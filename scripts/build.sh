@@ -4,8 +4,14 @@ rm -rf $outPath
 mkdir $outPath
 
 go build ../gitea.go
-chmod +x gitea
-mv gitea $outPath/
+PLATFORM=`uname | cut -d _ -f 1`
+if [ $PLATFORM = "MINGW32" ] || [ $PLATFORM = "MINGW64" ] || [ $PLATFORM = "CYGWIN" ]; then
+	GITEA_EXE=gitea.exe
+else
+	GITEA_EXE=gitea
+fi
+chmod +x $GITEA_EXE
+mv $GITEA_EXE $outPath/
 
 cp -r ../conf/ $outPath/conf/
 cp -r ../custom/ $outPath/custom/
