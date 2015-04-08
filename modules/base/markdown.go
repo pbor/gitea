@@ -109,12 +109,12 @@ func (options *CustomRender) Image(out *bytes.Buffer, link []byte, title []byte,
 }
 
 var (
-	MentionPattern = regexp.MustCompile(`(\s|^)@[0-9a-zA-Z_\.]+`)
-	commitPattern = regexp.MustCompile(`(\s|^)https?.*commit/[0-9a-zA-Z]+(#+[0-9a-zA-Z-]*)?`)
-	issueFullPattern = regexp.MustCompile(`(\s|^)https?.*issues/[0-9]+(#+[0-9a-zA-Z-]*)?`)
-	issueIndexPattern = regexp.MustCompile(`( |^)#[0-9]+\b`)
+	MentionPattern       = regexp.MustCompile(`(\s|^)@[0-9a-zA-Z_\.]+`)
+	commitPattern        = regexp.MustCompile(`(\s|^)https?.*commit/[0-9a-zA-Z]+(#+[0-9a-zA-Z-]*)?`)
+	issueFullPattern     = regexp.MustCompile(`(\s|^)https?.*issues/[0-9]+(#+[0-9a-zA-Z-]*)?`)
+	issueIndexPattern    = regexp.MustCompile(`( |^)#[0-9]+\b`)
 	crossRefIssuePattern = regexp.MustCompile(`( |^)[0-9a-zA-Z]+/[0-9a-zA-Z]+#[0-9]+\b`)
-	sha1CurrentPattern = regexp.MustCompile(`\b[0-9a-f]{40}\b`)
+	sha1CurrentPattern   = regexp.MustCompile(`\b[0-9a-f]{40}\b`)
 )
 
 func RenderSpecialLink(rawBytes []byte, urlPrefix string) []byte {
@@ -216,7 +216,6 @@ func RenderRawMarkdown(body []byte, urlPrefix string) []byte {
 	extensions |= blackfriday.EXTENSION_FENCED_CODE
 	extensions |= blackfriday.EXTENSION_AUTOLINK
 	extensions |= blackfriday.EXTENSION_STRIKETHROUGH
-	extensions |= blackfriday.EXTENSION_HARD_LINE_BREAK
 	extensions |= blackfriday.EXTENSION_NO_EMPTY_LINE_BEFORE_BLOCK
 
 	body = blackfriday.Markdown(body, renderer, extensions)
