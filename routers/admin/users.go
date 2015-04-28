@@ -186,6 +186,7 @@ func EditUserPost(ctx *middleware.Context, form auth.AdminEditUserForm) {
 		u.EncodePasswd()
 	}
 
+	u.FullName = form.FullName
 	u.Email = form.Email
 	u.Website = form.Website
 	u.Location = form.Location
