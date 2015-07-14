@@ -160,10 +160,10 @@ func (repo *Repository) refreshCollaboratorAccesses(e Engine, accessMap map[int6
 				return fmt.Errorf("GetMembers: %v", err)
 			}
 			for _, m := range t.Members {
-				if t.IsOwnerTeam() || t.Authorize >= ACCESS_MODE_ADMIN {
-					accessMap[m.Id] = ACCESS_MODE_ADMIN
+				if t.IsOwnerTeam() {
+					accessMap[m.Id] = ACCESS_MODE_OWNER
 				} else {
-					accessMap[m.Id] = ACCESS_MODE_WRITE
+					accessMap[m.Id] = maxAccessMode(accessMap[m.Id], t.Authorize)
 				}
 			}
 		}
