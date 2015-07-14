@@ -1,4 +1,3 @@
-// +build !windows
 // +build pam
 
 // Copyright 2014-2015 The Gogs Authors. All rights reserved.
