@@ -1,0 +1,21 @@
+[Unit]
+Description=Gitea (Git service with a cup of tea)
+After=syslog.target
+After=network.target
+#After=mysqld.service
+#After=postgresql.service
+#After=memcached.service
+#After=redis.service
+
+[Service]
+Type=simple
+User=git
+Group=git
+WorkingDirectory=/home/git/gitea
+ExecStart=/home/git/gitea/gitea web
+Restart=always
+Environment=USER=git
+Environment=HOME=/home/git
+
+[Install]
+WantedBy=multi-user.target

@@ -1,4 +1,5 @@
-// Copyright 2014 The Gogs Authors. All rights reserved.
+// Copyright 2014-2015 The Gogs Authors. All rights reserved.
+// Copyright 2015 The Gitea Authors. All rights reserved.
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
@@ -105,7 +106,7 @@ func CreatePost(ctx *middleware.Context, form auth.CreateRepoForm) {
 	}
 
 	repo, err := models.CreateRepository(ctxUser, form.RepoName, form.Description,
-		form.Gitignore, form.License, form.Private, false, form.AutoInit)
+		form.Gitignore, form.License, form.Private, false, form.AutoInit, false, 0)
 	if err == nil {
 		log.Trace("Repository created: %s/%s", ctxUser.Name, repo.Name)
 		ctx.Redirect(setting.AppSubUrl + "/" + ctxUser.Name + "/" + repo.Name)
@@ -328,7 +329,25 @@ func ForkPost(ctx *middleware.Context, form auth.CreateRepoForm) {
 		}
 	}
 
-	repo, err := models.ForkRepository(ctxUser, forkRepo, form.RepoName, form.Description)
+	if err = forkRepo.GetWikiRepo(); err != nil {
+		ctx.Handle(500, "GetWikiRepo", err)
+	}
+	var wikiRepoId int64
+	wikiRepoId = 0
+	if forkRepo.WikiRepo != nil {
+		wikiRepo, err := models.ForkRepository(ctxUser, forkRepo.WikiRepo, form.RepoName + ".wiki", form.Description, 0)
+		if err != nil {
+			if wikiRepo != nil {
+				if errDelete := models.DeleteRepository(ctxUser.Id, wikiRepo.ID, ctxUser.Name); errDelete != nil {
+					log.Error(4, "DeleteWikiRepository: %v", errDelete)
+				}
+			}
+			ctx.Handle(500, "ForkPost", err)
+		}
+		wikiRepoId = wikiRepo.ID
+	}
+
+	repo, err := models.ForkRepository(ctxUser, forkRepo, form.RepoName, form.Description, wikiRepoId)
 	if err == nil {
 		log.Trace("Repository forked: %s/%s", ctxUser.Name, repo.Name)
 		ctx.Redirect(setting.AppSubUrl + "/" + ctxUser.Name + "/" + repo.Name)

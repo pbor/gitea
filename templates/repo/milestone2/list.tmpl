@@ -38,7 +38,11 @@
                         <i class="octicon octicon-calendar"></i> Due to {{DateFmtShort .Deadline}}
                         {{end}}
                     </p>
-                    <div class="content">{{.RenderedContent | Str2html}}</div>
+
+                    <div class="content">
+                        In this version of release, users are able to register and log in/out on Gitea, setting up SSH keys and do most of Git operations through SSH with public repositories. And Web UI only for view of Git data, no extra features are supported.
+                    </div>
+
                     <div class="action">
                         <p class="status-bar">
                             <span class="closed">closed {{.NumClosedIssues}}</span>

@@ -1,4 +1,5 @@
-// Copyright 2014 The Gogs Authors. All rights reserved.
+// Copyright 2014-2015 The Gogs Authors. All rights reserved.
+// Copyright 2015 The Gitea Authors. All rights reserved.
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
@@ -145,6 +146,11 @@ func (repo *Repository) refreshCollaboratorAccesses(e Engine, accessMap map[int6
 	for _, c := range collaborators {
 		accessMap[c.Id] = ACCESS_MODE_WRITE
 	}
+
+	if err := repo.getOwner(e); err != nil {
+		return err
+	}
+
 	if repo.Owner.IsOrganization() {
 		if err = repo.Owner.GetTeams(); err != nil {
 			return fmt.Errorf("GetTeams: %v", err)

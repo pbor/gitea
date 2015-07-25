@@ -1,4 +1,5 @@
-// Copyright 2014 The Gogs Authors. All rights reserved.
+// Copyright 2014-2015 The Gogs Authors. All rights reserved.
+// Copyright 2015 The Gitea Authors. All rights reserved.
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
@@ -13,6 +14,7 @@ import (
 	"net/url"
 	"strings"
 	"time"
+	"os"
 
 	"github.com/Unknwon/com"
 
@@ -210,7 +212,15 @@ func CreateIssue(ctx *middleware.Context) {
 	}
 
 	ctx.Data["AllowedTypes"] = setting.AttachmentAllowedTypes
-	ctx.Data["Collaborators"] = us
+
+	var owners []*models.User
+	if ctx.Repo.Repository.Owner.IsOrganization() {
+		ctx.Repo.Repository.Owner.GetMembers()
+		owners = append(owners, ctx.Repo.Repository.Owner.Members...)
+	} else {
+		owners = append(owners, ctx.Repo.Repository.Owner)
+	}
+	ctx.Data["Collaborators"] = append(owners, us...)
 
 	ctx.HTML(200, ISSUE_CREATE)
 }
@@ -413,11 +423,20 @@ func ViewIssue(ctx *middleware.Context) {
 	}
 
 	// Get all collaborators.
-	ctx.Data["Collaborators"], err = ctx.Repo.Repository.GetCollaborators()
+	collaborators, err := ctx.Repo.Repository.GetCollaborators()
 	if err != nil {
 		ctx.Handle(500, "issue.CreateIssue(GetCollaborators)", err)
 		return
 	}
+
+	var owners []*models.User
+	if ctx.Repo.Repository.Owner.IsOrganization() {
+		ctx.Repo.Repository.Owner.GetMembers()
+		owners = append(owners, ctx.Repo.Repository.Owner.Members...)
+	} else {
+		owners = append(owners, ctx.Repo.Repository.Owner)
+	}
+	ctx.Data["Collaborators"] = append(owners, collaborators...)
 
 	if ctx.IsSigned {
 		// Update issue-user.
@@ -538,6 +557,7 @@ func UpdateIssueLabel(ctx *middleware.Context) {
 	labelStrId := ctx.Query("id")
 	labelId := com.StrTo(labelStrId).MustInt64()
 	label, err := models.GetLabelById(labelId)
+
 	if err != nil {
 		if err == models.ErrLabelNotExist {
 			ctx.Handle(404, "issue.UpdateIssueLabel(GetLabelById)", err)
@@ -720,6 +740,13 @@ func uploadFiles(ctx *middleware.Context, issueId, commentId int64) {
 			return
 		}
 
+		if !com.IsDir(setting.AttachmentPath) {
+			if err := os.MkdirAll(setting.AttachmentPath, os.ModePerm); err != nil {
+				ctx.Handle(500, "UploadFiles -> os.MkdirAll(setting.AttachmentPath)", err)
+				return
+			}
+		}
+
 		out, err := ioutil.TempFile(setting.AttachmentPath, "attachment_")
 
 		if err != nil {
@@ -882,6 +909,7 @@ func Comment(ctx *middleware.Context) {
 		RepoID:       ctx.Repo.Repository.ID,
 		RepoUserName: ctx.Repo.Owner.LowerName,
 		RepoName:     ctx.Repo.Repository.LowerName,
+		IsPrivate:    ctx.Repo.Repository.IsPrivate,
 	}
 	if err = models.NotifyWatchers(act); err != nil {
 		send(500, nil, err)
@@ -958,11 +986,17 @@ func UpdateLabel(ctx *middleware.Context, form auth.CreateLabelForm) {
 		return
 	}
 
-	l := &models.Label{
-		Id:    id,
-		Name:  form.Title,
-		Color: form.Color,
+	l, err := models.GetLabelById(id)
+
+	if l == nil {
+		log.Warn("Could not find label id in db: %s", err)
+		ctx.Redirect(ctx.Repo.RepoLink + "/issues")
+		return
 	}
+
+	l.Name = form.Title
+	l.Color = form.Color
+
 	if err := models.UpdateLabel(l); err != nil {
 		ctx.Handle(500, "issue.UpdateLabel(UpdateLabel)", err)
 		return

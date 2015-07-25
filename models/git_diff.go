@@ -1,4 +1,5 @@
-// Copyright 2014 The Gogs Authors. All rights reserved.
+// Copyright 2014-2015 The Gogs Authors. All rights reserved.
+// Copyright 2015 The Gitea Authors. All rights reserved.
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
@@ -38,6 +39,7 @@ const (
 	DIFF_FILE_ADD = iota + 1
 	DIFF_FILE_CHANGE
 	DIFF_FILE_DEL
+	DIFF_FILE_RENAME
 )
 
 type DiffLine struct {
@@ -58,11 +60,13 @@ type DiffSection struct {
 
 type DiffFile struct {
 	Name               string
+	OldName   string
 	Index              int
 	Addition, Deletion int
 	Type               int
 	IsCreated          bool
 	IsDeleted          bool
+	IsRenamed bool
 	IsBin              bool
 	Sections           []*DiffSection
 }
@@ -170,6 +174,7 @@ func ParsePatch(pid int64, maxlines int, cmd *exec.Cmd, reader io.Reader) (*Diff
 
 			fs := strings.Split(line[len(DIFF_HEAD):], " ")
 			a := fs[0]
+			b := fs[1]
 
 			curFile = &DiffFile{
 				Name:     a[strings.Index(a, "/")+1:],
@@ -186,14 +191,24 @@ func ParsePatch(pid int64, maxlines int, cmd *exec.Cmd, reader io.Reader) (*Diff
 					curFile.Type = DIFF_FILE_ADD
 					curFile.IsDeleted = false
 					curFile.IsCreated = true
+					curFile.IsRenamed = false
 				case strings.HasPrefix(scanner.Text(), "deleted"):
 					curFile.Type = DIFF_FILE_DEL
 					curFile.IsCreated = false
 					curFile.IsDeleted = true
+					curFile.IsRenamed = false
 				case strings.HasPrefix(scanner.Text(), "index"):
 					curFile.Type = DIFF_FILE_CHANGE
 					curFile.IsCreated = false
 					curFile.IsDeleted = false
+					curFile.IsRenamed = false
+				case strings.HasPrefix(scanner.Text(), "similarity index"):
+					curFile.Type = DIFF_FILE_RENAME
+					curFile.IsCreated = false
+					curFile.IsDeleted = false
+					curFile.IsRenamed = true
+					curFile.OldName = curFile.Name
+					curFile.Name = b[strings.Index(b, "/")+1:]
 				}
 				if curFile.Type > 0 {
 					break
@@ -244,10 +259,10 @@ func GetDiffRange(repoPath, beforeCommitId string, afterCommitId string, maxline
 			cmd = exec.Command("git", "show", afterCommitId)
 		} else {
 			c, _ := commit.Parent(0)
-			cmd = exec.Command("git", "diff", c.Id.String(), afterCommitId)
+			cmd = exec.Command("git", "diff", "-M", c.Id.String(), afterCommitId)
 		}
 	} else {
-		cmd = exec.Command("git", "diff", beforeCommitId, afterCommitId)
+		cmd = exec.Command("git", "diff", "-M", beforeCommitId, afterCommitId)
 	}
 	cmd.Dir = repoPath
 	cmd.Stdout = wr

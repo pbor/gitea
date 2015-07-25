@@ -1,4 +1,5 @@
-// Copyright 2014 The Gogs Authors. All rights reserved.
+// Copyright 2014-2015 The Gogs Authors. All rights reserved.
+// Copyright 2015 The Gitea Authors. All rights reserved.
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
@@ -102,7 +103,7 @@ func SearchRepos(ctx *middleware.Context) {
 
 func createRepo(ctx *middleware.Context, owner *models.User, opt api.CreateRepoOption) {
 	repo, err := models.CreateRepository(owner, opt.Name, opt.Description,
-		opt.Gitignore, opt.License, opt.Private, false, opt.AutoInit)
+		opt.Gitignore, opt.License, opt.Private, false, opt.AutoInit, false, 0)
 	if err != nil {
 		if err == models.ErrRepoAlreadyExist ||
 			models.IsErrNameReserved(err) ||

@@ -1,4 +1,5 @@
-// Copyright 2014 The Gogs Authors. All rights reserved.
+// Copyright 2014-2015 The Gogs Authors. All rights reserved.
+// Copyright 2015 The Gitea Authors. All rights reserved.
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
@@ -53,7 +54,7 @@ func SettingsPost(ctx *middleware.Context, form auth.RepoSettingForm) {
 		newRepoName := form.RepoName
 		// Check if repository name has been changed.
 		if ctx.Repo.Repository.Name != newRepoName {
-			if err := models.ChangeRepositoryName(ctx.Repo.Owner, ctx.Repo.Repository.Name, newRepoName); err != nil {
+			if err := models.ChangeRepositoryName(ctx.Repo.Owner, ctx.Repo.Repository.Name, newRepoName, false); err != nil {
 				switch {
 				case err == models.ErrRepoAlreadyExist:
 					ctx.Data["Err_RepoName"] = true
@@ -68,6 +69,19 @@ func SettingsPost(ctx *middleware.Context, form auth.RepoSettingForm) {
 					ctx.Handle(500, "ChangeRepositoryName", err)
 				}
 				return
+			}
+			if ctx.Repo.Repository.WikiRepo != nil {
+				newWikiRepoName := newRepoName + ".wiki"
+				if err := models.ChangeRepositoryName(ctx.Repo.Owner, ctx.Repo.Repository.WikiRepo.Name, newWikiRepoName, true); err != nil {
+					ctx.Handle(500, "ChangeRepositoryName", err)
+				}
+				ctx.Repo.Repository.WikiRepo.Name = newWikiRepoName
+				ctx.Repo.Repository.WikiRepo.LowerName = strings.ToLower(newWikiRepoName)
+
+				if err := models.UpdateRepository(ctx.Repo.Repository.WikiRepo, ctx.Repo.Repository.IsPrivate != form.Private); err != nil {
+					ctx.Handle(404, "UpdateRepository", err)
+					return
+				}
 			}
 			log.Trace("Repository name changed: %s/%s -> %s", ctx.Repo.Owner.Name, ctx.Repo.Repository.Name, newRepoName)
 			ctx.Repo.Repository.Name = newRepoName
@@ -126,6 +140,22 @@ func SettingsPost(ctx *middleware.Context, form auth.RepoSettingForm) {
 			return
 		}
 
+		// Transfer wiki repo
+		err = ctx.Repo.Repository.WikiRepo.GetOwner()
+		if err != nil {
+			ctx.Handle(500, "WikiRepo.GetOwner", err)
+		}
+		if ctx.Repo.Repository.WikiRepo != nil {
+			if err = models.TransferOwnership(ctx.User, newOwner, ctx.Repo.Repository.WikiRepo); err != nil {
+				if err == models.ErrRepoAlreadyExist {
+					ctx.RenderWithErr(ctx.Tr("repo.settings.new_owner_has_same_repo"), SETTINGS_OPTIONS, nil)
+				} else {
+					ctx.Handle(500, "TransferOwnership", err)
+				}
+				return
+			}
+		}
+
 		if err = models.TransferOwnership(ctx.User, newOwner, ctx.Repo.Repository); err != nil {
 			if err == models.ErrRepoAlreadyExist {
 				ctx.RenderWithErr(ctx.Tr("repo.settings.new_owner_has_same_repo"), SETTINGS_OPTIONS, nil)
@@ -162,6 +192,12 @@ func SettingsPost(ctx *middleware.Context, form auth.RepoSettingForm) {
 		if err := models.DeleteRepository(ctx.Repo.Owner.Id, ctx.Repo.Repository.ID, ctx.Repo.Owner.Name); err != nil {
 			ctx.Handle(500, "DeleteRepository", err)
 			return
+		}
+		if ctx.Repo.Repository.WikiRepoId > 0 {
+			if err := models.DeleteRepository(ctx.Repo.Owner.Id, ctx.Repo.Repository.WikiRepoId, ctx.Repo.Owner.Name); err != nil {
+				ctx.Handle(500, "DeleteRepository", err)
+				return
+			}
 		}
 		log.Trace("Repository deleted: %s/%s", ctx.Repo.Owner.Name, ctx.Repo.Repository.Name)
 		if ctx.Repo.Owner.IsOrganization() {
@@ -272,8 +308,8 @@ func Webhooks(ctx *middleware.Context) {
 }
 
 func renderHookTypes(ctx *middleware.Context) {
-	ctx.Data["HookTypes"] = []string{"Gogs", "Slack"}
-	ctx.Data["HookType"] = "Gogs"
+	ctx.Data["HookTypes"] = []string{"Gitea", "Slack"}
+	ctx.Data["HookType"] = "Gitea"
 }
 
 func WebHooksNew(ctx *middleware.Context) {
@@ -323,7 +359,7 @@ func WebHooksNewPost(ctx *middleware.Context, form auth.NewWebhookForm) {
 			PushOnly: form.PushOnly,
 		},
 		IsActive:     form.Active,
-		HookTaskType: models.GOGS,
+		HookTaskType: models.GITEA,
 		Meta:         "",
 		OrgId:        orCtx.OrgId,
 	}
@@ -370,7 +406,7 @@ func WebHooksEdit(ctx *middleware.Context) {
 		}
 	default:
 		{
-			ctx.Data["HookType"] = "Gogs"
+			ctx.Data["HookType"] = "Gitea"
 		}
 	}
 	w.GetEvent()

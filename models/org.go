@@ -1,4 +1,5 @@
-// Copyright 2014 The Gogs Authors. All rights reserved.
+// Copyright 2014-2015 The Gogs Authors. All rights reserved.
+// Copyright 2015 The Gitea Authors. All rights reserved.
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
@@ -491,7 +492,10 @@ func (t *Team) addRepository(e Engine, repo *Repository) (err error) {
 		return err
 	}
 
-	t.NumRepos++
+	if !repo.IsWiki {
+		t.NumRepos++
+	}
+
 	if _, err = e.Id(t.ID).AllCols().Update(t); err != nil {
 		return fmt.Errorf("update team: %v", err)
 	}
@@ -537,7 +541,10 @@ func (t *Team) removeRepository(e Engine, repo *Repository, recalculate bool) (e
 		return err
 	}
 
-	t.NumRepos--
+	if !repo.IsWiki {
+		t.NumRepos--
+	}
+
 	if _, err = e.Id(t.ID).AllCols().Update(t); err != nil {
 		return err
 	}

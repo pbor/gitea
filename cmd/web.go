@@ -1,4 +1,5 @@
-// Copyright 2014 The Gogs Authors. All rights reserved.
+// Copyright 2014-2015 The Gogs Authors. All rights reserved.
+// Copyright 2015 The Gitea Authors. All rights reserved.
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
@@ -241,7 +242,7 @@ func runWeb(ctx *cli.Context) {
 			m.Any("/*", func(ctx *middleware.Context) {
 				ctx.HandleAPI(404, "Page not found")
 			})
-		})
+		}, middleware.ApiAccess())
 	})
 
 	// User.
@@ -359,10 +360,10 @@ func runWeb(ctx *cli.Context) {
 				m.Post("", bindIgnErr(auth.UpdateOrgSettingForm{}), org.SettingsPost)
 				m.Get("/hooks", org.SettingsHooks)
 				m.Get("/hooks/new", repo.WebHooksNew)
-				m.Post("/hooks/gogs/new", bindIgnErr(auth.NewWebhookForm{}), repo.WebHooksNewPost)
+				m.Post("/hooks/gitea/new", bindIgnErr(auth.NewWebhookForm{}), repo.WebHooksNewPost)
 				m.Post("/hooks/slack/new", bindIgnErr(auth.NewSlackHookForm{}), repo.SlackHooksNewPost)
 				m.Get("/hooks/:id", repo.WebHooksEdit)
-				m.Post("/hooks/gogs/:id", bindIgnErr(auth.NewWebhookForm{}), repo.WebHooksEditPost)
+				m.Post("/hooks/gitea/:id", bindIgnErr(auth.NewWebhookForm{}), repo.WebHooksEditPost)
 				m.Post("/hooks/slack/:id", bindIgnErr(auth.NewSlackHookForm{}), repo.SlackHooksEditPost)
 				m.Route("/delete", "GET,POST", org.SettingsDelete)
 			})
@@ -391,10 +392,10 @@ func runWeb(ctx *cli.Context) {
 			m.Route("/collaboration", "GET,POST", repo.SettingsCollaboration)
 			m.Get("/hooks", repo.Webhooks)
 			m.Get("/hooks/new", repo.WebHooksNew)
-			m.Post("/hooks/gogs/new", bindIgnErr(auth.NewWebhookForm{}), repo.WebHooksNewPost)
+			m.Post("/hooks/gitea/new", bindIgnErr(auth.NewWebhookForm{}), repo.WebHooksNewPost)
 			m.Post("/hooks/slack/new", bindIgnErr(auth.NewSlackHookForm{}), repo.SlackHooksNewPost)
 			m.Get("/hooks/:id", repo.WebHooksEdit)
-			m.Post("/hooks/gogs/:id", bindIgnErr(auth.NewWebhookForm{}), repo.WebHooksEditPost)
+			m.Post("/hooks/gitea/:id", bindIgnErr(auth.NewWebhookForm{}), repo.WebHooksEditPost)
 			m.Post("/hooks/slack/:id", bindIgnErr(auth.NewSlackHookForm{}), repo.SlackHooksEditPost)
 
 			m.Group("/hooks/git", func() {
@@ -432,6 +433,11 @@ func runWeb(ctx *cli.Context) {
 
 		m.Post("/comment/:action", repo.Comment)
 
+		m.Get("/wiki/new", repo.CreateWikiPage)
+		m.Get("/wiki/:slug/edit", repo.EditWikiPage)
+		m.Post("/wiki/:slug/remove", repo.WikiPageRemove)
+		m.Post("/wiki/new", bindIgnErr(auth.CreateWikiPageForm{}), repo.CreateWikiPagePost)
+
 		m.Group("/releases", func() {
 			m.Get("/new", repo.NewRelease)
 			m.Post("/new", bindIgnErr(auth.NewReleaseForm{}), repo.NewReleasePost)
@@ -460,6 +466,11 @@ func runWeb(ctx *cli.Context) {
 		m.Get("/issues2/", repo.Issues2)
 		m.Get("/issues/labels2/", repo.Labels2)
 		m.Get("/issues/milestone2/", repo.Milestones2)
+
+		m.Get("/wiki", repo.Wiki)
+		m.Get("/wiki/pages", repo.WikiPageList)
+		m.Get("/wiki/git", repo.WikiGit)
+		m.Get("/wiki/:slug", repo.ViewWikiPage)
 
 		m.Group("", func() {
 			m.Get("/src/*", repo.Home)

@@ -1,4 +1,5 @@
-// Copyright 2014 The Gogs Authors. All rights reserved.
+// Copyright 2014-2015 The Gogs Authors. All rights reserved.
+// Copyright 2015 The Gitea Authors. All rights reserved.
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
@@ -8,6 +9,8 @@ import (
 	"bufio"
 	"container/list"
 	"strings"
+	"path"
+	"path/filepath"
 )
 
 // Commit represents a git commit.
@@ -131,4 +134,49 @@ func (c *Commit) GetSubModules() (map[string]*SubModule, error) {
 	}
 
 	return c.submodules, nil
+}
+
+func (c *Commit) GetTreeFiles(treename string) ([][]interface{}, Entries, error) {
+	tree, err := c.SubTree(treename)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	entries, err := tree.ListEntries(treename)
+	if err != nil {
+		return nil, nil, err
+	}
+	entries.Sort()
+
+	treePath := treename
+	if len(treePath) != 0 {
+		treePath = treePath + "/"
+	}
+
+	files := make([][]interface{}, 0, len(entries))
+	for _, te := range entries {
+		if te.Type != COMMIT {
+			c, err := c.GetCommitOfRelPath(filepath.Join(treePath, te.Name()))
+			if err != nil {
+				return nil, nil, err
+			}
+			files = append(files, []interface{}{te, c})
+		} else {
+			sm, err := c.GetSubModule(path.Join(treename, te.Name()))
+			if err != nil {
+				return nil, nil, err
+			}
+			smUrl := ""
+			if sm != nil {
+				smUrl = sm.Url
+			}
+
+			commit, err := c.GetCommitOfRelPath(filepath.Join(treePath, te.Name()))
+			if err != nil {
+				return nil, nil, err
+			}
+			files = append(files, []interface{}{te, NewSubModuleFile(commit, smUrl, te.Id.String())})
+		}
+	}
+	return files, entries, nil
 }

@@ -1,4 +1,5 @@
-// Copyright 2014 The Gogs Authors. All rights reserved.
+// Copyright 2014-2015 The Gogs Authors. All rights reserved.
+// Copyright 2015 The Gitea Authors. All rights reserved.
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
@@ -450,6 +451,10 @@ func CommitRepoAction(userId, repoUserId int64, userName, actEmail string,
 }
 
 func newRepoAction(e Engine, u *User, repo *Repository) (err error) {
+	if repo.IsWiki {
+		return nil
+	}
+
 	if err = notifyWatchers(e, &Action{
 		ActUserID:    u.Id,
 		ActUserName:  u.Name,
@@ -473,6 +478,10 @@ func NewRepoAction(u *User, repo *Repository) (err error) {
 }
 
 func transferRepoAction(e Engine, actUser, oldOwner, newOwner *User, repo *Repository) (err error) {
+	if repo.IsWiki {
+		return nil
+	}
+
 	action := &Action{
 		ActUserID:    actUser.Id,
 		ActUserName:  actUser.Name,
