@@ -224,11 +224,11 @@ import (
 	"compress/gzip"
 	"fmt"
 	"io"
-	"strings"
-	"os"
-	"time"
 	"io/ioutil"
 	"path/filepath"
+	"os"
+	"strings"
+	"time"
 )
 
 func bindataRead(data []byte, name string) ([]byte, error) {
@@ -257,9 +257,9 @@ type asset struct {
 }
 
 type bindataFileInfo struct {
-	name string
-	size int64
-	mode os.FileMode
+	name    string
+	size    int64
+	mode    os.FileMode
 	modTime time.Time
 }
 
@@ -4601,7 +4601,7 @@ func Asset(name string) ([]byte, error) {
 // It simplifies safe initialization of global variables.
 func MustAsset(name string) []byte {
 	a, err := Asset(name)
-	if (err != nil) {
+	if err != nil {
 		panic("asset: Asset(" + name + "): " + err.Error())
 	}
 
@@ -4887,13 +4887,13 @@ func AssetDir(name string) ([]string, error) {
 }
 
 type bintree struct {
-	Func func() (*asset, error)
+	Func     func() (*asset, error)
 	Children map[string]*bintree
 }
+
 var _bintree = &bintree{nil, map[string]*bintree{
 	"conf": &bintree{nil, map[string]*bintree{
-		"app.ini": &bintree{confAppIni, map[string]*bintree{
-		}},
+		"app.ini": &bintree{confAppIni, map[string]*bintree{}},
 		"gitignore": &bintree{nil, map[string]*bintree{
 			"Actionscript": &bintree{confGitignoreActionscript, map[string]*bintree{
 			}},
@@ -5301,32 +5301,19 @@ var _bintree = &bintree{nil, map[string]*bintree{
 			}},
 		}},
 		"locale": &bintree{nil, map[string]*bintree{
-			"TRANSLATORS": &bintree{confLocaleTranslators, map[string]*bintree{
-			}},
-			"locale_de-DE.ini": &bintree{confLocaleLocale_deDeIni, map[string]*bintree{
-			}},
-			"locale_en-US.ini": &bintree{confLocaleLocale_enUsIni, map[string]*bintree{
-			}},
-			"locale_es-ES.ini": &bintree{confLocaleLocale_esEsIni, map[string]*bintree{
-			}},
-			"locale_fr-FR.ini": &bintree{confLocaleLocale_frFrIni, map[string]*bintree{
-			}},
-			"locale_ja-JP.ini": &bintree{confLocaleLocale_jaJpIni, map[string]*bintree{
-			}},
-			"locale_lv-LV.ini": &bintree{confLocaleLocale_lvLvIni, map[string]*bintree{
-			}},
-			"locale_nl-NL.ini": &bintree{confLocaleLocale_nlNlIni, map[string]*bintree{
-			}},
-			"locale_pl-PL.ini": &bintree{confLocaleLocale_plPlIni, map[string]*bintree{
-			}},
-			"locale_pt-BR.ini": &bintree{confLocaleLocale_ptBrIni, map[string]*bintree{
-			}},
-			"locale_ru-RU.ini": &bintree{confLocaleLocale_ruRuIni, map[string]*bintree{
-			}},
-			"locale_zh-CN.ini": &bintree{confLocaleLocale_zhCnIni, map[string]*bintree{
-			}},
-			"locale_zh-HK.ini": &bintree{confLocaleLocale_zhHkIni, map[string]*bintree{
-			}},
+			"TRANSLATORS":      &bintree{confLocaleTranslators, map[string]*bintree{}},
+			"locale_de-DE.ini": &bintree{confLocaleLocale_deDeIni, map[string]*bintree{}},
+			"locale_en-US.ini": &bintree{confLocaleLocale_enUsIni, map[string]*bintree{}},
+			"locale_es-ES.ini": &bintree{confLocaleLocale_esEsIni, map[string]*bintree{}},
+			"locale_fr-FR.ini": &bintree{confLocaleLocale_frFrIni, map[string]*bintree{}},
+			"locale_ja-JP.ini": &bintree{confLocaleLocale_jaJpIni, map[string]*bintree{}},
+			"locale_lv-LV.ini": &bintree{confLocaleLocale_lvLvIni, map[string]*bintree{}},
+			"locale_nl-NL.ini": &bintree{confLocaleLocale_nlNlIni, map[string]*bintree{}},
+			"locale_pl-PL.ini": &bintree{confLocaleLocale_plPlIni, map[string]*bintree{}},
+			"locale_pt-BR.ini": &bintree{confLocaleLocale_ptBrIni, map[string]*bintree{}},
+			"locale_ru-RU.ini": &bintree{confLocaleLocale_ruRuIni, map[string]*bintree{}},
+			"locale_zh-CN.ini": &bintree{confLocaleLocale_zhCnIni, map[string]*bintree{}},
+			"locale_zh-HK.ini": &bintree{confLocaleLocale_zhHkIni, map[string]*bintree{}},
 		}},
 	}},
 }}
@@ -5374,7 +5361,6 @@ func RestoreAssets(dir, name string) error {
 }
 
 func _filePath(dir, name string) string {
-        cannonicalName := strings.Replace(name, "\\", "/", -1)
-        return filepath.Join(append([]string{dir}, strings.Split(cannonicalName, "/")...)...)
+	cannonicalName := strings.Replace(name, "\\", "/", -1)
+	return filepath.Join(append([]string{dir}, strings.Split(cannonicalName, "/")...)...)
 }
-

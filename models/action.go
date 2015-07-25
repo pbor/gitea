@@ -24,17 +24,17 @@ import (
 type ActionType int
 
 const (
-	CREATE_REPO   ActionType = iota + 1 // 1
-	DELETE_REPO                         // 2
-	STAR_REPO                           // 3
-	FOLLOW_REPO                         // 4
-	COMMIT_REPO                         // 5
-	CREATE_ISSUE                        // 6
-	PULL_REQUEST                        // 7
-	TRANSFER_REPO                       // 8
-	PUSH_TAG                            // 9
-	COMMENT_ISSUE                       // 10
-	COMMENT_COMMIT                      // 11
+	CREATE_REPO    ActionType = iota + 1 // 1
+	DELETE_REPO                          // 2
+	STAR_REPO                            // 3
+	FOLLOW_REPO                          // 4
+	COMMIT_REPO                          // 5
+	CREATE_ISSUE                         // 6
+	PULL_REQUEST                         // 7
+	TRANSFER_REPO                        // 8
+	PUSH_TAG                             // 9
+	COMMENT_ISSUE                        // 10
+	COMMENT_COMMIT                       // 11
 )
 
 var (
@@ -155,7 +155,8 @@ func updateIssuesCommit(userId, repoId int64, repoUserName, repoName string, com
 
 			url := fmt.Sprintf("%s/%s/%s/commit/%s", setting.AppSubUrl, repoUserName, repoName, c.Sha1)
 			message := fmt.Sprintf(`<a href="%s">%s</a>`, url, c.Message)
-			if _, err = CreateComment(userId, issue.RepoId, issue.Id, "", "", COMMENT_TYPE_COMMIT, message, nil); err != nil {
+
+			if _, err = CreateComment(userId, issue.RepoID, issue.ID, "", "", COMMENT_TYPE_COMMIT, message, nil); err != nil {
 				return err
 			}
 		}
@@ -185,7 +186,7 @@ func updateIssuesCommit(userId, repoId int64, repoUserName, repoName string, com
 				return err
 			}
 
-			if issue.RepoId == repoId {
+			if issue.RepoID == repoId {
 				if issue.IsClosed {
 					continue
 				}
@@ -204,7 +205,7 @@ func updateIssuesCommit(userId, repoId int64, repoUserName, repoName string, com
 
 				if err = UpdateIssue(issue); err != nil {
 					return err
-				} else if err = UpdateIssueUserPairsByStatus(issue.Id, issue.IsClosed); err != nil {
+				} else if err = UpdateIssueUserPairsByStatus(issue.ID, issue.IsClosed); err != nil {
 					return err
 				}
 
@@ -213,7 +214,7 @@ func updateIssuesCommit(userId, repoId int64, repoUserName, repoName string, com
 				}
 
 				// If commit happened in the referenced repository, it means the issue can be closed.
-				if _, err = CreateComment(userId, repoId, issue.Id, "", "", COMMENT_TYPE_CLOSE, "", nil); err != nil {
+				if _, err = CreateComment(userId, repoId, issue.ID, "", "", COMMENT_TYPE_CLOSE, "", nil); err != nil {
 					return err
 				}
 			}
@@ -244,7 +245,7 @@ func updateIssuesCommit(userId, repoId int64, repoUserName, repoName string, com
 				return err
 			}
 
-			if issue.RepoId == repoId {
+			if issue.RepoID == repoId {
 				if !issue.IsClosed {
 					continue
 				}
@@ -263,7 +264,7 @@ func updateIssuesCommit(userId, repoId int64, repoUserName, repoName string, com
 
 				if err = UpdateIssue(issue); err != nil {
 					return err
-				} else if err = UpdateIssueUserPairsByStatus(issue.Id, issue.IsClosed); err != nil {
+				} else if err = UpdateIssueUserPairsByStatus(issue.ID, issue.IsClosed); err != nil {
 					return err
 				}
 
@@ -272,7 +273,9 @@ func updateIssuesCommit(userId, repoId int64, repoUserName, repoName string, com
 				}
 
 				// If commit happened in the referenced repository, it means the issue can be closed.
-				if _, err = CreateComment(userId, repoId, issue.Id, "", "", COMMENT_TYPE_REOPEN, "", nil); err != nil {
+
+				if _, err = CreateComment(userId, repoId, issue.ID, "", "", COMMENT_TYPE_REOPEN, "", nil); err != nil {
+
 					return err
 				}
 			}
@@ -350,7 +353,7 @@ func CommitRepoAction(userId, repoUserId int64, userName, actEmail string,
 	// check if repo belongs to org and append additional webhooks
 	if repo.Owner.IsOrganization() {
 		// get hooks for org
-		orgws, err := GetActiveWebhooksByOrgId(repo.OwnerId)
+		orgws, err := GetActiveWebhooksByOrgId(repo.OwnerID)
 		if err != nil {
 			return errors.New("action.CommitRepoAction(GetActiveWebhooksByOrgId): " + err.Error())
 		}
@@ -390,7 +393,7 @@ func CommitRepoAction(userId, repoUserId int64, userName, actEmail string,
 		Ref:     refFullName,
 		Commits: commits,
 		Repo: &PayloadRepo{
-			Id:          repo.Id,
+			Id:          repo.ID,
 			Name:        repo.LowerName,
 			Url:         repoLink,
 			Description: repo.Description,
@@ -457,12 +460,12 @@ func newRepoAction(e Engine, u *User, repo *Repository) (err error) {
 		ActUserName:  u.Name,
 		ActEmail:     u.Email,
 		OpType:       CREATE_REPO,
-		RepoID:       repo.Id,
+		RepoID:       repo.ID,
 		RepoUserName: repo.Owner.Name,
 		RepoName:     repo.Name,
 		IsPrivate:    repo.IsPrivate,
 	}); err != nil {
-		return fmt.Errorf("notify watchers '%d/%s'", u.Id, repo.Id)
+		return fmt.Errorf("notify watchers '%d/%s'", u.Id, repo.ID)
 	}
 
 	log.Trace("action.NewRepoAction: %s/%s", u.Name, repo.Name)
@@ -484,19 +487,19 @@ func transferRepoAction(e Engine, actUser, oldOwner, newOwner *User, repo *Repos
 		ActUserName:  actUser.Name,
 		ActEmail:     actUser.Email,
 		OpType:       TRANSFER_REPO,
-		RepoID:       repo.Id,
+		RepoID:       repo.ID,
 		RepoUserName: newOwner.Name,
 		RepoName:     repo.Name,
 		IsPrivate:    repo.IsPrivate,
 		Content:      path.Join(oldOwner.LowerName, repo.LowerName),
 	}
 	if err = notifyWatchers(e, action); err != nil {
-		return fmt.Errorf("notify watchers '%d/%s'", actUser.Id, repo.Id)
+		return fmt.Errorf("notify watchers '%d/%s'", actUser.Id, repo.ID)
 	}
 
 	// Remove watch for organization.
 	if repo.Owner.IsOrganization() {
-		if err = watchRepo(e, repo.Owner.Id, repo.Id, false); err != nil {
+		if err = watchRepo(e, repo.Owner.Id, repo.ID, false); err != nil {
 			return fmt.Errorf("watch repository: %v", err)
 		}
 	}

@@ -32,20 +32,23 @@ var (
 
 // Issue represents an issue or pull request of repository.
 type Issue struct {
-	Id              int64
-	RepoId          int64 `xorm:"INDEX"`
-	Index           int64 // Index in one repository.
-	Name            string
-	Repo            *Repository `xorm:"-"`
-	PosterId        int64
-	Poster          *User    `xorm:"-"`
-	LabelIds        string   `xorm:"TEXT"`
-	Labels          []*Label `xorm:"-"`
-	MilestoneId     int64
-	AssigneeId      int64
-	Assignee        *User `xorm:"-"`
-	IsRead          bool  `xorm:"-"`
-	IsPull          bool  // Indicates whether is a pull request or not.
+	ID          int64 `xorm:"pk autoincr"`
+	RepoID      int64 `xorm:"INDEX unique(s)"`
+	Index       int64 `xorm:"unique(s)"` // Index in one repository.
+	Name        string
+	Repo        *Repository `xorm:"-"`
+	PosterID    int64
+	Poster      *User    `xorm:"-"`
+	LabelIds    string   `xorm:"TEXT"`
+	Labels      []*Label `xorm:"-"`
+	MilestoneID int64
+	AssigneeID  int64
+	Assignee    *User `xorm:"-"`
+	IsRead      bool  `xorm:"-"`
+
+	// Indicates whether it is a pull request or not.
+	IsPull bool
+
 	IsClosed        bool
 	Content         string `xorm:"TEXT"`
 	RenderedContent string `xorm:"-"`
@@ -57,7 +60,7 @@ type Issue struct {
 }
 
 func (i *Issue) GetPoster() (err error) {
-	i.Poster, err = GetUserById(i.PosterId)
+	i.Poster, err = GetUserById(i.PosterID)
 	if err == ErrUserNotExist {
 		i.Poster = &User{Name: "FakeUser"}
 		return nil
@@ -89,10 +92,10 @@ func (i *Issue) GetLabels() error {
 }
 
 func (i *Issue) GetAssignee() (err error) {
-	if i.AssigneeId == 0 {
+	if i.AssigneeID == 0 {
 		return nil
 	}
-	i.Assignee, err = GetUserById(i.AssigneeId)
+	i.Assignee, err = GetUserById(i.AssigneeID)
 	if err == ErrUserNotExist {
 		return nil
 	}
@@ -100,34 +103,31 @@ func (i *Issue) GetAssignee() (err error) {
 }
 
 func (i *Issue) Attachments() []*Attachment {
-	a, _ := GetAttachmentsForIssue(i.Id)
+	a, _ := GetAttachmentsForIssue(i.ID)
 	return a
 }
 
 func (i *Issue) AfterDelete() {
-	_, err := DeleteAttachmentsByIssue(i.Id, true)
+	_, err := DeleteAttachmentsByIssue(i.ID, true)
 
 	if err != nil {
-		log.Info("Could not delete files for issue #%d: %s", i.Id, err)
+		log.Info("Could not delete files for issue #%d: %s", i.ID, err)
 	}
 }
 
 // CreateIssue creates new issue for repository.
 func NewIssue(issue *Issue) (err error) {
 	sess := x.NewSession()
-	defer sess.Close()
+	defer sessionRelease(sess)
 	if err = sess.Begin(); err != nil {
 		return err
 	}
 
 	if _, err = sess.Insert(issue); err != nil {
-		sess.Rollback()
 		return err
 	}
 
-	rawSql := "UPDATE `repository` SET num_issues = num_issues + 1 WHERE id = ?"
-	if _, err = sess.Exec(rawSql, issue.RepoId); err != nil {
-		sess.Rollback()
+	if _, err = sess.Exec("UPDATE `repository` SET num_issues=num_issues+1 WHERE id = ?", issue.RepoID); err != nil {
 		return err
 	}
 
@@ -135,12 +135,12 @@ func NewIssue(issue *Issue) (err error) {
 		return err
 	}
 
-	if issue.MilestoneId > 0 {
+	if issue.MilestoneID > 0 {
 		// FIXES(280): Update milestone counter.
-		return ChangeMilestoneAssign(0, issue.MilestoneId, issue)
+		return ChangeMilestoneAssign(0, issue.MilestoneID, issue)
 	}
 
-	return
+	return nil
 }
 
 // GetIssueByRef returns an Issue specified by a GFM reference.
@@ -163,12 +163,12 @@ func GetIssueByRef(ref string) (issue *Issue, err error) {
 		return
 	}
 
-	return GetIssueByIndex(repo.Id, issueNumber)
+	return GetIssueByIndex(repo.ID, issueNumber)
 }
 
 // GetIssueByIndex returns issue by given index in repository.
 func GetIssueByIndex(rid, index int64) (*Issue, error) {
-	issue := &Issue{RepoId: rid, Index: index}
+	issue := &Issue{RepoID: rid, Index: index}
 	has, err := x.Get(issue)
 	if err != nil {
 		return nil, err
@@ -180,7 +180,7 @@ func GetIssueByIndex(rid, index int64) (*Issue, error) {
 
 // GetIssueById returns an issue by ID.
 func GetIssueById(id int64) (*Issue, error) {
-	issue := &Issue{Id: id}
+	issue := &Issue{ID: id}
 	has, err := x.Get(issue)
 	if err != nil {
 		return nil, err
@@ -191,14 +191,15 @@ func GetIssueById(id int64) (*Issue, error) {
 }
 
 // GetIssues returns a list of issues by given conditions.
-func GetIssues(uid, rid, pid, mid int64, page int, isClosed bool, labelIds, sortType string) ([]Issue, error) {
-	sess := x.Limit(20, (page-1)*20)
+func GetIssues(uid, rid, pid, mid int64, page, limit int, isClosed bool, labelIds, sortType string, isPull bool) ([]Issue, error) {
+	sess := x.Limit(limit, (page-1)*limit)
 
 	if rid > 0 {
 		sess.Where("repo_id=?", rid).And("is_closed=?", isClosed)
 	} else {
 		sess.Where("is_closed=?", isClosed)
 	}
+	sess.And("is_pull=?", isPull)
 
 	if uid > 0 {
 		sess.And("assignee_id=?", uid)
@@ -291,7 +292,7 @@ func NewIssueUserPairs(repo *Repository, issueID, orgID, posterID, assigneeID in
 
 	iu := &IssueUser{
 		IssueId: issueID,
-		RepoId:  repo.Id,
+		RepoId:  repo.ID,
 	}
 
 	isNeedAddPoster := true
@@ -331,8 +332,9 @@ func PairsContains(ius []*IssueUser, issueId int64) int {
 }
 
 // GetIssueUserPairs returns issue-user pairs by given repository and user.
-func GetIssueUserPairs(rid, uid int64, isClosed bool) ([]*IssueUser, error) {
+func GetIssueUserPairs(rid, uid int64, isPull, isClosed bool) ([]*IssueUser, error) {
 	ius := make([]*IssueUser, 0, 10)
+	//  And is_pull = ?
 	err := x.Where("is_closed=?", isClosed).Find(&ius, &IssueUser{RepoId: rid, Uid: uid})
 	return ius, err
 }
@@ -396,16 +398,16 @@ const (
 )
 
 // GetIssueStats returns issue statistic information by given conditions.
-func GetIssueStats(rid, uid int64, isShowClosed bool, filterMode int) *IssueStats {
+func GetIssueStats(rid, uid int64, isPull, isShowClosed bool, filterMode int) *IssueStats {
 	stats := &IssueStats{}
 	issue := new(Issue)
 	tmpSess := &xorm.Session{}
 
 	sess := x.Where("repo_id=?", rid)
 	*tmpSess = *sess
-	stats.OpenCount, _ = tmpSess.And("is_closed=?", false).Count(issue)
+	stats.OpenCount, _ = tmpSess.And("is_closed=? And is_pull = ?", false, isPull).Count(issue)
 	*tmpSess = *sess
-	stats.ClosedCount, _ = tmpSess.And("is_closed=?", true).Count(issue)
+	stats.ClosedCount, _ = tmpSess.And("is_closed=? And is_pull = ?", true, isPull).Count(issue)
 	if isShowClosed {
 		stats.AllCount = stats.ClosedCount
 	} else {
@@ -423,15 +425,15 @@ func GetIssueStats(rid, uid int64, isShowClosed bool, filterMode int) *IssueStat
 			goto nofilter
 		}
 		*tmpSess = *sess
-		stats.OpenCount, _ = tmpSess.And("is_closed=?", false).Count(issue)
+		stats.OpenCount, _ = tmpSess.And("is_closed=? AND is_pull=?", false, isPull).Count(issue)
 		*tmpSess = *sess
-		stats.ClosedCount, _ = tmpSess.And("is_closed=?", true).Count(issue)
+		stats.ClosedCount, _ = tmpSess.And("is_closed=? AND is_pull=?", true, isPull).Count(issue)
 	} else {
 		sess := x.Where("repo_id=?", rid).And("uid=?", uid).And("is_mentioned=?", true)
 		*tmpSess = *sess
-		stats.OpenCount, _ = tmpSess.And("is_closed=?", false).Count(new(IssueUser))
+		stats.OpenCount, _ = tmpSess.And("is_closed=? AND is_pull=?", false, isPull).Count(new(IssueUser))
 		*tmpSess = *sess
-		stats.ClosedCount, _ = tmpSess.And("is_closed=?", true).Count(new(IssueUser))
+		stats.ClosedCount, _ = tmpSess.And("is_closed=? AND is_pull=?", true, isPull).Count(new(IssueUser))
 	}
 nofilter:
 	stats.AssignCount, _ = x.Where("repo_id=?", rid).And("is_closed=?", isShowClosed).And("assignee_id=?", uid).Count(issue)
@@ -451,7 +453,7 @@ func GetUserIssueStats(uid int64, filterMode int) *IssueStats {
 
 // UpdateIssue updates information of issue.
 func UpdateIssue(issue *Issue) error {
-	_, err := x.Id(issue.Id).AllCols().Update(issue)
+	_, err := x.Id(issue.ID).AllCols().Update(issue)
 
 	if err != nil {
 		return err
@@ -529,6 +531,8 @@ type Label struct {
 	NumClosedIssues int
 	NumOpenIssues   int  `xorm:"-"`
 	IsChecked       bool `xorm:"-"`
+	Created time.Time `xorm:"created"`
+	Updated time.Time `xorm:"updated"`
 }
 
 // CalOpenIssues calculates the open issues of label.
@@ -567,7 +571,7 @@ func GetLabels(repoId int64) ([]*Label, error) {
 
 // UpdateLabel updates label information.
 func UpdateLabel(l *Label) error {
-	_, err := x.Id(l.Id).AllCols().Update(l)
+	_, err := x.Id(l.Id).Cols("name,color").Update(l)
 	return err
 }
 
@@ -595,7 +599,7 @@ func DeleteLabel(repoId int64, strId string) error {
 
 	for _, issue := range issues {
 		issue.LabelIds = strings.Replace(issue.LabelIds, "$"+strId+"|", "", -1)
-		if _, err = sess.Id(issue.Id).AllCols().Update(issue); err != nil {
+		if _, err = sess.Id(issue.ID).AllCols().Update(issue); err != nil {
 			sess.Rollback()
 			return err
 		}
@@ -631,6 +635,8 @@ type Milestone struct {
 	Deadline        time.Time
 	DeadlineString  string `xorm:"-"`
 	ClosedDate      time.Time
+	Created time.Time `xorm:"created"`
+	Updated time.Time `xorm:"updated"`
 }
 
 // CalOpenIssues calculates the open issues of milestone.
@@ -720,7 +726,7 @@ func ChangeMilestoneStatus(m *Milestone, isClosed bool) (err error) {
 	} else {
 		repo.NumClosedMilestones--
 	}
-	if _, err = sess.Id(repo.Id).Update(repo); err != nil {
+	if _, err = sess.Id(repo.ID).Update(repo); err != nil {
 		sess.Rollback()
 		return err
 	}
@@ -730,11 +736,11 @@ func ChangeMilestoneStatus(m *Milestone, isClosed bool) (err error) {
 // ChangeMilestoneIssueStats updates the open/closed issues counter and progress for the
 // milestone associated witht the given issue.
 func ChangeMilestoneIssueStats(issue *Issue) error {
-	if issue.MilestoneId == 0 {
+	if issue.MilestoneID == 0 {
 		return nil
 	}
 
-	m, err := GetMilestoneById(issue.MilestoneId)
+	m, err := GetMilestoneById(issue.MilestoneID)
 
 	if err != nil {
 		return err
@@ -782,8 +788,7 @@ func ChangeMilestoneAssign(oldMid, mid int64, issue *Issue) (err error) {
 			return err
 		}
 
-		rawSql := "UPDATE `issue_user` SET milestone_id = 0 WHERE issue_id = ?"
-		if _, err = sess.Exec(rawSql, issue.Id); err != nil {
+		if _, err = sess.Exec("UPDATE `issue_user` SET milestone_id = 0 WHERE issue_id = ?", issue.ID); err != nil {
 			sess.Rollback()
 			return err
 		}
@@ -810,8 +815,7 @@ func ChangeMilestoneAssign(oldMid, mid int64, issue *Issue) (err error) {
 			return err
 		}
 
-		rawSql := "UPDATE `issue_user` SET milestone_id = ? WHERE issue_id = ?"
-		if _, err = sess.Exec(rawSql, m.Id, issue.Id); err != nil {
+		if _, err = sess.Exec("UPDATE `issue_user` SET milestone_id=? WHERE issue_id=?", m.Id, issue.ID); err != nil {
 			sess.Rollback()
 			return err
 		}
@@ -875,6 +879,8 @@ const (
 	COMMENT_TYPE_COMMIT
 	// Reference from some pull request
 	COMMENT_TYPE_PULL
+	// Pull request merged
+	COMMENT_TYPE_MERGED
 )
 
 // Comment represents a comment in commit and issue page.
@@ -890,8 +896,18 @@ type Comment struct {
 	Created  time.Time `xorm:"CREATED"`
 }
 
+func (i *Comment) GetPoster() (err error) {
+	i.Poster, err = GetUserById(i.PosterId)
+	if err == ErrUserNotExist {
+		i.Poster = &User{Name: "FakeUser"}
+		return nil
+	}
+	return err
+}
+
 // CreateComment creates comment of issue or commit.
-func CreateComment(userId, repoId, issueId int64, commitId, line string, cmtType CommentType, content string, attachments []int64) (*Comment, error) {
+func CreateComment(userId, repoId, issueId int64, commitId, line string,
+	cmtType CommentType, content string, attachments []int64) (*Comment, error) {
 	sess := x.NewSession()
 	defer sess.Close()
 	if err := sess.Begin(); err != nil {
@@ -935,9 +951,62 @@ func CreateComment(userId, repoId, issueId int64, commitId, line string, cmtType
 			sess.Rollback()
 			return nil, err
 		}
+		if _, err := sess.Id(issueId).Cols("is_closed").Update(&Issue{IsClosed: false}); err != nil {
+			sess.Rollback()
+			return nil, err
+		}
 	case COMMENT_TYPE_CLOSE:
-		rawSql := "UPDATE `repository` SET num_closed_issues = num_closed_issues + 1 WHERE id = ?"
+		var issue Issue
+		has, err := sess.Id(issueId).Get(&issue)
+		if err != nil {
+			return nil, err
+		}
+		if !has {
+			return nil, ErrIssueNotExist
+		}
+		if issue.IsPull {
+			if _, err := sess.Id(issueId).Cols("is_closed").Update(&PullRepo{IsClosed: true}); err != nil {
+				sess.Rollback()
+				return nil, err
+			}
+			rawSql := "UPDATE `repository` SET num_closed_pulls = num_closed_pulls + 1 WHERE id = ?"
+			if _, err := sess.Exec(rawSql, repoId); err != nil {
+				sess.Rollback()
+				return nil, err
+			}
+		} else {
+			rawSql := "UPDATE `repository` SET num_closed_issues = num_closed_issues + 1 WHERE id = ?"
+			if _, err := sess.Exec(rawSql, repoId); err != nil {
+				sess.Rollback()
+				return nil, err
+			}
+		}
+
+		if _, err := sess.Id(issueId).Cols("is_closed").Update(&Issue{IsClosed: true}); err != nil {
+			sess.Rollback()
+			return nil, err
+		}
+	case COMMENT_TYPE_MERGED:
+		var issue Issue
+		has, err := sess.Id(issueId).Get(&issue)
+		if err != nil {
+			return nil, err
+		}
+		if !has {
+			return nil, ErrIssueNotExist
+		}
+
+		if _, err := sess.Id(issueId).Cols("is_merged").Update(&PullRepo{IsMerged: true}); err != nil {
+			sess.Rollback()
+			return nil, err
+		}
+		rawSql := "UPDATE `repository` SET num_closed_pulls = num_closed_pulls + 1 WHERE id = ?"
 		if _, err := sess.Exec(rawSql, repoId); err != nil {
+			sess.Rollback()
+			return nil, err
+		}
+
+		if _, err := sess.Id(issueId).Cols("is_closed").Update(&Issue{IsClosed: true}); err != nil {
 			sess.Rollback()
 			return nil, err
 		}
@@ -972,7 +1041,15 @@ func (c *Comment) ContentHtml() template.HTML {
 // GetIssueComments returns list of comment by given issue id.
 func GetIssueComments(issueId int64) ([]Comment, error) {
 	comments := make([]Comment, 0, 10)
-	err := x.Asc("created").Find(&comments, &Comment{IssueId: issueId})
+	err := x.Asc("created").Iterate(&Comment{IssueId: issueId}, func(_ int, bean interface{}) error {
+		comment := bean.(*Comment)
+		err := comment.GetPoster()
+		if err != nil {
+			return err
+		}
+		comments = append(comments, *comment)
+		return nil
+	})
 	return comments, err
 }
 

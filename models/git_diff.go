@@ -8,6 +8,7 @@ package models
 import (
 	"bufio"
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -99,7 +100,7 @@ func ParsePatch(pid int64, maxlines int, cmd *exec.Cmd, reader io.Reader) (*Diff
 	var i int
 	for scanner.Scan() {
 		line := scanner.Text()
-		// fmt.Println(i, line)
+		//fmt.Println(i, line)
 		if strings.HasPrefix(line, "+++ ") || strings.HasPrefix(line, "--- ") {
 			continue
 		}
@@ -293,6 +294,134 @@ func GetDiffRange(repoPath, beforeCommitId string, afterCommitId string, maxline
 	}()
 
 	return ParsePatch(pid, maxlines, cmd, rd)
+}
+
+// check if we have added original repo as a upstream remote and update all branches information
+func CheckUpstream(repoPath, forkedRepoPath, beforeBranch string) error {
+	if !git.IsRemoteExist(forkedRepoPath, "upstream") {
+		_, _, err := com.ExecCmdDir(forkedRepoPath, "git", "remote", "add", "upstream", repoPath)
+		if err != nil {
+			return err
+		}
+	}
+
+	if !git.IsRemoteBranchExist(forkedRepoPath, "upstream", beforeBranch) {
+		_, _, err := com.ExecCmdDir(forkedRepoPath, "git", "remote", "update")
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func GetDiffForkedRange(repoPath, forkedRepoPath, beforeBranch string, afterBranch string, maxlines int) (*Diff, error) {
+	err := CheckUpstream(repoPath, forkedRepoPath, beforeBranch)
+	if err != nil {
+		return nil, err
+	}
+
+	beforeBranch = "remotes/upstream/" + beforeBranch
+
+	rd, wr := io.Pipe()
+	var cmd *exec.Cmd
+	// if "after" commit given
+
+	cmd = exec.Command("git", "diff", beforeBranch, afterBranch)
+	cmd.Dir = forkedRepoPath
+	cmd.Stdout = wr
+	cmd.Stdin = os.Stdin
+	cmd.Stderr = os.Stderr
+
+	done := make(chan error)
+	go func() {
+		cmd.Start()
+		done <- cmd.Wait()
+		wr.Close()
+	}()
+	defer rd.Close()
+
+	desc := fmt.Sprintf("GetDiffRange(%s)", repoPath)
+	pid := process.Add(desc, cmd)
+	go func() {
+		// In case process became zombie.
+		select {
+		case <-time.After(5 * time.Minute):
+			if errKill := process.Kill(pid); errKill != nil {
+				log.Error(4, "git_diff.ParsePatch(Kill): %v", err)
+			}
+			<-done
+			// return "", ErrExecTimeout.Error(), ErrExecTimeout
+		case err = <-done:
+			process.Remove(pid)
+		}
+	}()
+
+	return ParsePatch(pid, maxlines, cmd, rd)
+}
+
+func ForkedMerge(repoPath, forkedRepoPath, beforeBranch, afterBranch string) (string, string, error) {
+	err := CheckUpstream(repoPath, forkedRepoPath, beforeBranch)
+	if err != nil {
+		return "", "", err
+	}
+
+	rd, wr := io.Pipe()
+
+	cmd := exec.Command("git", "push", "upstream", afterBranch+":"+beforeBranch)
+	cmd.Dir = forkedRepoPath
+	cmd.Stdout = wr
+	cmd.Stdin = os.Stdin
+	cmd.Stderr = os.Stderr
+
+	done := make(chan error)
+	go func() {
+		cmd.Start()
+		done <- cmd.Wait()
+		wr.Close()
+	}()
+	defer rd.Close()
+
+	desc := fmt.Sprintf("Merge branch from %s:%s to %s:%s", forkedRepoPath,
+		afterBranch, repoPath, beforeBranch)
+	pid := process.Add(desc, cmd)
+	go func() {
+		// In case process became zombie.
+		select {
+		case <-time.After(5 * time.Minute):
+			if errKill := process.Kill(pid); errKill != nil {
+				log.Error(4, "git_diff.ParsePatch(Kill): %v", err)
+			}
+			<-done
+			// return "", ErrExecTimeout.Error(), ErrExecTimeout
+		case err = <-done:
+			process.Remove(pid)
+		}
+	}()
+
+	return parseMerge(pid, beforeBranch, afterBranch, cmd, rd)
+}
+
+func parseMerge(pid int64, beforeBranch, afterBranch string, cmd *exec.Cmd, reader io.Reader) (string, string, error) {
+	scanner := bufio.NewScanner(reader)
+	var lastline string // a579799..bea62a3  master -> develop
+	for scanner.Scan() {
+		line := scanner.Text()
+		if len(strings.TrimSpace(line)) > 0 {
+			lastline = line
+			//fmt.Println("---", lastline)
+		}
+	}
+	fields := strings.Fields(strings.TrimSpace(lastline))
+	//fmt.Println(fields, len(fields))
+	if len(fields) != 4 || fields[2] != "->" ||
+		fields[1] != afterBranch || fields[3] != beforeBranch {
+		return "", "", errors.New("push failed")
+	}
+	commits := strings.Split(fields[0], "..")
+	if len(commits) != 2 {
+		return "", "", errors.New("push failed")
+	}
+	return commits[0], commits[1], nil
 }
 
 func GetDiffCommit(repoPath, commitId string, maxlines int) (*Diff, error) {

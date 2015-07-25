@@ -31,7 +31,7 @@ func NewWikiPage(p *WikiPage, r *Repository, u *User) error {
 	if r.WikiRepo != nil {
 		p.Repo = r.WikiRepo
 	} else {
-		p.Repo, err = CreateRepository(r.Owner, fmt.Sprintf("%s.wiki", r.Name), "", "", "", false, false, false, true, r.Id)
+		p.Repo, err = CreateRepository(r.Owner, fmt.Sprintf("%s.wiki", r.Name), "", "", "", false, false, false, true, r.ID)
 		if err != nil {
 			return err
 		}

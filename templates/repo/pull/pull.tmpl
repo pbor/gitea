@@ -1,0 +1,292 @@
+{{template "ng/base/head" .}}
+{{template "ng/base/header" .}}
+<div id="repo-wrapper">
+    {{template "repo/header" .}}
+    <div class="clear container repo-wide-wrapper repo-pr">
+        <div class="pr-main">
+            <div class="pr-title clear">
+                <h2 class="pr-title grid-5-6 left">
+                	<i class="octicon octicon-git-pull-request"></i>
+                	{{.Issue.Name}} <span class="pr-num">#{{.Issue.Index}}</span>
+                </h2>
+                <div class="pr-title-btn grid-1-6 right text-right">
+                    <button class="btn btn-gray btn-radius">{{.i18n.Tr "edit"}}</button><!--&nbsp;&nbsp;
+                    <a href="#"><button class="btn btn-green btn-radius">New Pull Request</button></a>-->
+                </div>
+            </div>
+            <div class="pr-meta">
+                <button class="btn btn-small {{if .Pull.IsClosed}}btn-red{{else if .Pull.IsMerged}}btn-orange{{else}}btn-green{{end}} btn-radius">
+                <i class="octicon octicon-git-pull-request"></i>
+                    {{if .Pull.IsClosed}}{{.i18n.Tr "closed"}}{{else if .Pull.IsMerged}}{{.i18n.Tr "merged"}}{{else}}{{.i18n.Tr "opened"}}{{end}}
+                </button>
+            <span class="msg">
+                <a href="#" class="text-bold pr-author">{{.Issue.Poster.Name}}</a> <span class="label radius label-blue">{{.CommitCount}}</span> {{.i18n.Tr "repo.pulls.commits"}}
+                <span class="pr-branch label label-gray radius">{{.FromRepo.Owner.Name}}:{{.Pull.FromBranch}}</span>
+                <i class="octicon octicon-arrow-right"></i>
+                <span class="pr-branch label label-gray radius">{{.Pull.ToBranch}}</span>
+            </span>
+            </div>
+            <div class="pr-nav clear">
+                <ul class="menu menu-line left" id="pr-nav">
+                    <li class="current js-tab-nav js-tab-nav-show" data-tab-target="#pr-conversation"><a href="#"><i class="octicon octicon-comment"></i>{{.i18n.Tr "repo.pulls.conversations"}}
+                        <span class="label label-gray label-radius">{{.CountComments}}</span>
+                    </a></li>
+                    <li class="js-tab-nav" data-tab-target="#pr-commit"><a href="#"><i class="octicon octicon-git-commit"></i>{{.i18n.Tr "repo.pulls.commits"}}
+                        <span class="label label-gray label-radius">{{.CommitCount}}</span>
+                    </a></li>
+                    <li class="js-tab-nav" data-tab-target="#pr-file-diff"><a href="#"><i class="octicon octicon-file-code"></i>{{.i18n.Tr "repo.pulls.files"}}
+                        <span class="label label-gray label-radius">{{len .Diff.Files}}</span>
+                    </a></li>
+                </ul>
+                <div class="diff-bar right">
+                    <span class="diff-add">+{{.Diff.TotalAddition}}</span>
+                <span class="inline-block diff-status">
+                    <span class="block diff-status-inner"></span>
+                </span>
+                    <span class="diff-delete">-{{.Diff.TotalDeletion}}</span>
+                </div>
+            </div>
+            <div id="pr-conversation" class="js-tab-show clear">
+                <div id="pr-conversation-list">
+                    <div class="issue-comment clear">
+                        <a class="author-avatar" href="{{AppSubUrl}}/{{.Issue.Poster.Name}}"><img class="avatar-40 radius" src="{{.Issue.Poster.AvatarLink}}" alt="{{.Issue.Poster.Name}}"/></a>
+                        <div class="panel panel-radius">
+                            <p class="panel-header clear"><a class="author-name" href="#">{{.Issue.Poster.Name}}</a>
+                                <span class="date">{{TimeSince .Issue.Created $.Lang}}</span>
+                            <span class="action right">
+                                <span class="label label-black label-radius">{{.i18n.Tr "repo.pulls.owner"}}</span>
+                                <!--TODO: complete this -->
+                                <!--<a href="#"><i class="octicon octicon-pencil"></i></a>
+                                <a href="#"><i class="octicon octicon-x"></i></a>
+                                -->
+                            </span>
+                            </p>
+                            <div class="panel-content content markdown">{{.Issue.Content}}</div>
+                        </div>
+                    </div>
+                    {{range .Comments}}
+                    {{if eq .Type 0}}
+                    <div class="issue-comment clear">
+                        <a class="author-avatar" href="{{AppSubUrl}}/{{.Poster.Name}}"><img class="avatar-40 radius" src="{{.Poster.AvatarLink}}" alt="{{.Poster.Name}}"/></a>
+                        <div class="panel panel-radius">
+                            <p class="panel-header clear"><a class="author-name" href="#">{{.Poster.Name}}</a>
+                                <span class="date">{{TimeSince .Created $.Lang}}</span>
+                            <span class="action right">
+                                {{if eq .PosterId $.Issue.PosterID}}<span class="label label-black label-radius">{{.i18n.Tr "repo.pulls.owner"}}</span>{{end}}
+                                <!--TODO: complete this -->
+                                <!--<a href="#"><i class="octicon octicon-pencil"></i></a>
+                                <a href="#"><i class="octicon octicon-x"></i></a>
+                                -->
+                            </span>
+                            </p>
+                            <div class="panel-content content markdown">{{.Content}}</div>
+                        </div>
+                    </div>
+                    {{else if eq .Type 4}}
+                    <div class="issue-commit clear">
+                        <i class="mega-octicon octicon-git-commit left"></i>
+                        <a class="author-avatar left" href="{{AppSubUrl}}/{{.Poster.Name}}"><img class="avatar-24 radius" src="{{.Poster.AvatarLink}}" alt="{{.Poster.Name}}"/></a>
+                        <a class="sha right" href="#">8e259ba</a>
+                        <span class="message">Fix: Repo Name can not be converted to lower in the case of backend data storage, or frontend clone link display. or frontend clone link display or frontend clone link display.</span>
+                    </div>
+                    {{else if eq .Type 2}}
+                    <div class="issue-comment clear">
+                        <a class="author-avatar" href="{{AppSubUrl}}/{{.Poster.Name}}"><img class="avatar-40 radius" src="{{.Poster.AvatarLink}}" alt="{{.Poster.Name}}"/></a>
+                        <div class="panel panel-radius">
+                            <p class="panel-header clear"><a class="author-name" href="#">{{.Poster.Name}}</a>
+                                <span class="date">{{TimeSince .Created $.Lang}}</span>
+                            <span class="action right">
+                                {{if eq .PosterId $.Issue.PosterID}}<span class="label label-black label-radius">{{.i18n.Tr "repo.pulls.owner"}}</span>{{end}}
+                            </span>
+                            </p>
+                            <div class="panel-content content markdown">{{.Content}}</div>
+                        </div>
+                    </div>
+                    <div class="issue-commit clear">
+                        <i class="mega-octicon octicon-issue-closed left"></i>
+                        <a class="author-avatar left" href="{{AppSubUrl}}/{{.Poster.Name}}"><img class="avatar-24 radius" src="{{.Poster.AvatarLink}}" alt="{{.Poster.Name}}"/></a>
+                        <span class="message">
+                        {{.i18n.Tr "repo.issues.close_desc" "#" .Poster.Name (TimeSince .Created $.Lang)}}</span>
+                    </div>
+                    {{else if eq .Type 6}}
+                    <div class="issue-commit clear">
+                        <i class="mega-octicon octicon-git-commit left"></i>
+                        <a class="author-avatar left" href="{{AppSubUrl}}/{{.Poster.Name}}"><img class="avatar-24 radius" src="{{.Poster.AvatarLink}}" alt="{{.Poster.Name}}"/></a>
+                        <a class="author-name" href="#">{{.Poster.Name}}</a> merged commit <a class="sha right" href="#">8e259ba</a> into repouser:branchname {{TimeSince .Created $.Lang}}
+                        <span class="message">{{.Content}}</span>
+                    </div>
+                    {{else}}
+                    {{.Type}}
+                    {{end}}
+                    {{end}}
+                    {{if not .Issue.IsClosed}}
+                    <div class="issue-line"></div>
+                    <div class="issue-merge issue-merge-ok clear">
+                        <span class="inline-block radius ico"><i class="mega-octicon octicon-git-pull-request"></i></span>
+                        {{if .IsAutoMerge}}
+                        <div class="panel panel-radius">
+                            <p class="panel-header clear">
+                                <i class="octicon octicon-check"></i><strong>{{.i18n.Tr "merge_check_well"}}</strong>
+                            </p>
+                            <div class="panel-content content clear">
+                            	<div id="pr-merge-notice">
+									<div class="message left">{{.i18n.Tr "repo.pulls.merge_check_hint"}}</div>
+									<button class="btn btn-green right btn-radius" id="pr-merge-btn">
+										<i class="octicon octicon-git-merge"></i>
+										{{.i18n.Tr "repo.pulls.merge"}}
+									</button>
+                                </div>
+                                <form id="pr-merge-form" action="{{AppSubUrl}}{{.RepoLink}}/pull/{{.Issue.Index}}/merge" method="post" class="hide">
+                                	<h3>{{.i18n.Tr "repo.pulls.merge_hint" .Issue.Index .FromRepo.Owner.Name .Pull.FromBranch}}</h3>
+                                     {{.CsrfTokenHtml}}
+                                    <input type="hidden" name="issueID" value="{{.Pull.PullID}}">
+                                	<textarea class="ipt ipt-radius" name="content" id="pr-merge-content"></textarea>
+                                	<p class="submit text-right">
+                                		<button class="btn btn-gray btn-radius text-bold" type="reset" id="pr-merge-cancel-btn">{{.i18n.Tr "cancel"}}</button>
+                                		<button class="btn btn-green btn-radius text-bold" name="submit" value="confirm" id="pr-merge-confirm-btn">{{.i18n.Tr "confirm"}}</button>
+                                	</p>
+                                </form>
+                            </div>
+                        </div>
+                        {{else}}
+                        <div class="panel panel-radius">
+                            <p class="panel-header clear">
+                                <i class="octicon octicon-check"></i><strong>{{.i18n.Tr "repo.pulls.merge_check_conflict"}}</strong>
+                            </p>
+                            <div class="panel-content content clear">
+                                <div class="message left">{{.i18n.Tr "repo.pulls.merge_check_conflict_hint"}}</div>
+                            </div>
+                        </div>
+                        {{end}}
+                    </div>
+                    {{end}}
+                    <div class="issue-add-comment clear">
+                        <a class="author-avatar" href="{{AppSubUrl}}/{{$.User.Name}}"><img class="avatar-40 radius" src="{{$.User.AvatarLink}}" alt="{{$.User.Name}}"/></a>
+                        <div class="panel panel-radius">
+                            <div class="panel-header">
+                                <ul class="menu menu-line add-nav">
+                                    <li class="js-tab-nav js-tab-nav-show" data-tab-target="#issue-add-comment-form"><a href="#">{{.i18n.Tr "repo.pulls.write"}}</a></li>
+                                    <li class="js-tab-nav" data-tab-target="#issue-add-comment-preview"><a href="#" id="pull-issue-preview">{{.i18n.Tr "repo.pulls.preview"}}</a></li>
+                                </ul>
+                            </div>
+                            <div class="panel-content content">
+                                <form id="issue-add-comment-form" action="{{AppSubUrl}}{{.RepoLink}}/pull/{{.Issue.Index}}/comment" method="post">
+                                {{.CsrfTokenHtml}}
+                                    <input type="hidden" name="issueID" value="{{.Issue.ID}}"/>
+                                    <input type="hidden" name="issueIndex" value="{{.Issue.Index}}"/>
+                                    <textarea class="ipt ipt-radius js-preview-input" name="content" id="issue-add-content"></textarea>
+                                    <p class="submit text-right">
+                                        {{if not .Issue.IsClosed}}<button class="btn btn-gray btn-radius text-bold" name="submit" value="close">{{.i18n.Tr "repo.pulls.close_pr"}}</button>&nbsp;&nbsp;
+                                        {{end}}
+                                        <button class="btn btn-green btn-radius text-bold" name="submit" value="comment">{{.i18n.Tr "settings.commits.comment.add"}}</button>
+                                    </p>
+                                </form>
+                                <div id="issue-add-comment-preview" class="js-preview-container">
+                                    {{.i18n.Tr "repo.pulls.preview"}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--<div id="pr-conversation-sidebar" class="left grid-1-6">
+                    1-4
+                </div>-->
+            </div>
+            <div id="pr-commit">
+                {{if .Commits}}
+                    {{template "repo/commits_table" .}}
+                {{end}}
+            </div>
+            <div id="pr-file-diff">
+                <div class="diff-detail-box diff-box">
+            <a class="pull-right btn btn-gray btn-header btn-radius text-black" data-target="#diff-files">{{.i18n.Tr "repo.diff.show_diff_stats"}}</a>
+            <p class="showing">
+                <i class="fa fa-retweet"></i>
+                {{.i18n.Tr "repo.diff.stats_desc" .Diff.NumFiles .Diff.TotalAddition .Diff.TotalDeletion | Str2html}}
+            </p>
+            <ol class="detail-files collapse hide" id="diff-files">
+                {{range .Diff.Files}}
+                <li>
+                    <div class="diff-counter count pull-right">
+                        {{if not .IsBin}}
+                        <span class="add" data-line="{{.Addition}}">{{.Addition}}</span>
+                        <span class="bar">
+                            <span class="pull-left add"></span>
+                            <span class="pull-left del"></span>
+                        </span>
+                        <span class="del" data-line="{{.Deletion}}">{{.Deletion}}</span>
+                        {{else}}
+                        <span>{{$.i18n.Tr "repo.diff.bin"}}</span>
+                        {{end}}
+                    </div>
+                    <!-- todo finish all file status, now modify, add, delete and rename -->
+                    <span class="status {{DiffTypeToStr .Type}}" data-toggle="tooltip" data-placement="right" title="{{DiffTypeToStr .Type}}">&nbsp;</span>
+                    <a class="file" href="#diff-{{.Index}}">{{.Name}}</a>
+                </li>
+                {{end}}
+            </ol>
+        </div>
+
+        {{range $i, $file := .Diff.Files}}
+        <div class="panel panel-radius diff-file-box diff-box file-content" id="diff-{{.Index}}">
+            <div class="panel-header">
+                <div class="diff-counter count pull-left">
+                    {{if not $file.IsBin}}
+                    <span class="add" data-line="{{.Addition}}">+ {{.Addition}}</span>
+                    <span class="bar">
+                        <span class="pull-left add"></span>
+                        <span class="pull-left del"></span>
+                    </span>
+                    <span class="del" data-line="{{.Deletion}}">- {{.Deletion}}</span>
+                    {{else}}
+                    {{$.i18n.Tr "repo.diff.bin"}}
+                    {{end}}
+                </div>
+                {{if $file.IsDeleted}}
+                <a class="btn btn-gray btn-header btn-radius text-black pull-right" rel="nofollow" href="{{$.BeforeSourcePath}}/{{.Name}}">{{$.i18n.Tr "repo.diff.view_file"}}</a>
+                {{else}}
+                <a class="btn btn-gray btn-header btn-radius text-black pull-right" rel="nofollow" href="{{$.SourcePath}}/{{.Name}}">{{$.i18n.Tr "repo.diff.view_file"}}</a>
+                {{end}}
+                <span class="file">{{$file.Name}}</span>
+            </div>
+            {{$isImage := (call $.IsImageFile $file.Name)}}
+            <div class="panel-body file-body file-code code-view code-diff">
+                {{if $isImage}}
+                    <div class="text-center">
+                        <img src="{{$.RawPath}}/{{.Name}}">
+                    </div>
+                {{else}}
+                <table>
+                    <tbody>
+                        {{range .Sections}}
+                        {{range $k, $line := .Lines}}
+                        <tr class="{{DiffLineTypeToStr .Type}}-code nl-{{$k}} ol-{{$k}}">
+                            <td class="lines-num lines-num-old">
+                                <span rel="{{if $line.LeftIdx}}diff-{{Sha1 $file.Name}}L{{$line.LeftIdx}}{{end}}">{{if $line.LeftIdx}}{{$line.LeftIdx}}{{end}}</span>
+                            </td>
+                            <td class="lines-num lines-num-new">
+                                <span rel="{{if $line.RightIdx}}diff-{{Sha1 $file.Name}}R{{$line.RightIdx}}{{end}}">{{if $line.RightIdx}}{{$line.RightIdx}}{{end}}</span>
+                            </td>
+                            
+                            <td class="lines-code">
+                                <pre>{{$line.Content}}</pre>
+                            </td>
+                        </tr>
+                        {{end}}
+                        {{end}}
+                    </tbody>
+                </table>
+                {{end}}
+            </div>
+        </div>
+        <br> 
+        {{end}}
+            </div>
+        </div>
+        <div class="pr-sidebar">
+            {{template "repo/sidebar_mini" .}}
+        </div>
+    </div>
+</div>
+</div>
+{{template "ng/base/footer" .}}

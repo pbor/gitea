@@ -1388,31 +1388,37 @@ The register and sign-in page style
   margin-left: 4em;
 }
 #release-new-target-branch-list,
+#repo-pull-branch-list,
 #repo-create-owner-list {
-  top: 30px;
+  top: 25px;
   left: 0;
   width: auto;
   max-width: 300px;
 }
 #release-new-target-branch-list .octicon,
+#repo-pull-branch-list .octicon,
 #repo-create-owner-list .octicon {
   margin-right: 12px;
   opacity: 0;
 }
 #release-new-target-branch-list .avatar,
+#repo-pull-branch-list .avatar,
 #repo-create-owner-list .avatar {
   width: 20px;
   height: 20px;
 }
 #release-new-target-branch-list li,
+#repo-pull-branch-list li,
 #repo-create-owner-list li {
   white-space: nowrap;
 }
 #release-new-target-branch-list li.checked .octicon,
+#repo-pull-branch-list li.checked .octicon,
 #repo-create-owner-list li.checked .octicon {
   opacity: 1;
 }
 #release-new-target-branch-list li a,
+#repo-pull-branch-list li a,
 #repo-create-owner-list li a {
   text-overflow: ellipsis;
   -o-text-overflow: ellipsis;
@@ -2051,6 +2057,10 @@ The register and sign-in page style
   font-weight: normal;
   color: #888;
 }
+.pr-title i {
+  margin-right: 6px;
+  font-size: 1.2em;
+}
 .pr-meta {
   color: #888;
   padding: 4px 0 8px 0;
@@ -2112,6 +2122,15 @@ The register and sign-in page style
   height: 10px;
   border-top-left-radius: .2em;
   border-bottom-left-radius: .2em;
+}
+#pr-create-panel {
+  margin-top: 12px;
+}
+#pr-create-panel .menu > li > a {
+  padding: .2em .6em;
+}
+#pr-create-btn {
+  margin-left: 12px;
 }
 #pr-commit,
 #pr-file-diff,
@@ -2242,12 +2261,22 @@ The register and sign-in page style
 .commit-add-comment .add-nav > li.js-tab-nav-show > a {
   background-color: #FFF;
 }
+input#pr-add-title {
+  width: 100%;
+  margin-bottom: 18px;
+  box-sizing: border-box;
+}
 textarea#issue-add-content,
-textarea#commit-add-content {
+textarea#commit-add-content,
+textarea#pr-add-content,
+textarea#pr-merge-content {
   width: 100%;
   box-sizing: border-box;
   height: 120px;
   resize: vertical;
+}
+textarea#pr-merge-content {
+  height: 80px;
 }
 #issue-list-nav {
   border-bottom: 1px solid #DDD;

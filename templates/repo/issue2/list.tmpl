@@ -42,6 +42,7 @@
                                 <li class="no-label"><strong>no label</strong></li>
                                 {{end}}
                             </ul>
+							<br/>
                         </div>
                     </li>
                     <li class="down drop milestone-filter">
@@ -63,9 +64,10 @@
                 </ul>
                 <div class="clear"></div>
             </div>
+			{{template "ng/base/alert" .}}
             <ul id="issue-list" class="list-no-style">
-                {{range .Issues}}{{if .Poster}}
-                <li class="item{{if not .IsRead}} unread{{end}}" id="issue-{{.Id}}">
+            	{{range .Issues}}{{if .Poster}}
+                <li class="item{{if not .IsRead}} unread{{end}}" id="issue-{{.ID}}">
                     <a class="comment" href="{{$.RepoLink}}/issues/{{.Index}}#comments">
                         <i class="octicon octicon-comment"></i> {{.NumComments}}
                     </a>
@@ -82,13 +84,13 @@
                 </li>
                 {{end}}{{end}}
             </ul>
-            <div id="issue-list-pager" class="pager text-center">
+            <!--<div id="issue-list-pager" class="pager text-center">
                 <a class="prev invalid" href="#">Prev</a>
                 <a class="page" href="#">1</a>
                 <a class="page hover" href="#">2</a>
                 <a class="page" href="#">3</a>
                 <a class="next" href="#">Next</a>
-            </div>
+            </div>-->
         </div>
     </div>
 </div>

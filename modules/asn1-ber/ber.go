@@ -8,10 +8,10 @@ package ber
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
 	"reflect"
-	"errors"
 )
 
 type Packet struct {

@@ -404,6 +404,7 @@ func runWeb(ctx *cli.Context) {
 				m.Post("/:name", repo.GitHooksEditPost)
 			}, middleware.GitHookService())
 		})
+
 	}, reqSignIn, middleware.RepoAssignment(true), reqAdmin)
 
 	m.Group("/:username/:reponame", func() {
@@ -417,9 +418,12 @@ func runWeb(ctx *cli.Context) {
 			m.Post("/:index/milestone", repo.UpdateIssueMilestone)
 			m.Post("/:index/assignee", repo.UpdateAssignee)
 			m.Get("/:index/attachment/:id", repo.IssueGetAttachment)
+
+			m.Get("/labels", repo.Labels)
 			m.Post("/labels/new", bindIgnErr(auth.CreateLabelForm{}), repo.NewLabel)
 			m.Post("/labels/edit", bindIgnErr(auth.CreateLabelForm{}), repo.UpdateLabel)
 			m.Post("/labels/delete", repo.DeleteLabel)
+
 			m.Get("/milestones/new", repo.NewMilestone)
 			m.Post("/milestones/new", bindIgnErr(auth.CreateMilestoneForm{}), repo.NewMilestonePost)
 			m.Get("/milestones/:index/edit", repo.UpdateMilestone)
@@ -440,6 +444,16 @@ func runWeb(ctx *cli.Context) {
 			m.Get("/edit/:tagname", repo.EditRelease)
 			m.Post("/edit/:tagname", bindIgnErr(auth.EditReleaseForm{}), repo.EditReleasePost)
 		}, middleware.RepoRef())
+
+		m.Group("/pulls", func() {
+			m.Get("/", repo.Pulls)
+		})
+		m.Group("/pull", func() {
+			m.Post("/create", bindIgnErr(auth.NewPullRequestForm{}), repo.NewPullRequest)
+			m.Get("/:id", repo.Pull)
+			m.Post("/:id/merge", repo.PullMerge)
+			m.Post("/:id/comment", repo.PullComment)
+		})
 	}, reqSignIn, middleware.RepoAssignment(true))
 
 	m.Group("/:username/:reponame", func() {
@@ -447,13 +461,11 @@ func runWeb(ctx *cli.Context) {
 		m.Get("/issues", repo.Issues)
 		m.Get("/issues/:index", repo.ViewIssue)
 		m.Get("/issues/milestones", repo.Milestones)
-		m.Get("/pulls", repo.Pulls)
 		m.Get("/branches", repo.Branches)
 		m.Get("/archive/*", repo.Download)
 		m.Get("/issues2/", repo.Issues2)
-		m.Get("/pulls2/", repo.PullRequest2)
-		m.Get("/labels2/", repo.Labels2)
-		m.Get("/milestone2/", repo.Milestones2)
+		m.Get("/issues/labels2/", repo.Labels2)
+		m.Get("/issues/milestone2/", repo.Milestones2)
 
 		m.Get("/wiki", repo.Wiki)
 		m.Get("/wiki/pages", repo.WikiPageList)
@@ -470,7 +482,8 @@ func runWeb(ctx *cli.Context) {
 			m.Post("/commit/comment/:action/:commitId", repo.CreateCommitComment)
 		}, middleware.RepoRef())
 
-		m.Get("/compare/:before([a-z0-9]+)...:after([a-z0-9]+)", repo.CompareDiff)
+		m.Get("/compare", repo.CompareDiff)
+		m.Get("/compare/*", repo.CompareDiff)
 	}, ignSignIn, middleware.RepoAssignment(true))
 
 	m.Group("/:username", func() {

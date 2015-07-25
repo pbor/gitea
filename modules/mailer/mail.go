@@ -157,7 +157,6 @@ func SendResetPasswdMail(r macaron.Render, u *models.User) {
 
 // SendIssueNotifyMail sends mail notification to all watchers of repository.
 func SendIssueNotifyMail(u, owner *models.User, repo *models.Repository, issue *models.Issue) ([]string, error) {
-
 	subject := fmt.Sprintf("[%s] %s(#%d)", repo.Name, issue.Name, issue.Index)
 	content := fmt.Sprintf("%s<br>-<br> <a href=\"%s%s/%s/issues/%d\">View it on Gitea</a>.",
 		base.RenderSpecialLink([]byte(issue.Content), owner.Name+"/"+repo.Name),
@@ -170,7 +169,6 @@ func SendIssueNotifyMail(u, owner *models.User, repo *models.Repository, issue *
 
 // SendCommentNotifyMail sends mail notification to all watchers of repository.
 func SendCommentNotifyMail(u, owner *models.User, repo *models.Repository, comment *models.Comment) ([]string, error) {
-
 	subject := fmt.Sprintf("[%s] New comment to commit %s", repo.Name, comment.CommitId)
 	content := fmt.Sprintf("%s<br>-<br> <a href=\"%s%s/%s/commit/%s\">View it on Gitea</a>.",
 		base.RenderSpecialLink([]byte(comment.Content), owner.Name+"/"+repo.Name),
@@ -182,7 +180,7 @@ func SendCommentNotifyMail(u, owner *models.User, repo *models.Repository, comme
 }
 
 func SendNotifyMail(u *models.User, repo *models.Repository, subject, content, msgInfo string) ([]string, error) {
-	ws, err := models.GetWatchers(repo.Id)
+	ws, err := models.GetWatchers(repo.ID)
 	if err != nil {
 		return nil, errors.New("mail.NotifyWatchers(GetWatchers): " + err.Error())
 	}

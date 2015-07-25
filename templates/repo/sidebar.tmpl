@@ -2,7 +2,7 @@
     <ul class="menu menu-vertical" id="repo-sidebar-nav">
 		{{with .Repository}}
 		<li id="repo-header-fork" class="btns">
-            <a class="sidebar-btns" id="repo-header-fork-btn" {{if or (not $.IsRepositoryAdmin) $.Owner.IsOrganization}}href="{{AppSubUrl}}/repo/fork?fork_id={{.Id}}"{{end}}>
+            <a class="sidebar-btns" id="repo-header-fork-btn" {{if or (not $.IsRepositoryAdmin) $.Owner.IsOrganization}}href="{{AppSubUrl}}/repo/fork?fork_id={{.ID}}"{{end}}>
                 <button class="btn btn-gray text-bold btn-radius">
                     <i class="octicon octicon-repo-forked"></i>{{$.i18n.Tr "repo.fork"}}
                     <span class="num">{{.NumForks}}</span>
@@ -43,12 +43,15 @@
         <li>
             <a class="radius" href="{{.RepoLink}}/issues"><i class="octicon octicon-issue-opened"></i>{{.i18n.Tr "repo.issues"}}<span class="num right label label-blue label-radius">{{.Repository.NumOpenIssues}}</span></a>
         </li>
+        
         <li>
             <a class="radius" href="{{.RepoLink}}/wiki"><i class="octicon octicon-book"></i>{{.i18n.Tr "repo.wiki.wiki"}}</a>
         </li>
-        <!-- <li>
-            <a class="radius" href="{{.RepoLink}}/pulls"><i class="octicon octicon-git-pull-request"></i>Pull Requests<span class="num right label label-blue label-radius">{{.Repository.NumOpenPulls}}</span></a>
-        </li> -->
+
+        <li>
+            <a class="radius" href="{{.RepoLink}}/pulls"><i class="octicon octicon-git-pull-request"></i>{{.i18n.Tr "repo.pulls"}}<span class="num right label label-blue label-radius">{{.Repository.NumOpenPulls}}</span></a>
+        </li>
+
         <li class="border-bottom"></li>
         <li class="head">{{if .IsViewBranch}}{{.BranchName}}{{else}}{{ShortSha .BranchName}}{{end}}</li>
         <li>

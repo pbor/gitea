@@ -17,6 +17,10 @@
     color: #888;
   }
   padding: 4px 0;
+  i{
+	margin-right: 6px;
+	font-size: 1.2em;
+  }
 }
 .pr-meta {
   color: #888;
@@ -84,6 +88,19 @@
     border-bottom-left-radius: .2em;
   }
 }
+
+#pr-create-panel {
+  margin-top: 12px;
+  .menu > li > a {
+	padding: .2em .6em;
+  }
+}
+
+#pr-create-btn {
+  margin-left: 12px;
+}
+
+
 #pr-commit,
 #pr-file-diff,
 #commit-add-comment-preview,
@@ -219,13 +236,26 @@
     }
   }
 }
+input#pr-add-title{
+  width: 100%;
+  margin-bottom: 18px;
+  box-sizing: border-box;
+}
+
 textarea#issue-add-content,
-textarea#commit-add-content {
+textarea#commit-add-content,
+textarea#pr-add-content,
+textarea#pr-merge-content{
   width: 100%;
   box-sizing: border-box;
   height: 120px;
   resize: vertical;
 }
+
+textarea#pr-merge-content{
+  height: 80px;
+}
+
 // #issue list navigator
 #issue-list-nav {
   border-bottom: 1px solid #DDD;

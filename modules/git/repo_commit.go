@@ -15,6 +15,10 @@ import (
 	"github.com/Unknwon/com"
 )
 
+func (repo *Repository) GetCommitIdOfRef(refpath string) (string, error) {
+	return repo.getCommitIdOfRef(refpath)
+}
+
 func (repo *Repository) getCommitIdOfRef(refpath string) (string, error) {
 	stdout, stderr, err := com.ExecCmdDir(repo.Path, "git", "show-ref", "--verify", refpath)
 	if err != nil {
@@ -247,6 +251,15 @@ func (repo *Repository) FileCommitsCount(branch, file string) (int, error) {
 		return 0, errors.New(stderr)
 	}
 	return com.StrTo(strings.TrimSpace(stdout)).Int()
+}
+
+func (repo *Repository) CommitsBetweenBranch(afterBranch, beforeBranch string, page int) (*list.List, error) {
+	stdout, stderr, err := com.ExecCmdDirBytes(repo.Path, "git", "log", afterBranch+".."+
+		beforeBranch, "--skip="+com.ToStr((page-1)*50), "--max-count=50", prettyLogFormat)
+	if err != nil {
+		return nil, errors.New(string(stderr))
+	}
+	return parsePrettyFormatLog(repo, stdout)
 }
 
 func (repo *Repository) CommitsByFileAndRange(branch, file string, page int) (*list.List, error) {

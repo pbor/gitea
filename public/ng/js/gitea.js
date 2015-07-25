@@ -260,8 +260,8 @@ var Gitea = {};
             var commit = document.location.href.match(/([a-zA-Z0-9-.:\/\/]+)\/commit\/([a-z0-9]+)/);
             console.log(commit);
             var lineNum;
-            if ($(this).prop("tagName") == "BUTTON") {                
-                lineNum = $(this).attr('rel');                                
+            if ($(this).prop("tagName") == "BUTTON") {
+                lineNum = $(this).attr('rel');
             } else {
                 lineNum = $(this).parent().prev().find('span').attr('rel');
             }
@@ -586,7 +586,23 @@ function initRepoCreate() {
 
             $(this).parent().find('.checked').removeClass('checked');
             $(this).addClass('checked');
-            console.log("set repo owner to uid :", uid, $(this).text().trim());
+            console.log("set repo owner to uid:", uid, $(this).text().trim());
+        }
+    });
+
+    // Branch switch menu click.
+    $('.repo-pull-branch-list').on('click', 'li', function () {
+        if (!$(this).hasClass('checked')) {
+            var branch_name = $(this).data('branch-name');
+            var target = $(this).data('target');
+            var target_show = $(this).data('target-show');
+
+            $(target).val(branch_name);
+            $(target_show).text($(this).text().trim());
+
+            $(this).parent().find('.checked').removeClass('checked');
+            $(this).addClass('checked');
+            console.log("set branch: ", branch_name, $(this).text().trim());
         }
     });
 
@@ -630,6 +646,37 @@ function initRepo() {
             $($this.data("preview")).html("no content");
         })
     });
+
+	// pr logic
+	(function () {
+		$('#pull-issue-preview').markdown_preview(".issue-add-comment");
+
+		var $prCreateBtn = $("#pr-create-btn");
+		if ($prCreateBtn.length) {
+			var $prCreatePanel = $("#pr-create-panel");
+			$('#pull-add-preview').markdown_preview(".pr-create-new");
+			$prCreateBtn.on("click", function () {
+				$prCreatePanel.removeClass("hide");
+				$prCreateBtn.hide();
+			});
+			$('#pr-create-cancel-btn').on("click", function () {
+				$prCreatePanel.addClass("hide");
+				$prCreateBtn.show();
+			})
+		}
+		var $prMergeBtn = $('#pr-merge-btn');
+		if($prMergeBtn.length){
+			var $prMergeNotice = $('#pr-merge-notice'),$prMergeForm = $('#pr-merge-form');
+			$prMergeBtn.on("click",function(){
+				$prMergeNotice.hide();
+				$prMergeForm.show();
+			});
+			$('#pr-merge-cancel-btn').on("click",function(){
+				$prMergeForm.hide();
+				$prMergeNotice.show();
+			});
+		}
+	})();
 }
 
 // when user changes hook type, hide/show proper divs
@@ -972,9 +1019,9 @@ function initTimeSwitch() {
 }
 
 function initDiff() {
-    $('.diff-detail-box>a').click(function () {
+    $('#pr-diff-btn').click(function () {
         $($(this).data('target')).slideToggle(100);
-    })
+    });
 
     var $counter = $('.diff-counter');
     if ($counter.length < 1) {
@@ -1046,7 +1093,6 @@ $(document).ready(function () {
     }
 
     $('#dashboard-sidebar-menu').tabs();
-    $('#pull-issue-preview').markdown_preview(".issue-add-comment");
 
     homepage();
 

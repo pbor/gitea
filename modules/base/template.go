@@ -17,8 +17,8 @@ import (
 	"golang.org/x/net/html/charset"
 	"golang.org/x/text/transform"
 
-	"github.com/gogits/chardet"
 	"github.com/go-gitea/gitea/modules/setting"
+	"github.com/gogits/chardet"
 )
 
 func Str2html(raw string) template.HTML {
@@ -250,7 +250,7 @@ func DiffLineTypeToStr(diffType int) string {
 }
 
 func DiffLinePosToStr(file int, section int, line int) string {
-	return fmt.Sprintf("%vL%v%v", file + 1, section, line)
+	return fmt.Sprintf("%vL%v%v", file+1, section, line)
 }
 
 func Oauth2Icon(t int) string {
