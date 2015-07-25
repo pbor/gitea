@@ -665,5 +665,5 @@ func GitHooksEditPost(ctx *middleware.Context) {
 }
 
 func TriggerHook(ctx *middleware.Context) {
-	models.HookQueue.AddRepoID(ctx.Repo.Repository.Id)
+	models.HookQueue.AddRepoID(ctx.Repo.Repository.ID)
 }

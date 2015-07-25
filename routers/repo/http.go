@@ -192,7 +192,7 @@ func Http(ctx *middleware.Context) {
 
 						// FIXME: handle error.
 						if err = models.Update(refName, oldCommitId, newCommitId, authUsername, username, reponame, authUser.Id); err == nil {
-							models.HookQueue.AddRepoID(repo.Id)
+							models.HookQueue.AddRepoID(repo.ID)
 						}
 
 					}

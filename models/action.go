@@ -436,7 +436,7 @@ func CommitRepoAction(userId, repoUserId int64, userName, actEmail string,
 		}
 
 		if err = CreateHookTask(&HookTask{
-			RepoID:      repo.Id,
+			RepoID:      repo.ID,
 			HookID:      w.Id,
 			Type:        w.HookTaskType,
 			Url:         w.Url,
