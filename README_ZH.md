@@ -5,8 +5,6 @@ Gitea (Git service with a cup of tea) 是一款可轻易搭建的自助 Git 服�
 
 ![Demo](screenshots/demo.gif)
 
-##### 当前版本：0.6.1 Beta
-
 ## 开发目的
 
 Gitea 的目标是打造一个最简单、最快速和最轻松的方式搭建自助 Git 服务。使用 Go 语言开发使得 Gitea 能够通过独立的二进制分发，并且支持 Go 语言支持的 **所有平台**，包括 Linux、Mac OS X 以及 Windows。
