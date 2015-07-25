@@ -18,7 +18,7 @@ import (
 	"github.com/go-gitea/gitea/modules/setting"
 )
 
-const APP_VER = "0.6.2.0604 Beta"
+const APP_VER = "0.6.3.0725 Beta"
 
 func init() {
 	runtime.GOMAXPROCS(runtime.NumCPU())

@@ -16,10 +16,9 @@ var c = New()
 
 func NewCronContext() {
 	c.AddFunc("Update mirrors", "@every 1h", models.MirrorUpdate)
-	c.AddFunc("Update wiki repos", "@every 10m", models.WikiUpdate)
-	c.AddFunc("Deliver hooks", fmt.Sprintf("@every %ds", setting.Webhook.TaskInterval), models.DeliverHooks)
+	c.AddFunc("Update wikis", "@every 10m", models.WikiUpdate)
 	if setting.Git.Fsck.Enable {
-		c.AddFunc("Repository health check", fmt.Sprintf("@every %dh", setting.Git.Fsck.Interval), models.GitFsck)
+		c.AddFunc("Health checks", fmt.Sprintf("@every %dh", setting.Git.Fsck.Interval), models.GitFsck)
 	}
 	c.Start()
 }

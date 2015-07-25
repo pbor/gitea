@@ -17,6 +17,7 @@ import (
 	"github.com/codegangsta/cli"
 
 	"github.com/go-gitea/gitea/models"
+	"github.com/go-gitea/gitea/modules/httplib"
 	"github.com/go-gitea/gitea/modules/log"
 	"github.com/go-gitea/gitea/modules/setting"
 	"github.com/go-gitea/gitea/modules/uuid"
@@ -192,6 +193,12 @@ func runServ(c *cli.Context) {
 		if err = models.DelUpdateTasksByUuid(uuid); err != nil {
 			log.GitLogger.Fatal(2, "DelUpdateTasksByUuid: %v", err)
 		}
+	}
+
+	// Send deliver hook request.
+	resp, err := httplib.Head(setting.AppUrl + setting.AppSubUrl + repoUserName + "/" + repoName + "/hooks/trigger").Response()
+	if err == nil {
+		resp.Body.Close()
 	}
 
 	// Update key activity.
