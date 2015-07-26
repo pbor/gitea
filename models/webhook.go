@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io/ioutil"
+	"sync"
 	"time"
 
 	"github.com/go-gitea/gitea/modules/httplib"
@@ -301,16 +302,30 @@ var (
 	// This happens with massive hook tasks cannot finish delivering
 	// before next shooting starts.
 	isShooting = false
+	shootingLock sync.Mutex
 )
+
+func onShooting() bool {
+	shootingLock.Lock()
+	defer shootingLock.Unlock()
+	return isShooting
+}
+
+func setShooting(shooting bool) {
+	shootingLock.Lock()
+	defer shootingLock.Unlock()
+	isShooting = shooting
+}
 
 // DeliverHooks checks and delivers undelivered hooks.
 // FIXME: maybe can use goroutine to shoot a number of them at same time?
 func DeliverHooks() {
-	if isShooting {
+	if onShooting() {
 		return
 	}
-	isShooting = true
-	defer func() { isShooting = false }()
+
+	setShooting(true)
+	defer func() { setShooting(false) }()
 
 	tasks := make([]*HookTask, 0, 10)
 	timeout := time.Duration(setting.Webhook.DeliverTimeout) * time.Second
