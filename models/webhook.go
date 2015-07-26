@@ -174,11 +174,13 @@ type HookTaskType int
 
 const (
 	GITEA HookTaskType = iota + 1
+	GOGS
 	SLACK
 )
 
 var hookTaskTypes = map[string]HookTaskType{
-	"gitea":  GITEA,
+	"gitea": GITEA,
+	"gogs":  GOGS,
 	"slack": SLACK,
 }
 
@@ -191,6 +193,8 @@ func (t HookTaskType) Name() string {
 	switch t {
 	case GITEA:
 		return "gitea"
+	case GOGS:
+		return "gogs"
 	case SLACK:
 		return "slack"
 	}
@@ -329,7 +333,7 @@ func DeliverHooks() {
 
 			// FIXME: record response.
 			switch t.Type {
-			case GITEA:
+			case GITEA, GOGS:
 				{
 					if _, err := req.Response(); err != nil {
 						log.Error(5, "Delivery: %v", err)
