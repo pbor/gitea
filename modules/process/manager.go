@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"os/exec"
 	"time"
+	"sync"
 
 	"github.com/go-gitea/gitea/modules/log"
 )
@@ -36,11 +37,15 @@ type Process struct {
 // List of existing processes.
 var (
 	curPid    int64 = 1
-	Processes []*Process
+	Processes = make([]*Process, 0)
+	pidLock sync.Mutex
 )
 
 // Add adds a existing process and returns its PID.
 func Add(desc string, cmd *exec.Cmd) int64 {
+	pidLock.Lock()
+	defer pidLock.Unlock()
+
 	pid := curPid
 	Processes = append(Processes, &Process{
 		Pid:         pid,
@@ -102,6 +107,8 @@ func Exec(desc, cmdName string, args ...string) (string, string, error) {
 
 // Remove removes a process from list.
 func Remove(pid int64) {
+	pidLock.Lock()
+	defer pidLock.Unlock()
 	for i, proc := range Processes {
 		if proc.Pid == pid {
 			Processes = append(Processes[:i], Processes[i+1:]...)
@@ -112,6 +119,8 @@ func Remove(pid int64) {
 
 // Kill kills and removes a process from list.
 func Kill(pid int64) error {
+	pidLock.Lock()
+	defer pidLock.Unlock()
 	for i, proc := range Processes {
 		if proc.Pid == pid {
 			if proc.Cmd.Process != nil && proc.Cmd.ProcessState != nil && !proc.Cmd.ProcessState.Exited() {
