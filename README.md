@@ -7,8 +7,6 @@ Gitea (Git service with a cup of tea) is a self-hosted Git service.
 
 ![Demo](screenshots/demo.gif)
 
-##### Current version: 0.6.1 Beta
-
 ### NOTICES
 
 - Due to testing purpose, data of [try.gogs.io](https://try.gogs.io) has been reset in **Jan 28, 2015** and will reset multiple times after. Please do **NOT** put your important data on the site.
