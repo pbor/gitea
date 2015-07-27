@@ -1,10 +1,9 @@
-
 {{template "ng/base/head" .}}
 {{template "ng/base/header" .}}
 <div id="repo-wrapper">
     {{template "repo/header" .}}
     <div class="container clear" id="diff-page">
-        {{if .IsDiffCompare }}
+        {{if .IsDiffCompare}}
         <div class="panel panel-info panel-radius compare-head-box">
             <div class="panel-header">
                 <a class="pull-right btn btn-blue btn-header btn-medium btn-radius" rel="nofollow" href="{{.SourcePath}}">{{.i18n.Tr "repo.diff.browse_source"}}</a>
@@ -128,6 +127,7 @@
                                 <pre>{{$line.Content}}</pre>
                             </td>
                         </tr>
+                        {{if $.Comments}}
                         {{if index $.Comments $lineNum}}
                         <tr class="comment comment-{{$lineNum}}">
                             <td class="lines-code" colspan="3">
@@ -143,23 +143,23 @@
                                         <p class="panel-header clear"><a class="author-name" href="{{AppSubUrl}}/{{.Poster.Name}}">{{.Poster.Name}}</a>
                                             <span class="date">{{TimeSince .Created $.Lang}}</span>
                                             <span class="action right">
-                                                {{if eq $.Repository.Owner.Id .Poster.Id}}
-                                                <span class="label label-black label-radius">{{$.i18n.Tr "repo.owner"}}</span>
-                                                {{end}}
-                                                {{if $.SignedUser}}
+                                            {{if eq $.Repository.Owner.Id .Poster.Id}}
+                                                
+                                            {{end}}
+                                            {{if $.SignedUser}}
                                                 {{if eq $.SignedUser.Id .Poster.Id}}
                                                 <a href="#" class="edit-comment"><i class="octicon octicon-pencil"></i></a>
                                                 <a href="#" data-id="{{.Id}}" class="remove-comment"><i class="octicon octicon-x"></i></a>
                                                 {{end}}
-                                                {{end}}
+                                            {{end}}
                                             </span>
                                         </p>
 
                                         <div class="panel-content content markdown">
                                             {{if len .Content}}
-                                            {{Str2html .Content}}
+                                                {{Str2html .Content}}
                                             {{else}}
-                                            <i>No comment entered</i>
+                                                <i>No comment entered</i>
                                             {{end}}
                                         </div>
                                     </div>
@@ -168,6 +168,7 @@
                                 <button rel="diff-{{$lineNum}}" class="btn btn-gray btn-radius text-bold answer" value="close">{{$.i18n.Tr "repo.commits.comment.comment_line"}}</button>
                             </td>
                         </tr>
+                        {{end}}
                         {{end}}
                         {{end}}
                         {{end}}

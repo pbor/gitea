@@ -411,6 +411,7 @@ func CompareCommits(ctx *middleware.Context, beforeCommitId, afterCommitId strin
 	ctx.Data["IsImageFile"] = isImageFile
 	ctx.Data["Title"] = "Comparing " + base.ShortSha(beforeCommitId) + "..." + base.ShortSha(afterCommitId) + " · " + userName + "/" + repoName
 	ctx.Data["Commit"] = commit
+	ctx.Data["Author"] = models.ValidateCommitWithEmail(commit)
 	ctx.Data["Diff"] = diff
 	ctx.Data["DiffNotAvailable"] = diff.NumFiles() == 0
 	ctx.Data["SourcePath"] = setting.AppSubUrl + "/" + path.Join(userName, repoName, "src", afterCommitId)
