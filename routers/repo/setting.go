@@ -318,6 +318,7 @@ func WebHooksNew(ctx *middleware.Context) {
 	ctx.Data["PageIsSettingsHooksNew"] = true
 	ctx.Data["Webhook"] = models.Webhook{HookEvent: &models.HookEvent{}}
 	renderHookTypes(ctx)
+
 	orCtx, err := getOrgRepoCtx(ctx)
 	if err != nil {
 		ctx.Handle(500, "WebHooksNew(getOrgRepoCtx)", err)
@@ -332,6 +333,7 @@ func WebHooksNewPost(ctx *middleware.Context, form auth.NewWebhookForm) {
 	ctx.Data["PageIsSettingsHooks"] = true
 	ctx.Data["PageIsSettingsHooksNew"] = true
 	ctx.Data["Webhook"] = models.Webhook{HookEvent: &models.HookEvent{}}
+	renderHookTypes(ctx)
 
 	orCtx, err := getOrgRepoCtx(ctx)
 	if err != nil {
@@ -400,14 +402,10 @@ func WebHooksEdit(ctx *middleware.Context) {
 	// set data per HookTaskType
 	switch w.HookTaskType {
 	case models.SLACK:
-		{
-			ctx.Data["SlackHook"] = w.GetSlackHook()
-			ctx.Data["HookType"] = "Slack"
-		}
+		ctx.Data["SlackHook"] = w.GetSlackHook()
+		ctx.Data["HookType"] = "Slack"
 	default:
-		{
-			ctx.Data["HookType"] = "Gitea"
-		}
+		ctx.Data["HookType"] = "Gitea"
 	}
 	w.GetEvent()
 	ctx.Data["Webhook"] = w
@@ -438,6 +436,15 @@ func WebHooksEditPost(ctx *middleware.Context, form auth.NewWebhookForm) {
 			ctx.Handle(500, "GetWebhookById", err)
 		}
 		return
+	}
+
+	// set data per HookTaskType
+	switch w.HookTaskType {
+	case models.SLACK:
+		ctx.Data["SlackHook"] = w.GetSlackHook()
+		ctx.Data["HookType"] = "Slack"
+	default:
+		ctx.Data["HookType"] = "Gitea"
 	}
 	w.GetEvent()
 	ctx.Data["Webhook"] = w
