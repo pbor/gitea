@@ -12,6 +12,7 @@ import (
 
 	"github.com/Unknwon/com"
 	"github.com/go-xorm/xorm"
+	"github.com/go-xorm/core"
 	"gopkg.in/ini.v1"
 
 	"github.com/go-gitea/gitea/modules/log"
@@ -393,15 +394,23 @@ func fixLocaleFileLoadPanic(_ *xorm.Engine) error {
 }
 
 func prepareToCommitComments(x *xorm.Engine) error {
+	var mysqlSql = `ALTER TABLE comment MODIFY %s VARCHAR(50)`
+	var postgresSql = `ALTER TABLE comment ALTER COLUMN %s TYPE VARCHAR(50)`
 
-	sql := `ALTER TABLE comment MODIFY commit_id VARCHAR(50) NULL DEFAULT NULL`
-	_, err := x.Exec(sql)
+	// for mysql & sqlite3
+	var sql = mysqlSql
+	if x.Dialect().DBType() == core.POSTGRES {
+		sql = postgresSql
+	}
+
+	//sql = mysqlSql`ALTER TABLE comment MODIFY commit_id VARCHAR(50) NULL DEFAULT NULL`
+	_, err := x.Exec(fmt.Sprintf(sql, "commit_id"))
 	if err != nil {
 		return err
 	}
 
-	sql = `ALTER TABLE comment MODIFY line VARCHAR(50) NULL DEFAULT NULL;`
-	_, err = x.Exec(sql)
+	//sql = `ALTER TABLE comment MODIFY line VARCHAR(50) NULL DEFAULT NULL;`
+	_, err = x.Exec(fmt.Sprintf(sql, "line"))
 	if err != nil {
 		return err
 	}
