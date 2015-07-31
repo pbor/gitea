@@ -274,7 +274,7 @@ func CreateIssuePost(ctx *middleware.Context, form auth.CreateIssueForm) {
 	}
 	issue := &models.Issue{
 		RepoID:      ctx.Repo.Repository.ID,
-		Index:       int64(ctx.Repo.Repository.NumIssues) + 1,
+		Index:       int64(ctx.Repo.Repository.NumIssues) + int64(ctx.Repo.Repository.NumPulls) + 1,
 		Name:        form.IssueName,
 		PosterID:    ctx.User.Id,
 		MilestoneID: form.MilestoneId,

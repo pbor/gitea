@@ -239,7 +239,7 @@ func NewPullRequest(ctx *middleware.Context, form auth.NewPullRequestForm) {
 
 	pr := &models.Issue{
 		RepoID:   repo.ID,
-		Index:    int64(repo.NumPulls) + 1,
+		Index:    int64(repo.NumIssues) + int64(repo.NumPulls) + 1,
 		Name:     form.Title,
 		PosterID: ctx.User.Id,
 		IsPull:   true,
