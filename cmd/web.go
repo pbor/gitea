@@ -466,6 +466,7 @@ func runWeb(ctx *cli.Context) {
 		m.Get("/issues2/", repo.Issues2)
 		m.Get("/issues/labels2/", repo.Labels2)
 		m.Get("/issues/milestone2/", repo.Milestones2)
+		m.Head("/hooks/trigger", repo.TriggerHook)
 
 		m.Get("/wiki", repo.Wiki)
 		m.Get("/wiki/pages", repo.WikiPageList)
