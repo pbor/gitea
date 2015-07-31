@@ -140,12 +140,14 @@ func SettingsPost(ctx *middleware.Context, form auth.RepoSettingForm) {
 			return
 		}
 
-		// Transfer wiki repo
-		err = ctx.Repo.Repository.WikiRepo.GetOwner()
-		if err != nil {
-			ctx.Handle(500, "WikiRepo.GetOwner", err)
-		}
 		if ctx.Repo.Repository.WikiRepo != nil {
+			// Transfer wiki repo
+			err = ctx.Repo.Repository.WikiRepo.GetOwner()
+			if err != nil {
+				ctx.Handle(500, "WikiRepo.GetOwner", err)
+				return
+			}
+
 			if err = models.TransferOwnership(ctx.User, newOwner, ctx.Repo.Repository.WikiRepo); err != nil {
 				if err == models.ErrRepoAlreadyExist {
 					ctx.RenderWithErr(ctx.Tr("repo.settings.new_owner_has_same_repo"), SETTINGS_OPTIONS, nil)
