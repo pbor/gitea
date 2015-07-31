@@ -17,6 +17,7 @@ import (
 	"regexp"
 	"sort"
 	"strings"
+	"sync"
 	"time"
 	"unicode/utf8"
 
@@ -1199,18 +1200,16 @@ func RewriteRepositoryUpdateHook() error {
 
 var (
 	// Prevent duplicate tasks.
-	isMirrorUpdating = false
-	isGitFscking     = false
-	isCheckingRepos  = false
+	//isMirrorUpdating = false
+	mirrorUpdateLock sync.Mutex
+	gitFsckLock sync.Mutex
+	checkingReposLock sync.Mutex
 )
 
 // MirrorUpdate checks and updates mirror repositories.
 func MirrorUpdate() {
-	if isMirrorUpdating {
-		return
-	}
-	isMirrorUpdating = true
-	defer func() { isMirrorUpdating = false }()
+	mirrorUpdateLock.Lock()
+	defer mirrorUpdateLock.Unlock()
 
 	mirrors := make([]*Mirror, 0, 10)
 
@@ -1248,11 +1247,8 @@ func MirrorUpdate() {
 
 // GitFsck calls 'git fsck' to check repository health.
 func GitFsck() {
-	if isGitFscking {
-		return
-	}
-	isGitFscking = true
-	defer func() { isGitFscking = false }()
+	gitFsckLock.Lock()
+	defer gitFsckLock.Unlock()
 
 	args := append([]string{"fsck"}, setting.Git.Fsck.Args...)
 	if err := x.Where("id > 0").Iterate(new(Repository),
@@ -1294,11 +1290,8 @@ func GitGcRepos() error {
 }
 
 func CheckRepoStats() {
-	if isCheckingRepos {
-		return
-	}
-	isCheckingRepos = true
-	defer func() { isCheckingRepos = false }()
+	checkingReposLock.Lock()
+	defer checkingReposLock.Unlock()
 
 	// Check count watchers
 	results_watch, err := x.Query("SELECT r.id FROM `repository` r WHERE r.num_watches!=(SELECT count(*) FROM `watch` WHERE repo_id=r.id)")
