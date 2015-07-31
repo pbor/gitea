@@ -17,6 +17,7 @@ import (
 	"regexp"
 	"sort"
 	"strings"
+	"sync"
 	"time"
 	"unicode/utf8"
 
@@ -1199,17 +1200,16 @@ func RewriteRepositoryUpdateHook() error {
 
 var (
 	// Prevent duplicate tasks.
-	isMirrorUpdating = false
-	isGitFscking     = false
+	//isMirrorUpdating = false
+	mirrorUpdateLock sync.Mutex
+	gitFsckLock sync.Mutex
+	checkingReposLock sync.Mutex
 )
 
 // MirrorUpdate checks and updates mirror repositories.
 func MirrorUpdate() {
-	if isMirrorUpdating {
-		return
-	}
-	isMirrorUpdating = true
-	defer func() { isMirrorUpdating = false }()
+	mirrorUpdateLock.Lock()
+	defer mirrorUpdateLock.Unlock()
 
 	mirrors := make([]*Mirror, 0, 10)
 
@@ -1247,11 +1247,8 @@ func MirrorUpdate() {
 
 // GitFsck calls 'git fsck' to check repository health.
 func GitFsck() {
-	if isGitFscking {
-		return
-	}
-	isGitFscking = true
-	defer func() { isGitFscking = false }()
+	gitFsckLock.Lock()
+	defer gitFsckLock.Unlock()
 
 	args := append([]string{"fsck"}, setting.Git.Fsck.Args...)
 	if err := x.Where("id > 0").Iterate(new(Repository),
@@ -1290,6 +1287,39 @@ func GitGcRepos() error {
 			}
 			return nil
 		})
+}
+
+func CheckRepoStats() {
+	checkingReposLock.Lock()
+	defer checkingReposLock.Unlock()
+
+	// Check count watchers
+	results_watch, err := x.Query("SELECT r.id FROM `repository` r WHERE r.num_watches!=(SELECT count(*) FROM `watch` WHERE repo_id=r.id)")
+	if err != nil {
+		log.Error(4, "select repository check 'watch': %v", err)
+	}
+	for _, repo_id := range results_watch {
+		log.Info("updating repository count 'watch'")
+		repoID := com.StrTo(repo_id["id"]).MustInt64()
+		_, err := x.Exec("UPDATE `repository` SET num_watches=(SELECT count(*) FROM `watch` WHERE repo_id=?) WHERE id=?", repoID, repoID)
+		if err != nil {
+			log.Error(4, "update repository check 'watch', repo %v: %v", repo_id, err)
+		}
+	}
+
+	// Check count stars
+	results_star, err := x.Query("SELECT s.id FROM `repository` s WHERE s.num_stars!=(SELECT count(*) FROM `star` WHERE repo_id=s.id)")
+	if err != nil {
+		log.Error(4, "select repository check 'star': %v", err)
+	}
+	for _, repo_id := range results_star {
+		log.Info("updating repository count 'star'")
+		repoID := com.StrTo(repo_id["id"]).MustInt64()
+		_, err := x.Exec("UPDATE `repository` SET .num_stars=(SELECT count(*) FROM `star` WHERE repo_id=?) WHERE id=?", repoID, repoID)
+		if err != nil {
+			log.Error(4, "update repository check 'star', repo %v: %v", repo_id, err)
+		}
+	}
 }
 
 // _________        .__  .__        ___.                        __  .__
