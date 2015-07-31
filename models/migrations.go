@@ -3,7 +3,7 @@
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
-package migrations
+package models
 
 import (
 	"errors"
@@ -109,13 +109,6 @@ func Migrate(x *xorm.Engine) error {
 		}
 	}
 	return nil
-}
-
-func sessionRelease(sess *xorm.Session) {
-	if !sess.IsCommitedOrRollbacked {
-		sess.Rollback()
-	}
-	sess.Close()
 }
 
 func accessToCollaboration(x *xorm.Engine) (err error) {
@@ -394,6 +387,41 @@ func fixLocaleFileLoadPanic(_ *xorm.Engine) error {
 	return nil
 }
 
+func prepareToCommitCommentsSqlite3(x *xorm.Engine) error {
+	sess := x.NewSession()
+	defer sess.Close()
+
+	if err := sess.Begin(); err != nil {
+		return err
+	}
+
+	if _, err := sess.Exec("ALTER TABLE comment RENAME TO tmp_comment"); err != nil {
+		return err
+	}
+
+	if err := sess.CreateTable(new(Comment)); err != nil {
+		return err
+	}
+
+	if err := sess.CreateIndexes(new(Comment)); err != nil {
+		return err
+	}
+
+	if err := sess.CreateUniques(new(Comment)); err != nil {
+		return err
+	}
+
+	if _, err := sess.Exec("insert into comment select * from tmp_comment"); err != nil {
+		return err
+	}
+
+	if _, err := sess.Exec("DROP TABLE tmp_comment"); err != nil {
+		return err
+	}
+
+	return sess.Commit()
+}
+
 func prepareToCommitComments(x *xorm.Engine) error {
 	var mysqlSql = `ALTER TABLE comment MODIFY %s VARCHAR(50)`
 	var postgresSql = `ALTER TABLE comment ALTER COLUMN %s TYPE VARCHAR(50)`
@@ -404,8 +432,7 @@ func prepareToCommitComments(x *xorm.Engine) error {
 	case core.POSTGRES:
 		sql = postgresSql
 	case core.SQLITE:
-		// since sqlite3 don't support modify column type, just ignore this
-		return nil
+		return prepareToCommitCommentsSqlite3(x)
 	case core.MYSQL:
 		sql = mysqlSql
 	default:

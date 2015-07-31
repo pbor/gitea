@@ -17,7 +17,6 @@ import (
 	"github.com/go-xorm/xorm"
 	_ "github.com/lib/pq"
 
-	"github.com/go-gitea/gitea/models/migrations"
 	"github.com/go-gitea/gitea/modules/setting"
 )
 
@@ -163,7 +162,7 @@ func NewEngine() (err error) {
 		return err
 	}
 
-	if err = migrations.Migrate(x); err != nil {
+	if err = Migrate(x); err != nil {
 		return fmt.Errorf("migrate: %v", err)
 	}
 
