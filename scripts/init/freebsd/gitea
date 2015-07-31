@@ -21,7 +21,7 @@ load_rc_config $name
 : ${gitea_enable:="NO"}
 : ${gitea_directory:="/home/git"}
 
-command="${gitea_directory}/scripts/start.sh"
+command="${gitea_directory}/gitea web"
 
 pidfile="${gitea_directory}/${name}.pid"
 
