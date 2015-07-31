@@ -6,6 +6,7 @@
 package migrations
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -398,9 +399,17 @@ func prepareToCommitComments(x *xorm.Engine) error {
 	var postgresSql = `ALTER TABLE comment ALTER COLUMN %s TYPE VARCHAR(50)`
 
 	// for mysql & sqlite3
-	var sql = mysqlSql
-	if x.Dialect().DBType() == core.POSTGRES {
+	var sql string
+	switch x.Dialect().DBType() {
+	case core.POSTGRES:
 		sql = postgresSql
+	case core.SQLITE:
+		// since sqlite3 don't support modify column type, just ignore this
+		return nil
+	case core.MYSQL:
+		sql = mysqlSql
+	default:
+		return errors.New("unsupported database type")
 	}
 
 	//sql = mysqlSql`ALTER TABLE comment MODIFY commit_id VARCHAR(50) NULL DEFAULT NULL`
