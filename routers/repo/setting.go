@@ -35,12 +35,22 @@ const (
 )
 
 func Settings(ctx *middleware.Context) {
+	if ctx.Repo.Repository.IsWiki {
+		ctx.Handle(403, "Settings Forbidden", errors.New("Could not access wiki repo's settings"))
+		return
+	}
+
 	ctx.Data["Title"] = ctx.Tr("repo.settings")
 	ctx.Data["PageIsSettingsOptions"] = true
 	ctx.HTML(200, SETTINGS_OPTIONS)
 }
 
 func SettingsPost(ctx *middleware.Context, form auth.RepoSettingForm) {
+	if ctx.Repo.Repository.IsWiki {
+		ctx.Handle(403, "Settings Forbidden", errors.New("Could not access wiki repo's settings"))
+		return
+	}
+
 	ctx.Data["Title"] = ctx.Tr("repo.settings")
 	ctx.Data["PageIsSettingsOptions"] = true
 
