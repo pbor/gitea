@@ -149,6 +149,13 @@ func InstallPost(ctx *middleware.Context, form auth.InstallForm) {
 	models.DbCfg.SSLMode = form.SSLMode
 	models.DbCfg.Path = form.DbPath
 
+	// Check repository root path format.
+	if strings.Contains(form.RepoRootPath, "\\") {
+		ctx.Data["Err_RepoRootPath"] = true
+		ctx.RenderWithErr(ctx.Tr("install.invalid_repo_path", ctx.Tr("install.invalid_repo_path_format")), INSTALL, &form)
+		return
+	}
+
 	// Set test engine.
 	var x *xorm.Engine
 	if err := models.NewTestEngine(x); err != nil {
