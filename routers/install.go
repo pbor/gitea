@@ -156,17 +156,6 @@ func InstallPost(ctx *middleware.Context, form auth.InstallForm) {
 		return
 	}
 
-	// Set test engine.
-	var x *xorm.Engine
-	if err := models.NewTestEngine(x); err != nil {
-		if strings.Contains(err.Error(), `Unknown database type: sqlite3`) {
-			ctx.RenderWithErr(ctx.Tr("install.sqlite3_not_available", "http://gitea.io/docs/installation/install_from_binary.html"), INSTALL, &form)
-		} else {
-			ctx.RenderWithErr(ctx.Tr("install.invalid_db_setting", err), INSTALL, &form)
-		}
-		return
-	}
-
 	// Test repository root path.
 	if err := os.MkdirAll(form.RepoRootPath, os.ModePerm); err != nil {
 		ctx.Data["Err_RepoRootPath"] = true
@@ -186,6 +175,17 @@ func InstallPost(ctx *middleware.Context, form auth.InstallForm) {
 	if form.AdminPasswd != form.AdminConfirmPasswd {
 		ctx.Data["Err_AdminPasswd"] = true
 		ctx.RenderWithErr(ctx.Tr("form.password_not_match"), INSTALL, form)
+		return
+	}
+
+	// Set test engine.
+	var x *xorm.Engine
+	if err := models.NewTestEngine(x); err != nil {
+		if strings.Contains(err.Error(), `Unknown database type: sqlite3`) {
+			ctx.RenderWithErr(ctx.Tr("install.sqlite3_not_available", "http://gitea.io/docs/installation/install_from_binary.html"), INSTALL, &form)
+		} else {
+			ctx.RenderWithErr(ctx.Tr("install.invalid_db_setting", err), INSTALL, &form)
+		}
 		return
 	}
 
