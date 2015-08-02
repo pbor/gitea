@@ -30,7 +30,7 @@
 					                    <tbody>
 					                        {{range .Repos}}
 					                        <tr>
-					                            <td>{{.Id}}</td>
+					                            <td>{{.ID}}</td>
 					                            <td><a href="{{AppSubUrl}}/{{.Owner.Name}}">{{.Owner.Name}}</a></td>
                             					<td><a href="{{AppSubUrl}}/{{.Owner.Name}}/{{.Name}}">{{.Name}}</a></td>
 					                            <td><i class="fa fa{{if .IsPrivate}}-check{{end}}-square-o"></i></td>
