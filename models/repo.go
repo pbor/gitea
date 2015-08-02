@@ -480,6 +480,18 @@ func MigrateRepository(u *User, name, desc string, private, mirror bool, url str
 func initRepoCommit(tmpPath string, sig *git.Signature) (err error) {
 	var stderr string
 	if _, stderr, err = process.ExecDir(-1,
+		tmpPath, fmt.Sprintf("initRepoCommit(git config user.name): %s", tmpPath),
+		"git", "config", "user.name", sig.Name); err != nil {
+		return errors.New("git config user.name: " + stderr)
+	}
+
+	if _, stderr, err = process.ExecDir(-1,
+		tmpPath, fmt.Sprintf("initRepoCommit(git config user.email): %s", tmpPath),
+		"git", "config", "user.email", sig.Email); err != nil {
+		return errors.New("git config user.email: " + stderr)
+	}
+
+	if _, stderr, err = process.ExecDir(-1,
 		tmpPath, fmt.Sprintf("initRepoCommit(git add): %s", tmpPath),
 		"git", "add", "--all"); err != nil {
 		return errors.New("git add: " + stderr)
@@ -487,7 +499,7 @@ func initRepoCommit(tmpPath string, sig *git.Signature) (err error) {
 
 	if _, stderr, err = process.ExecDir(-1,
 		tmpPath, fmt.Sprintf("initRepoCommit(git commit): %s", tmpPath),
-		"git", "commit", fmt.Sprintf("--author='%s <%s>'", sig.Name, sig.Email),
+		"git", "commit",
 		"-m", "Init commit"); err != nil {
 		return errors.New("git commit: " + stderr)
 	}
