@@ -12,9 +12,9 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 	"time"
-	"os"
 
 	"github.com/Unknwon/com"
 
@@ -28,7 +28,7 @@ import (
 )
 
 const (
-	ISSUES       base.TplName = "repo/issue/list"
+	ISSUES       base.TplName = "repo/issue2/list"
 	ISSUE_CREATE base.TplName = "repo/issue/create"
 	ISSUE_VIEW   base.TplName = "repo/issue/view"
 
@@ -42,6 +42,8 @@ const (
 var (
 	ErrFileTypeForbidden = errors.New("File type is not allowed")
 	ErrTooManyFiles      = errors.New("Maximum number of files to upload exceeded")
+
+	issueTypes = []string{"assigned", "created_by", "mentioned"}
 )
 
 func Issues(ctx *middleware.Context) {
@@ -54,8 +56,7 @@ func issues(ctx *middleware.Context, tmpl base.TplName, isPull bool) {
 	ctx.Data["IsRepoToolbarIssuesList"] = true
 
 	viewType := ctx.Query("type")
-	types := []string{"assigned", "created_by", "mentioned"}
-	if !com.IsSliceContainsStr(types, viewType) {
+	if !com.IsSliceContainsStr(issueTypes, viewType) {
 		viewType = "all"
 	}
 
@@ -91,6 +92,7 @@ func issues(ctx *middleware.Context, tmpl base.TplName, isPull bool) {
 		mid = mile.Id
 	}
 
+	// Get labels.
 	selectLabels := ctx.Query("labels")
 	labels, err := models.GetLabels(ctx.Repo.Repository.ID)
 	if err != nil {
@@ -100,7 +102,13 @@ func issues(ctx *middleware.Context, tmpl base.TplName, isPull bool) {
 	for _, l := range labels {
 		l.CalOpenIssues()
 	}
-	ctx.Data["Labels"] = labels
+
+	// Get milestones
+	miles, err := models.GetMilestones(ctx.Repo.Repository.ID, false)
+	if err != nil {
+		ctx.Handle(500, "issue.Milestones(GetMilestones)", err)
+		return
+	}
 
 	page, _ := com.StrTo(ctx.Query("page")).Int()
 	limit := 20
@@ -149,32 +157,18 @@ func issues(ctx *middleware.Context, tmpl base.TplName, isPull bool) {
 	if ctx.User != nil {
 		uid = ctx.User.Id
 	}
+	repoLink, _ := ctx.Repo.Repository.RepoLink()
+	ctx.Data["RepoLink"] = repoLink
+
 	issueStats := models.GetIssueStats(ctx.Repo.Repository.ID, uid, isPull, isShowClosed, filterMode)
 	ctx.Data["IssueStats"] = issueStats
 	ctx.Data["SelectLabels"], _ = com.StrTo(selectLabels).Int64()
 	ctx.Data["ViewType"] = viewType
 	ctx.Data["Issues"] = issues
+	ctx.Data["Labels"] = labels
+	ctx.Data["Milestones"] = miles
 	ctx.Data["IsShowClosed"] = isShowClosed
-	var totalCount int64
-	if isShowClosed {
-		ctx.Data["State"] = "closed"
-		totalCount = issueStats.ClosedCount
-	} else {
-		totalCount = issueStats.OpenCount
-	}
-	ctx.Data["ShowCount"] = totalCount
-	pages := func() []int64 {
-		if totalCount == 0 {
-			return makeArray(1)
-		}
-		if totalCount%int64(limit) == 0 {
-			return makeArray(totalCount / int64(limit))
-		}
-		return makeArray(totalCount/int64(limit) + 1)
-	}()
-	ctx.Data["Pages"] = pages
-	repoLink, _ := ctx.Repo.Repository.RepoLink()
-	ctx.Data["RepoLink"] = repoLink
+	ctx.Data["ShowCount"], ctx.Data["Pages"] = issueCount(ctx, issueStats, isShowClosed, limit)
 	ctx.HTML(200, tmpl)
 }
 
@@ -1274,6 +1268,7 @@ func Issues2(ctx *middleware.Context) {
 		mid = mile.Id
 	}
 
+	// Get labels.
 	selectLabels := ctx.Query("labels")
 	labels, err := models.GetLabels(ctx.Repo.Repository.ID)
 	if err != nil {
@@ -1284,6 +1279,14 @@ func Issues2(ctx *middleware.Context) {
 		l.CalOpenIssues()
 	}
 	ctx.Data["Labels"] = labels
+
+	// Get milestones
+	miles, err := models.GetMilestones(ctx.Repo.Repository.ID, false)
+	if err != nil {
+		ctx.Handle(500, "issue.Milestones(GetMilestones)", err)
+		return
+	}
+	ctx.Data["Milestones"] = miles
 
 	page, _ := com.StrTo(ctx.Query("page")).Int()
 	limit := 20
@@ -1338,13 +1341,25 @@ func Issues2(ctx *middleware.Context) {
 	ctx.Data["ViewType"] = viewType
 	ctx.Data["Issues"] = issues
 	ctx.Data["IsShowClosed"] = isShowClosed
+	ctx.Data["ShowCount"], ctx.Data["Pages"] = issueCount(ctx, issueStats, isShowClosed, limit)
+	ctx.HTML(200, "repo/issue2/list")
+}
+
+func issueCount(ctx *middleware.Context, issueStats *models.IssueStats, isShowClosed bool, limit int) (int64, []int64) {
+	var totalCount int64
 	if isShowClosed {
 		ctx.Data["State"] = "closed"
-		ctx.Data["ShowCount"] = issueStats.ClosedCount
+		totalCount = issueStats.ClosedCount
 	} else {
-		ctx.Data["ShowCount"] = issueStats.OpenCount
+		totalCount = issueStats.OpenCount
 	}
-	ctx.HTML(200, "repo/issue2/list")
+	if totalCount == 0 {
+		return totalCount, makeArray(1)
+	}
+	if totalCount%int64(limit) == 0 {
+		return totalCount, makeArray(totalCount / int64(limit))
+	}
+	return totalCount, makeArray(totalCount/int64(limit) + 1)
 }
 
 func Labels2(ctx *middleware.Context) {
