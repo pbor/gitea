@@ -33,15 +33,13 @@
                         <a href="{{$.RepoLink}}/issues?milestone={{.Index}}{{if .IsClosed}}&state=closed{{end}}" class="title-text">{{.Name}}</a>
                     </p>
                     <p class="desc">
-                        <i class="octicon octicon-clock"></i> Updated 3 days ago &nbsp;&nbsp;
+                        <i class="octicon octicon-clock"></i> Updated {{TimeSince .Updated $.i18n.Lang}}&nbsp;&nbsp;
                         {{if .DeadlineString}}
                         <i class="octicon octicon-calendar"></i> Due to {{DateFmtShort .Deadline}}
                         {{end}}
                     </p>
 
-                    <div class="content">
-                        In this version of release, users are able to register and log in/out on Gitea, setting up SSH keys and do most of Git operations through SSH with public repositories. And Web UI only for view of Git data, no extra features are supported.
-                    </div>
+                    <div class="content">{{Str2html .RenderedContent}}</div>
 
                     <div class="action">
                         <p class="status-bar">

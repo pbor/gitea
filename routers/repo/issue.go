@@ -28,13 +28,13 @@ import (
 )
 
 const (
-	ISSUES       base.TplName = "repo/issue2/list"
+	ISSUES       base.TplName = "repo/issue/list2"
 	ISSUE_CREATE base.TplName = "repo/issue/create"
 	ISSUE_VIEW   base.TplName = "repo/issue/view"
 
-	LABELS base.TplName = "repo/issue2/labels"
+	LABELS base.TplName = "repo/issue/labels"
 
-	MILESTONE      base.TplName = "repo/issue/milestone"
+	MILESTONE      base.TplName = "repo/issue/milestone2"
 	MILESTONE_NEW  base.TplName = "repo/issue/milestone_new"
 	MILESTONE_EDIT base.TplName = "repo/issue/milestone_edit"
 )
@@ -1360,10 +1360,6 @@ func issueCount(ctx *middleware.Context, issueStats *models.IssueStats, isShowCl
 		return totalCount, makeArray(totalCount / int64(limit))
 	}
 	return totalCount, makeArray(totalCount/int64(limit) + 1)
-}
-
-func Labels2(ctx *middleware.Context) {
-	ctx.HTML(200, "repo/issue2/labels")
 }
 
 func Milestones2(ctx *middleware.Context) {

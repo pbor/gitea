@@ -468,8 +468,6 @@ func runWeb(ctx *cli.Context) {
 		m.Get("/milestones", repo.Milestones)
 		m.Get("/branches", repo.Branches)
 		m.Get("/archive/*", repo.Download)
-		m.Get("/labels2/", repo.Labels2)
-		m.Get("/milestone2/", repo.Milestones2)
 		m.Head("/hooks/trigger", repo.TriggerHook)
 
 		m.Get("/wiki", repo.Wiki)
