@@ -4,12 +4,12 @@
     {{template "repo/header" .}}
     <div class="issue-main container repo-wide-wrapper">
         <ul id="issue-list-nav" class="menu menu-line">
-            <li class="current"><a href="{{.RepoLink}}/issues">Issue</a></li>
-            <li><a href="{{.RepoLink}}/pulls">Pull Request</a></li>
-            <li><a href="{{.RepoLink}}/issues/labels">Labels</a></li>
-            <li><a href="{{.RepoLink}}/issues/milestones">Milestones</a></li>
+            <li class="current"><a href="{{.RepoLink}}/issues">{{.i18n.Tr "repo.issues"}}</a></li>
+            <li><a href="{{.RepoLink}}/pulls">{{.i18n.Tr "repo.pulls"}}</a></li>
+            <li><a href="{{.RepoLink}}/labels">{{.i18n.Tr "repo.labels"}}</a></li>
+            <li><a href="{{.RepoLink}}/milestones">{{.i18n.Tr "repo.milestones"}}</a></li>
             <li class="right" id="issue-new"><a href="{{.RepoLink}}/issues/new">
-                <button id="issue-new-btn" class="btn btn-green text-bold">New Issue</button>
+                <button id="issue-new-btn" class="btn btn-green text-bold">{{.i18n.Tr "repo.issues.new"}}</button>
             </a></li>
             <!--<li class="right"><a href="#">Filter</a></li>-->
         </ul>
@@ -18,18 +18,18 @@
                 <div class="left">
                     <span class="mark open{{if not .IsShowClosed}} hover{{end}}"><a
                             href="{{.RepoLink}}/issues?type={{.ViewType}}">
-                        <i class="octicon octicon-issue-opened"></i> {{.IssueStats.OpenCount}} Open
+                        <i class="octicon octicon-issue-opened"></i> {{.IssueStats.OpenCount}} {{.i18n.Tr "open"}}
                     </a></span>
                     <span class="mark close{{if .IsShowClosed}} hover{{end}}"><a
                             href="{{.RepoLink}}/issues?type={{.ViewType}}&state=closed">
-                        <i class="octicon octicon-issue-closed"></i> {{.IssueStats.ClosedCount}} Closed
+                        <i class="octicon octicon-issue-closed"></i> {{.IssueStats.ClosedCount}} {{.i18n.Tr "closed"}}
                     </a></span>
                 </div>
                 <ul id="issue-list-filter" class="right menu menu-line">
                     <li class="down drop label-filter">
-                        <a href="#">Labels</a>
+                        <a href="#">{{.i18n.Tr "labels"}}</a>
                         <div class="drop-down">
-                            <h4>Labels</h4>
+                            <h4>{{.i18n.Tr "labels"}}</h4>
                             <ul class="labels list-no-style">
                                 {{if .Labels}}
                                 {{range .Labels}}

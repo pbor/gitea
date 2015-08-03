@@ -410,6 +410,22 @@ func runWeb(ctx *cli.Context) {
 	m.Group("/:username/:reponame", func() {
 		m.Get("/action/:action", repo.Action)
 
+		m.Group("/labels", func() {
+			m.Get("/", repo.Labels)
+			m.Post("/new", bindIgnErr(auth.CreateLabelForm{}), repo.NewLabel)
+			m.Post("/edit", bindIgnErr(auth.CreateLabelForm{}), repo.UpdateLabel)
+			m.Post("/delete", repo.DeleteLabel)
+		})
+
+		m.Group("/milestones", func() {
+			m.Get("/", repo.Milestones)
+			m.Get("/new", repo.NewMilestone)
+			m.Post("/new", bindIgnErr(auth.CreateMilestoneForm{}), repo.NewMilestonePost)
+			m.Get("/:index/edit", repo.UpdateMilestone)
+			m.Post("/:index/edit", bindIgnErr(auth.CreateMilestoneForm{}), repo.UpdateMilestonePost)
+			m.Get("/:index/:action", repo.UpdateMilestone)
+		})
+
 		m.Group("/issues", func() {
 			m.Get("/new", repo.CreateIssue)
 			m.Post("/new", bindIgnErr(auth.CreateIssueForm{}), repo.CreateIssuePost)
@@ -418,17 +434,6 @@ func runWeb(ctx *cli.Context) {
 			m.Post("/:index/milestone", repo.UpdateIssueMilestone)
 			m.Post("/:index/assignee", repo.UpdateAssignee)
 			m.Get("/:index/attachment/:id", repo.IssueGetAttachment)
-
-			m.Get("/labels", repo.Labels)
-			m.Post("/labels/new", bindIgnErr(auth.CreateLabelForm{}), repo.NewLabel)
-			m.Post("/labels/edit", bindIgnErr(auth.CreateLabelForm{}), repo.UpdateLabel)
-			m.Post("/labels/delete", repo.DeleteLabel)
-
-			m.Get("/milestones/new", repo.NewMilestone)
-			m.Post("/milestones/new", bindIgnErr(auth.CreateMilestoneForm{}), repo.NewMilestonePost)
-			m.Get("/milestones/:index/edit", repo.UpdateMilestone)
-			m.Post("/milestones/:index/edit", bindIgnErr(auth.CreateMilestoneForm{}), repo.UpdateMilestonePost)
-			m.Get("/milestones/:index/:action", repo.UpdateMilestone)
 		})
 
 		m.Post("/comment/:action", repo.Comment)
@@ -460,11 +465,11 @@ func runWeb(ctx *cli.Context) {
 		m.Get("/releases", middleware.RepoRef(), repo.Releases)
 		m.Get("/issues", repo.Issues)
 		m.Get("/issues/:index", repo.ViewIssue)
-		m.Get("/issues/milestones", repo.Milestones)
+		m.Get("/milestones", repo.Milestones)
 		m.Get("/branches", repo.Branches)
 		m.Get("/archive/*", repo.Download)
-		m.Get("/issues/labels2/", repo.Labels2)
-		m.Get("/issues/milestone2/", repo.Milestones2)
+		m.Get("/labels2/", repo.Labels2)
+		m.Get("/milestone2/", repo.Milestones2)
 		m.Head("/hooks/trigger", repo.TriggerHook)
 
 		m.Get("/wiki", repo.Wiki)

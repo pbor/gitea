@@ -4,20 +4,20 @@
     {{template "repo/header" .}}
     <div class="issue-main container repo-wide-wrapper">
         <ul id="issue-list-nav" class="menu menu-line">
-            <li><a href="{{.RepoLink}}/issues">Issue</a></li>
-            <li><a href="{{.RepoLink}}/pulls">Pull Request</a></li>
-            <li><a href="{{.RepoLink}}/issues/labels">Labels</a></li>
-            <li class="current"><a href="{{.RepoLink}}/milestones">Milestones</a></li>
-            <li class="right" id="milestone-new"><a href="{{.RepoLink}}/issues/milestones/new"><button id="issue-new-btn" class="btn btn-green text-bold">New Milestone</button></a></li>
+            <li><a href="{{.RepoLink}}/issues">{{.i18n.Tr "repo.issues"}}</a></li>
+            <li><a href="{{.RepoLink}}/pulls">{{.i18n.Tr "repo.pulls"}}</a></li>
+            <li><a href="{{.RepoLink}}/labels">{{.i18n.Tr "repo.labels"}}</a></li>
+            <li class="current"><a href="{{.RepoLink}}/milestones">{{.i18n.Tr "repo.milestones"}}</a></li>
+            <li class="right" id="milestone-new"><a href="{{.RepoLink}}/issues/milestones/new"><button id="issue-new-btn" class="btn btn-green text-bold">{{.i18n.Tr "repo.milestones.new"}}</button></a></li>
         </ul>
         <div id="issue-list-container">
             <div id="issue-list-menu">
                 <div class="left">
                     <span class="mark open{{if eq .State "open"}} hover{{end}}"><a href="{{.RepoLink}}/issues/milestones">
-                        <i class="octicon octicon-milestone"></i> {{.Repository.NumOpenMilestones}} Open
+                        <i class="octicon octicon-milestone"></i> {{.Repository.NumOpenMilestones}} {{.i18n.Tr "open"}}
                     </a></span>
                     <span class="mark close{{if eq .State "closed"}} hover{{end}}"><a href="{{.RepoLink}}/issues/milestones?state=closed">
-                        <i class="octicon octicon-issue-closed"></i> {{.Repository.NumClosedMilestones}} Close
+                        <i class="octicon octicon-issue-closed"></i> {{.Repository.NumClosedMilestones}} {{.i18n.Tr "close"}}
                     </a></span>
                 </div>
                 <div class="clear"></div>
