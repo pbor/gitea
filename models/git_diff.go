@@ -60,13 +60,13 @@ type DiffSection struct {
 
 type DiffFile struct {
 	Name               string
-	OldName   string
+	OldName            string
 	Index              int
 	Addition, Deletion int
 	Type               int
 	IsCreated          bool
 	IsDeleted          bool
-	IsRenamed bool
+	IsRenamed          bool
 	IsBin              bool
 	Sections           []*DiffSection
 }

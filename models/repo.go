@@ -167,9 +167,9 @@ type Repository struct {
 
 	Branches []string `xorm:"-"`
 
-	IsWiki       bool        `xorm:"NOT NULL DEFAULT false"`
-	WikiRepoId   int64       `xorm:"NOT NULL DEFAULT 0"`
-	WikiRepo     *Repository `xorm:"-"`
+	IsWiki     bool        `xorm:"NOT NULL DEFAULT false"`
+	WikiRepoId int64       `xorm:"NOT NULL DEFAULT 0"`
+	WikiRepo   *Repository `xorm:"-"`
 
 	Created time.Time `xorm:"CREATED"`
 	Updated time.Time `xorm:"UPDATED"`
@@ -636,7 +636,7 @@ func CreateRepository(u *User, name, desc, lang, license string, isPrivate, isMi
 	if _, err = sess.Insert(repo); err != nil {
 		return nil, err
 	} else if isWiki {
-		_, err = sess.Exec("UPDATE `repository` SET wiki_repo_id = ? WHERE id = ?", repo.ID, wikiForRepoID);
+		_, err = sess.Exec("UPDATE `repository` SET wiki_repo_id = ? WHERE id = ?", repo.ID, wikiForRepoID)
 		if err != nil {
 			return nil, err
 		}
@@ -1201,8 +1201,8 @@ func RewriteRepositoryUpdateHook() error {
 var (
 	// Prevent duplicate tasks.
 	//isMirrorUpdating = false
-	mirrorUpdateLock sync.Mutex
-	gitFsckLock sync.Mutex
+	mirrorUpdateLock  sync.Mutex
+	gitFsckLock       sync.Mutex
 	checkingReposLock sync.Mutex
 )
 

@@ -1,8 +1,8 @@
 package models
 
 import (
-	"fmt"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -17,11 +17,11 @@ import (
 )
 
 type WikiPage struct {
-	Title    string
-	Alias    string
-	Content  string
-	Repo     *Repository
-	Commit   *git.Commit
+	Title   string
+	Alias   string
+	Content string
+	Repo    *Repository
+	Commit  *git.Commit
 }
 
 func NewWikiPage(p *WikiPage, r *Repository, u *User) error {
@@ -149,7 +149,7 @@ func HasWikiPage(r *Repository, a string) (bool, error) {
 }
 
 func GetWikiPage(r *Repository, a string) (*WikiPage, error) {
-	p := &WikiPage {
+	p := &WikiPage{
 		Alias: a,
 		Repo:  r,
 	}
@@ -209,4 +209,3 @@ func WikiUpdate() {
 		log.Error(4, "WikiUpdate: %v", err)
 	}
 }
-

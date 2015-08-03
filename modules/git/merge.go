@@ -7,7 +7,6 @@ import (
 	"github.com/Unknwon/com"
 )
 
-
 // check if merge is fast-forward
 func (repo *Repository) MergeCheck(fromBranch, toBranch string) (bool, error) {
 	stdout, stderr, err := com.ExecCmdDir(repo.Path, "git", "merge-base", fromBranch, toBranch)

@@ -322,7 +322,7 @@ func ForkPost(ctx *middleware.Context, form auth.CreateRepoForm) {
 	var wikiRepoId int64
 	wikiRepoId = 0
 	if forkRepo.WikiRepo != nil {
-		wikiRepo, err := models.ForkRepository(ctxUser, forkRepo.WikiRepo, form.RepoName + ".wiki", form.Description, 0)
+		wikiRepo, err := models.ForkRepository(ctxUser, forkRepo.WikiRepo, form.RepoName+".wiki", form.Description, 0)
 		if err != nil {
 			if wikiRepo != nil {
 				if errDelete := models.DeleteRepository(ctxUser.Id, wikiRepo.ID, ctxUser.Name); errDelete != nil {

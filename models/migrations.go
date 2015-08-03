@@ -12,8 +12,8 @@ import (
 	"time"
 
 	"github.com/Unknwon/com"
-	"github.com/go-xorm/xorm"
 	"github.com/go-xorm/core"
+	"github.com/go-xorm/xorm"
 	"gopkg.in/ini.v1"
 
 	"github.com/go-gitea/gitea/modules/log"

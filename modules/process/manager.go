@@ -10,8 +10,8 @@ import (
 	"errors"
 	"fmt"
 	"os/exec"
-	"time"
 	"sync"
+	"time"
 
 	"github.com/go-gitea/gitea/modules/log"
 )
@@ -37,8 +37,8 @@ type Process struct {
 // List of existing processes.
 var (
 	curPid    int64 = 1
-	Processes = make([]*Process, 0)
-	pidLock sync.Mutex
+	Processes       = make([]*Process, 0)
+	pidLock   sync.Mutex
 )
 
 // Add adds a existing process and returns its PID.

@@ -28,10 +28,10 @@ type PullRepo struct {
 	PullID       int64 `xorm:"unique"` // issueID
 	*Issue       `xorm:"-"`
 	FromRepoID   int64
-	FromRepo *Repository `xorm:"-"`
+	FromRepo     *Repository `xorm:"-"`
 	FromBranch   string
 	ToRepoID     int64
-	ToRepo *Repository `xorm:"-"`
+	ToRepo       *Repository `xorm:"-"`
 	ToBranch     string
 	CanAutoMerge bool
 	IsMerged     bool

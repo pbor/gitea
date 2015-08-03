@@ -559,6 +559,7 @@ func DeleteInactivateUsers() error {
 func UserPath(userName string) string {
 	return filepath.Join(setting.RepoRootPath, strings.ToLower(userName))
 }
+
 // WikiUserPath returns the path absolute path of user wiki repositories.
 func WikiUserPath(userName string) string {
 	return filepath.Join(setting.RepoRootPath, ".wiki", strings.ToLower(userName))

@@ -13,12 +13,12 @@ import (
 func CurrentUsername() string {
 	curUserName := os.Getenv("USER")
 	if len(curUserName) > 0 {
-		return curUserName;
+		return curUserName
 	}
 
 	curUserName = os.Getenv("USERNAME")
 	if len(curUserName) > 0 {
-		return curUserName;
+		return curUserName
 	}
 
 	curUser, err := user.Current()
@@ -26,5 +26,5 @@ func CurrentUsername() string {
 		return curUser.Username
 	}
 
-	return "";
+	return ""
 }

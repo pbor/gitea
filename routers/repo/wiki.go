@@ -15,11 +15,11 @@ import (
 )
 
 const (
-	WIKI_EMPTY     base.TplName = "repo/wiki/empty"
-	WIKI_ADD       base.TplName = "repo/wiki/add"
-	WIKI_VIEW      base.TplName = "repo/wiki/view"
-	WIKI_PAGELIST  base.TplName = "repo/wiki/pagelist"
-	WIKI_GIT       base.TplName = "repo/wiki/git"
+	WIKI_EMPTY    base.TplName = "repo/wiki/empty"
+	WIKI_ADD      base.TplName = "repo/wiki/add"
+	WIKI_VIEW     base.TplName = "repo/wiki/view"
+	WIKI_PAGELIST base.TplName = "repo/wiki/pagelist"
+	WIKI_GIT      base.TplName = "repo/wiki/git"
 )
 
 func Wiki(ctx *middleware.Context) {
@@ -180,7 +180,7 @@ func CreateWikiPagePost(ctx *middleware.Context, form auth.CreateWikiPageForm) {
 		return
 	}
 
-	p := &models.WikiPage {
+	p := &models.WikiPage{
 		Title:   form.Title,
 		Content: form.Content,
 		Repo:    ctx.Repo.Repository.WikiRepo,
@@ -288,7 +288,7 @@ func WikiPageRemove(ctx *middleware.Context) {
 		return
 	}
 
-	p := &models.WikiPage {
+	p := &models.WikiPage{
 		Alias: ctx.Params(":slug"),
 		Title: strings.Title(ctx.Params(":slug")),
 		Repo:  ctx.Repo.Repository.WikiRepo,

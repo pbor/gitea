@@ -8,9 +8,9 @@ package git
 import (
 	"bufio"
 	"container/list"
-	"strings"
 	"path"
 	"path/filepath"
+	"strings"
 )
 
 // Commit represents a git commit.

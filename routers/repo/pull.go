@@ -9,8 +9,8 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"strings"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/go-gitea/gitea/models"
@@ -332,7 +332,7 @@ func PullMerge(ctx *middleware.Context) {
 
 	// TODO: transaction
 	_, err := models.CreateComment(userID, repoID, issueID, "", "",
-			models.COMMENT_TYPE_MERGED, content, nil)
+		models.COMMENT_TYPE_MERGED, content, nil)
 	if err != nil {
 		ctx.Handle(500, "CreateComment", err)
 		return
@@ -369,7 +369,7 @@ func PullMerge(ctx *middleware.Context) {
 		return
 	}
 
-	err = pullRequestMerge(tmpDir, pull.ToBranch, pull.FromBranch, 
+	err = pullRequestMerge(tmpDir, pull.ToBranch, pull.FromBranch,
 		srcRepoPath, prRepoPath)
 	if err != nil {
 		ctx.Handle(500, "pullRequestMerge", err)

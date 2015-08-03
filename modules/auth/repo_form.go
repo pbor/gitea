@@ -192,7 +192,6 @@ func (f *EditReleaseForm) Validate(ctx *macaron.Context, errs binding.Errors) bi
 	return validate(errs, ctx.Data, f, ctx.Locale)
 }
 
-
 //
 // \      /  |  |  /  |
 //  \ /\ /   |  | |   |
