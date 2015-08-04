@@ -18,6 +18,7 @@ import (
 
 	"github.com/Unknwon/macaron"
 	"github.com/codegangsta/cli"
+	"github.com/macaron-contrib/bindata"
 	"github.com/macaron-contrib/binding"
 	"github.com/macaron-contrib/cache"
 	"github.com/macaron-contrib/captcha"
@@ -35,7 +36,9 @@ import (
 	"github.com/go-gitea/gitea/modules/auth/apiv1"
 	"github.com/go-gitea/gitea/modules/avatar"
 	"github.com/go-gitea/gitea/modules/base"
-	"github.com/go-gitea/gitea/modules/bindata"
+	"github.com/go-gitea/gitea/modules/bindata/locale"
+	"github.com/go-gitea/gitea/modules/bindata/public"
+	"github.com/go-gitea/gitea/modules/bindata/templates"
 	"github.com/go-gitea/gitea/modules/git"
 	"github.com/go-gitea/gitea/modules/log"
 	"github.com/go-gitea/gitea/modules/middleware"
@@ -108,9 +111,15 @@ func newMacaron() *macaron.Macaron {
 		m.SetURLPrefix(setting.AppSubUrl)
 	}
 	m.Use(macaron.Static(
-		path.Join(setting.StaticRootPath, "public"),
+		"public",
 		macaron.StaticOptions{
 			SkipLogging: !setting.DisableRouterLog,
+			FileSystem: bindata.Static(bindata.Options{
+				Asset:      public.Asset,
+				AssetDir:   public.AssetDir,
+				AssetNames: public.AssetNames,
+				Prefix:     "",
+			}),
 		},
 	))
 	m.Use(macaron.Static(
@@ -121,23 +130,28 @@ func newMacaron() *macaron.Macaron {
 		},
 	))
 	m.Use(macaron.Renderer(macaron.RenderOptions{
-		Directory:  path.Join(setting.StaticRootPath, "templates"),
+		TemplateFileSystem: bindata.Templates(bindata.Options{
+			Asset:      templates.Asset,
+			AssetDir:   templates.AssetDir,
+			AssetNames: templates.AssetNames,
+			Prefix:     "",
+		}),
 		Funcs:      []template.FuncMap{base.TemplateFuncs},
 		IndentJSON: macaron.Env != macaron.PROD,
 	}))
 
-	localeNames, err := bindata.AssetDir("conf/locale")
+	localeNames, err := locale.AssetDir("locale")
 	if err != nil {
 		log.Fatal(4, "Fail to list locale files: %v", err)
 	}
 	localFiles := make(map[string][]byte)
 	for _, name := range localeNames {
-		localFiles[name] = bindata.MustAsset("conf/locale/" + name)
+		localFiles[name] = locale.MustAsset("locale/" + name)
 	}
 	m.Use(i18n.I18n(i18n.Options{
 		SubURL:          setting.AppSubUrl,
 		Files:           localFiles,
-		CustomDirectory: path.Join(setting.CustomPath, "conf/locale"),
+		CustomDirectory: path.Join(setting.CustomPath, "locale"),
 		Langs:           setting.Langs,
 		Names:           setting.Names,
 		Redirect:        true,

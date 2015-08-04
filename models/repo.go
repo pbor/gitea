@@ -25,7 +25,8 @@ import (
 	"github.com/Unknwon/com"
 
 	"github.com/go-gitea/gitea/modules/base"
-	"github.com/go-gitea/gitea/modules/bindata"
+	"github.com/go-gitea/gitea/modules/bindata/gitignore"
+	"github.com/go-gitea/gitea/modules/bindata/license"
 	"github.com/go-gitea/gitea/modules/git"
 	"github.com/go-gitea/gitea/modules/log"
 	"github.com/go-gitea/gitea/modules/process"
@@ -54,33 +55,45 @@ var (
 )
 
 func LoadRepoConfig() {
-	// Load .gitignore and license files.
-	types := []string{"gitignore", "license"}
-	typeFiles := make([][]string, 2)
-	for i, t := range types {
-		files, err := bindata.AssetDir("conf/" + t)
-		if err != nil {
-			log.Fatal(4, "Fail to get %s files: %v", t, err)
-		}
-		customPath := path.Join(setting.CustomPath, "conf", t)
-		if com.IsDir(customPath) {
-			customFiles, err := com.StatDir(customPath)
-			if err != nil {
-				log.Fatal(4, "Fail to get custom %s files: %v", t, err)
-			}
-
-			for _, f := range customFiles {
-				if !com.IsSliceContainsStr(files, f) {
-					files = append(files, f)
-				}
-			}
-		}
-		typeFiles[i] = files
+	Gitignores, err := gitignore.AssetDir("gitignore")
+	if err != nil {
+		log.Fatal(4, "Fail to get gitignore files: %v", err)
 	}
 
-	Gitignores = typeFiles[0]
-	Licenses = typeFiles[1]
+	customGitignores := path.Join(setting.CustomPath, "gitignore")
+	if com.IsDir(customGitignores) {
+		customFiles, err := com.StatDir(customGitignores)
+		if err != nil {
+			log.Fatal(4, "Fail to get custom gitignore files: %v", err)
+		}
+
+		for _, f := range customFiles {
+			if !com.IsSliceContainsStr(Gitignores, f) {
+				Gitignores = append(Gitignores, f)
+			}
+		}
+	}
+
 	sort.Strings(Gitignores)
+	Licenses, err := license.AssetDir("license")
+	if err != nil {
+		log.Fatal(4, "Fail to get license files: %v", err)
+	}
+
+	customLicenses := path.Join(setting.CustomPath, "license")
+	if com.IsDir(customLicenses) {
+		customFiles, err := com.StatDir(customLicenses)
+		if err != nil {
+			log.Fatal(4, "Fail to get custom license files: %v", err)
+		}
+
+		for _, f := range customFiles {
+			if !com.IsSliceContainsStr(Licenses, f) {
+				Licenses = append(Licenses, f)
+			}
+		}
+	}
+
 	sort.Strings(Licenses)
 }
 
@@ -519,7 +532,7 @@ func createUpdateHook(repoPath string) error {
 }
 
 // InitRepository initializes README and .gitignore if needed.
-func initRepository(e Engine, repoPath string, u *User, repo *Repository, initReadme bool, repoLang, license string) error {
+func initRepository(e Engine, repoPath string, u *User, repo *Repository, initReadme bool, repoLang, repoLicense string) error {
 	// Init bare new repository.
 	os.MkdirAll(repoPath, os.ModePerm)
 	_, stderr, err := process.ExecDir(-1, repoPath,
@@ -541,7 +554,7 @@ func initRepository(e Engine, repoPath string, u *User, repo *Repository, initRe
 	if repoLang != "" {
 		fileName["gitign"] = ".gitignore"
 	}
-	if license != "" {
+	if repoLicense != "" {
 		fileName["license"] = "LICENSE"
 	}
 
@@ -570,7 +583,7 @@ func initRepository(e Engine, repoPath string, u *User, repo *Repository, initRe
 
 	// .gitignore
 	// Copy custom file when available.
-	customPath := path.Join(setting.CustomPath, "conf/gitignore", repoLang)
+	customPath := path.Join(setting.CustomPath, "gitignore", repoLang)
 	targetPath := path.Join(tmpDir, fileName["gitign"])
 	if com.IsFile(customPath) {
 		if err := com.Copy(customPath, targetPath); err != nil {
@@ -578,7 +591,7 @@ func initRepository(e Engine, repoPath string, u *User, repo *Repository, initRe
 		}
 	} else if com.IsSliceContainsStr(Gitignores, repoLang) {
 		if err = ioutil.WriteFile(targetPath,
-			bindata.MustAsset(path.Join("conf/gitignore", repoLang)), os.ModePerm); err != nil {
+			gitignore.MustAsset(path.Join("gitignore", repoLang)), os.ModePerm); err != nil {
 			return fmt.Errorf("generate gitignore: %v", err)
 		}
 	} else {
@@ -586,15 +599,15 @@ func initRepository(e Engine, repoPath string, u *User, repo *Repository, initRe
 	}
 
 	// LICENSE
-	customPath = path.Join(setting.CustomPath, "conf/license", license)
+	customPath = path.Join(setting.CustomPath, "license", repoLicense)
 	targetPath = path.Join(tmpDir, fileName["license"])
 	if com.IsFile(customPath) {
 		if err = com.Copy(customPath, targetPath); err != nil {
 			return fmt.Errorf("copy license: %v", err)
 		}
-	} else if com.IsSliceContainsStr(Licenses, license) {
+	} else if com.IsSliceContainsStr(Licenses, repoLicense) {
 		if err = ioutil.WriteFile(targetPath,
-			bindata.MustAsset(path.Join("conf/license", license)), os.ModePerm); err != nil {
+			license.MustAsset(path.Join("license", repoLicense)), os.ModePerm); err != nil {
 			return fmt.Errorf("generate license: %v", err)
 		}
 	} else {
@@ -620,7 +633,7 @@ func initRepository(e Engine, repoPath string, u *User, repo *Repository, initRe
 }
 
 // CreateRepository creates a repository for given user or organization.
-func CreateRepository(u *User, name, desc, lang, license string, isPrivate, isMirror, initReadme, isWiki bool, wikiForRepoID int64) (_ *Repository, err error) {
+func CreateRepository(u *User, name, desc, lang, repoLicense string, isPrivate, isMirror, initReadme, isWiki bool, wikiForRepoID int64) (_ *Repository, err error) {
 	if err = IsUsableName(name); err != nil {
 		return nil, err
 	}
@@ -685,7 +698,7 @@ func CreateRepository(u *User, name, desc, lang, license string, isPrivate, isMi
 	// No need for init mirror.
 	if !isMirror {
 		repoPath := RepoPath(u.Name, repo.Name)
-		if err = initRepository(sess, repoPath, u, repo, initReadme, lang, license); err != nil {
+		if err = initRepository(sess, repoPath, u, repo, initReadme, lang, repoLicense); err != nil {
 			if err2 := os.RemoveAll(repoPath); err2 != nil {
 				log.Error(4, "initRepository: %v", err)
 				return nil, fmt.Errorf(

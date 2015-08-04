@@ -21,7 +21,7 @@ import (
 	"github.com/macaron-contrib/session"
 	"gopkg.in/ini.v1"
 
-	"github.com/go-gitea/gitea/modules/bindata"
+	"github.com/go-gitea/gitea/modules/bindata/conf"
 	"github.com/go-gitea/gitea/modules/log"
 	// "github.com/go-gitea/gitea/modules/ssh"
 	"github.com/go-gitea/gitea/modules/user"
@@ -187,7 +187,7 @@ func NewConfigContext() {
 		log.Fatal(4, "Fail to get work directory: %v", err)
 	}
 
-	Cfg, err = ini.Load(bindata.MustAsset("conf/app.ini"))
+	Cfg, err = ini.Load(conf.MustAsset("conf/app.ini"))
 	if err != nil {
 		log.Fatal(4, "Fail to parse 'conf/app.ini': %v", err)
 	}
