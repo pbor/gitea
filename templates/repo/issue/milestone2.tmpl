@@ -8,7 +8,7 @@
             <li><a href="{{.RepoLink}}/pulls">{{.i18n.Tr "repo.pulls"}}</a></li>
             <li><a href="{{.RepoLink}}/labels">{{.i18n.Tr "repo.labels"}}</a></li>
             <li class="current"><a href="{{.RepoLink}}/milestones">{{.i18n.Tr "repo.milestones"}}</a></li>
-            <li class="right" id="milestone-new"><a href="{{.RepoLink}}/issues/milestones/new"><button id="issue-new-btn" class="btn btn-green text-bold">{{.i18n.Tr "repo.milestones.new"}}</button></a></li>
+            <li class="right" id="milestone-new"><a href="{{.RepoLink}}/milestones/new"><button id="issue-new-btn" class="btn btn-green text-bold">{{.i18n.Tr "repo.milestones.new"}}</button></a></li>
         </ul>
         <div id="issue-list-container">
             <div id="issue-list-menu">
@@ -22,6 +22,7 @@
                 </div>
                 <div class="clear"></div>
             </div>
+			{{if .Milestones}}
             <ul id="milestone-list" class="list-no-style">
             	{{range .Milestones}}
                 <li class="item" id="milestone-id">
@@ -60,6 +61,15 @@
                 </li>
                 {{end}}
             </ul>
+			{{else}}
+			<div id="issue-no-list" class="text-center">
+				<h2><i class="octicon octicon-git-pull-request mega-octicon"></i><br/></h2>
+				<h2>There aren’t any milestones.</h2>
+				<a href="{{.RepoLink}}/milestones/new">
+					<button class="btn btn-green text-bold">{{.i18n.Tr "repo.milestones.new"}}</button>
+				</a>
+			</div>
+			{{end}}
         </div>
     </div>
 </div>
