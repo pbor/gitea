@@ -76,6 +76,7 @@
                 <div class="clear"></div>
             </div>
 			{{template "ng/base/alert" .}}
+			{{if .Issues}}
             <ul id="issue-list" class="list-no-style">
             	{{range .Issues}}{{if .Poster}}
                 <li class="item{{if not .IsRead}} unread{{end}}" id="issue-{{.ID}}">
@@ -89,7 +90,6 @@
                         <span class="label issue-label" style="background-color: {{.Color}}">{{.Name}}</span>
                         {{end}}
                     </p>
-
                     <p class="desc">opened {{TimeSince .Created $.Lang}} by <a href="{{AppSubUrl}}/{{.Poster.Name}}">{{.Poster.Name}}</a>
                     </p>
                 </li>
@@ -100,6 +100,12 @@
 				<a class="page" href="?page={{.}}">{{.}}</a>
 				{{end}}
 			</div>
+			{{else}}
+				<div id="issue-no-list" class="text-center">
+					<h2><i class="octicon octicon-issue-opened mega-octicon"></i><br/></h2>
+					<h2>There aren’t any open issues.</h2>
+				</div>
+			{{end}}
         </div>
     </div>
 </div>

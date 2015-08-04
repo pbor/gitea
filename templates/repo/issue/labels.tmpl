@@ -29,6 +29,7 @@
                 <div class="left"><span class="label label-black" id="labels-num">{{.LabelsCount}}</span><strong>Labels</strong></div>
                 <div class="clear"></div>
             </div>
+			{{if .Labels}}
             <ul id="label-list" class="list-no-style">
 				{{range .Labels}}
                 <li class="item" id="label-{{.Id}}">
@@ -40,6 +41,17 @@
 				{{end}}
                 </li>
             </ul>
+			{{else}}
+			<div id="issue-no-list" class="text-center">
+				<h2><i class="octicon octicon-git-pull-request mega-octicon"></i><br/></h2>
+				<h2>There aren’t any labels.</h2>
+				<a href="#">
+					<button class="btn btn-green text-bold">
+						New Label
+					</button>
+				</a>
+			</div>
+			{{end}}
         </div>
     </div>
 </div>

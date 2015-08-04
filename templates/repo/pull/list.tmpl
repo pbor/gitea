@@ -23,6 +23,7 @@
                 </div>
                 <div class="clear"></div>
             </div>
+			{{if .Issues}}
             <ul id="pull-list" class="list-no-style">
                 {{range .Issues}}
                 <li class="item" id="pr-id">
@@ -44,6 +45,12 @@
                 {{end}}
                 <a class="next" href="#">{{.i18n.Tr "admin.next"}}</a>
             </div>
+			{{else}}
+			<div id="issue-no-list" class="text-center">
+				<h2><i class="octicon octicon-git-pull-request mega-octicon"></i><br/></h2>
+				<h2>There aren’t any open pull requests.</h2>
+			</div>
+			{{end}}
         </div>
     </div>
     <!--<div class="pr-sidebar">

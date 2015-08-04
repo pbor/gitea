@@ -2741,6 +2741,12 @@ textarea#pr-merge-content {
 .issues.list-group > .list-group-item > .info span > a {
   color: #444;
 }
+#issue-no-list {
+  margin: 60px auto;
+}
+#issue-no-list .octicon {
+  color: #999;
+}
 .org-header-alert .alert {
   margin-top: 10px;
 }
