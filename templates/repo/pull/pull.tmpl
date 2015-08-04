@@ -20,7 +20,7 @@
                     {{if .Pull.IsClosed}}{{.i18n.Tr "closed"}}{{else if .Pull.IsMerged}}{{.i18n.Tr "merged"}}{{else}}{{.i18n.Tr "opened"}}{{end}}
                 </button>
             <span class="msg">
-                <a href="#" class="text-bold pr-author">{{.Issue.Poster.Name}}</a> <span class="label radius label-blue">{{.CommitCount}}</span> {{.i18n.Tr "repo.pulls.commits"}}
+                <a href="{{AppSubUrl}}/{{.Issue.Poster.Name}}" class="text-bold pr-author">{{.Issue.Poster.Name}}</a> <span class="label radius label-blue">{{.CommitCount}}</span> {{.i18n.Tr "repo.pulls.commits"}}
                 <span class="pr-branch label label-gray radius">{{.FromRepo.Owner.Name}}:{{.Pull.FromBranch}}</span>
                 <i class="octicon octicon-arrow-right"></i>
                 <span class="pr-branch label label-gray radius">{{.Pull.ToBranch}}</span>
@@ -51,7 +51,7 @@
                     <div class="issue-comment clear">
                         <a class="author-avatar" href="{{AppSubUrl}}/{{.Issue.Poster.Name}}"><img class="avatar-40 radius" src="{{.Issue.Poster.AvatarLink}}" alt="{{.Issue.Poster.Name}}"/></a>
                         <div class="panel panel-radius">
-                            <p class="panel-header clear"><a class="author-name" href="#">{{.Issue.Poster.Name}}</a>
+                            <p class="panel-header clear"><a class="author-name" href="{{AppSubUrl}}/{{.Issue.Poster.Name}}">{{.Issue.Poster.Name}}</a>
                                 <span class="date">{{TimeSince .Issue.Created $.Lang}}</span>
                             <span class="action right">
                                 <span class="label label-black label-radius">{{.i18n.Tr "repo.pulls.owner"}}</span>
@@ -69,7 +69,7 @@
                     <div class="issue-comment clear">
                         <a class="author-avatar" href="{{AppSubUrl}}/{{.Poster.Name}}"><img class="avatar-40 radius" src="{{.Poster.AvatarLink}}" alt="{{.Poster.Name}}"/></a>
                         <div class="panel panel-radius">
-                            <p class="panel-header clear"><a class="author-name" href="#">{{.Poster.Name}}</a>
+                            <p class="panel-header clear"><a class="author-name" href="{{AppSubUrl}}/{{.Poster.Name}}">{{.Poster.Name}}</a>
                                 <span class="date">{{TimeSince .Created $.Lang}}</span>
                             <span class="action right">
                                 {{if eq .PosterId $.Issue.PosterID}}<span class="label label-black label-radius">{{$.i18n.Tr "repo.pulls.owner"}}</span>{{end}}
@@ -93,7 +93,7 @@
                     <div class="issue-comment clear">
                         <a class="author-avatar" href="{{AppSubUrl}}/{{.Poster.Name}}"><img class="avatar-40 radius" src="{{.Poster.AvatarLink}}" alt="{{.Poster.Name}}"/></a>
                         <div class="panel panel-radius">
-                            <p class="panel-header clear"><a class="author-name" href="#">{{.Poster.Name}}</a>
+                            <p class="panel-header clear"><a class="author-name" href="{{AppSubUrl}}/{{.Poster.Name}}">{{.Poster.Name}}</a>
                                 <span class="date">{{TimeSince .Created $.Lang}}</span>
                             <span class="action right">
                                 {{if eq .PosterId $.Issue.PosterID}}<span class="label label-black label-radius">{{.i18n.Tr "repo.pulls.owner"}}</span>{{end}}
@@ -114,7 +114,7 @@
                     <div class="issue-commit clear">
                         <i class="mega-octicon octicon-git-commit left"></i>
                         <a class="author-avatar left" href="{{AppSubUrl}}/{{.Poster.Name}}"><img class="avatar-24 radius" src="{{.Poster.AvatarLink}}" alt="{{.Poster.Name}}"/></a>
-                        <a class="author-name" href="#">{{.Poster.Name}}</a> merged commit <a class="sha right" href="#">8e259ba</a> into repouser:branchname {{TimeSince .Created $.Lang}}
+                        <a class="author-name" href="{{AppSubUrl}}/{{.Poster.Name}}">{{.Poster.Name}}</a> merged commit <a class="sha right" href="#">8e259ba</a> into repouser:branchname {{TimeSince .Created $.Lang}}
                         <span class="message">{{.Content}}</span>
                     </div>
                     {{else}}
