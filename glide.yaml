@@ -18,6 +18,8 @@ import:
     ref:     bf9c39a678d8e26aeee60d5fe733cad47a7a6871
   - package: github.com/lib/pq
     ref:     b269bd035a727d6c1081f76e7a239a1b00674c40
+  - package: github.com/macaron-contrib/bindata
+    ref:     8034104f1486732c68b88433eaac22a20ee9040a
   - package: github.com/macaron-contrib/binding
     ref:     de6ed786683ec1afb9a9db503f51aa7caeba99f0
   - package: github.com/macaron-contrib/cache
