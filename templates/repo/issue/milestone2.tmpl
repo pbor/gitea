@@ -17,7 +17,7 @@
                         <i class="octicon octicon-milestone"></i> {{.Repository.NumOpenMilestones}} {{.i18n.Tr "open"}}
                     </a></span>
                     <span class="mark close{{if eq .State "closed"}} hover{{end}}"><a href="{{.RepoLink}}/issues/milestones?state=closed">
-                        <i class="octicon octicon-issue-closed"></i> {{.Repository.NumClosedMilestones}} {{.i18n.Tr "close"}}
+                        <i class="octicon octicon-issue-closed"></i> {{.Repository.NumClosedMilestones}} {{.i18n.Tr "closed"}}
                     </a></span>
                 </div>
                 <div class="clear"></div>
@@ -44,18 +44,18 @@
 
                     <div class="action">
                         <p class="status-bar">
-                            <span class="closed">closed {{.NumClosedIssues}}</span>
+                            <span class="closed">{{.i18n.Tr "closed"}} {{.NumClosedIssues}}</span>
                             <span class="inline-block bar"><span class="inline-block opening" style="width:{{.Completeness}}%"></span></span>
                             <span class="open">{{.NumOpenIssues}} open</span>
                         </p>
                         <div class="action-bar text-right">
-                            <a href="{{$.RepoLink}}/issues/milestones/{{.Index}}/edit">Edit</a>
+                            <a href="{{$.RepoLink}}/issues/milestones/{{.Index}}/edit">{{.i18n.Tr "edit"}}</a>
                             {{if .IsClosed}}
-                            <a href="{{$.RepoLink}}/issues/milestones/{{.Index}}/open">Open</a>
+                            <a href="{{$.RepoLink}}/issues/milestones/{{.Index}}/open">{{.i18n.Tr "open"}}</a>
                             {{else}}
-                            <a href="{{$.RepoLink}}/issues/milestones/{{.Index}}/close">Close</a>
+                            <a href="{{$.RepoLink}}/issues/milestones/{{.Index}}/close">{{.i18n.Tr "closed"}}</a>
                             {{end}}
-                            <a href="{{$.RepoLink}}/issues/milestones/{{.Index}}/delete" class="text-red">Delete</a>
+                            <a href="{{$.RepoLink}}/issues/milestones/{{.Index}}/delete" class="text-red">{{.i18n.Tr "delete"}}</a>
                         </div>
                     </div>
                 </li>
@@ -64,7 +64,7 @@
 			{{else}}
 			<div id="issue-no-list" class="text-center">
 				<h2><i class="octicon octicon-git-pull-request mega-octicon"></i><br/></h2>
-				<h2>There aren’t any milestones.</h2>
+				<h2>{{.i18n.Tr "repo.milestones.nomilestone"}}</h2>
 				<a href="{{.RepoLink}}/milestones/new">
 					<button class="btn btn-green text-bold">{{.i18n.Tr "repo.milestones.new"}}</button>
 				</a>

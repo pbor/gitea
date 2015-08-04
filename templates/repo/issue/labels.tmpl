@@ -21,21 +21,21 @@
                     <a href="#" class="color" style="background: green"></a>
                 </div>
             </div>
-            <button class="btn btn-gray right" type="button" id="label-cancel-btn">Cancel</button>
-            <button class="btn btn-green right" id="label-add-btn">Create</button>
+            <button class="btn btn-gray right" type="button" id="label-cancel-btn">{{.i18n.Tr "cancel"}}</button>
+            <button class="btn btn-green right" id="label-add-btn">{{.i18n.Tr "create"}}</button>
         </form>
         <div id="issue-list-container">
             <div id="issue-list-menu">
-                <div class="left"><span class="label label-black" id="labels-num">{{.LabelsCount}}</span><strong>Labels</strong></div>
+                <div class="left"><span class="label label-black" id="labels-num">{{.LabelsCount}}</span><strong>{{.i18n.Tr "repo.labels"}}</strong></div>
                 <div class="clear"></div>
             </div>
 			{{if .Labels}}
             <ul id="label-list" class="list-no-style">
 				{{range .Labels}}
                 <li class="item" id="label-{{.Id}}">
-                    <a class="right delete" href="#"><i class="octicon octicon-x"></i>Delete</a>
-                    <a class="right edit" href="#"><i class="octicon octicon-pencil"></i>Edit</a>
-                    <a class="right issue-num" href="{{$.RepoLink}}/issues?type=all&labels={{.Id}}"><i class="octicon octicon-issue-opened"></i><strong class="num">{{.NumOpenIssues}}</strong>Issues</a>
+                    <a class="right delete" href="#"><i class="octicon octicon-x"></i>{{.i18n.Tr "delete"}}</a>
+                    <a class="right edit" href="#"><i class="octicon octicon-pencil"></i>{{.i18n.Tr "edit"}}</a>
+                    <a class="right issue-num" href="{{$.RepoLink}}/issues?type=all&labels={{.Id}}"><i class="octicon octicon-issue-opened"></i><strong class="num">{{.NumOpenIssues}}</strong>{{.i18n.Tr "repo.issues"}}</a>
                     <a class="left label clear" href="#" style="background-color: {{.Color}}" data-color-hex="{{.Color}}"><i class="octicon octicon-tag"></i><strong>{{.Name}}</strong></a>
                 </li>
 				{{end}}
@@ -44,10 +44,10 @@
 			{{else}}
 			<div id="issue-no-list" class="text-center">
 				<h2><i class="octicon octicon-git-pull-request mega-octicon"></i><br/></h2>
-				<h2>There aren’t any labels.</h2>
+				<h2>{{.i18n.Tr "repo.labels.nolabel"}}</h2>
 				<a href="#">
 					<button class="btn btn-green text-bold">
-						New Label
+						{{.i18n.Tr "repo.labels.new"}}
 					</button>
 				</a>
 			</div>
@@ -69,8 +69,8 @@
 					<a href="#" class="color" style="background: green"></a>
 				</div>
 			</div>
-			<button class="btn btn-gray right" type="button" id="label-edit-cancel-btn">Cancel</button>
-			<button class="btn btn-green right" id="label-edit-btn">Save Changes</button>
+			<button class="btn btn-gray right" type="button" id="label-edit-cancel-btn">{{.i18n.Tr "cancel"}}</button>
+			<button class="btn btn-green right" id="label-edit-btn">{{.i18n.Tr "save"}}</button>
     	</form>
 	</li>
 </div>
@@ -79,9 +79,9 @@
         <form id="label-delete-form" action="{{.RepoLink}}/issues/labels/delete?form=form" method="post">
 			{{.CsrfTokenHtml}}
             <input type="hidden" name="remove" value="id"/>
-            <span><strong class="text-red">Are you sure?</strong> Deleting a label will remove it from all issues and pull requests.</span>
-            <button class="btn btn-gray right" type="button" id="label-del-cancel-btn">Cancel</button>
-            <button class="btn btn-red right" id="label-del-btn">Delete</button>
+            <span>{{.i18n.Tr "repo.labels.confirm_delete"}}</span>
+            <button class="btn btn-gray right" type="button" id="label-del-cancel-btn">{{.i18n.Tr "cancel"}}</button>
+            <button class="btn btn-red right" id="label-del-btn">{{.i18n.Tr "delete"}}</button>
         </form>
     </li>
 </div>
