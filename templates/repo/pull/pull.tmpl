@@ -106,7 +106,9 @@
                         <i class="mega-octicon octicon-issue-closed left"></i>
                         <a class="author-avatar left" href="{{AppSubUrl}}/{{.Poster.Name}}"><img class="avatar-24 radius" src="{{.Poster.AvatarLink}}" alt="{{.Poster.Name}}"/></a>
                         <span class="message">
-                        {{.i18n.Tr "repo.issues.close_desc" "#" .Poster.Name (TimeSince .Created $.Lang)}}</span>
+                        {{$url := Join AppSubUrl "/" .Poster.Name}}
+                        {{Str2html ($.i18n.Tr "repo.issues.open_desc" (TimeSince .Created $.Lang) $url .Poster.Name)}}
+                        </span>
                     </div>
                     {{else if eq .Type 6}}
                     <div class="issue-commit clear">
@@ -126,11 +128,11 @@
                         {{if .IsAutoMerge}}
                         <div class="panel panel-radius">
                             <p class="panel-header clear">
-                                <i class="octicon octicon-check"></i><strong>{{.i18n.Tr "merge_check_well"}}</strong>
+                                <i class="octicon octicon-check"></i><strong>{{.i18n.Tr "repo.pulls.merge_check_well"}}</strong>
                             </p>
                             <div class="panel-content content clear">
                             	<div id="pr-merge-notice">
-									<div class="message left">{{.i18n.Tr "repo.pulls.merge_check_hint"}}</div>
+									<div class="message left">{{.i18n.Tr "repo.pulls.merge_check_hint" | Str2html}}</div>
 									<button class="btn btn-green right btn-radius" id="pr-merge-btn">
 										<i class="octicon octicon-git-merge"></i>
 										{{.i18n.Tr "repo.pulls.merge"}}
@@ -154,7 +156,7 @@
                                 <i class="octicon octicon-check"></i><strong>{{.i18n.Tr "repo.pulls.merge_check_conflict"}}</strong>
                             </p>
                             <div class="panel-content content clear">
-                                <div class="message left">{{.i18n.Tr "repo.pulls.merge_check_conflict_hint"}}</div>
+                                <div class="message left">{{.i18n.Tr "repo.pulls.merge_check_conflict_hint" | Str2html}}</div>
                             </div>
                         </div>
                         {{end}}
@@ -178,7 +180,7 @@
                                     <p class="submit text-right">
                                         {{if not .Issue.IsClosed}}<button class="btn btn-gray btn-radius text-bold" name="submit" value="close">{{.i18n.Tr "repo.pulls.close_pr"}}</button>&nbsp;&nbsp;
                                         {{end}}
-                                        <button class="btn btn-green btn-radius text-bold" name="submit" value="comment">{{.i18n.Tr "settings.commits.comment.add"}}</button>
+                                        <button class="btn btn-green btn-radius text-bold" name="submit" value="comment">{{.i18n.Tr "repo.commits.comment.add"}}</button>
                                     </p>
                                 </form>
                                 <div id="issue-add-comment-preview" class="js-preview-container">
