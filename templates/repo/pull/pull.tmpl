@@ -128,7 +128,7 @@
                         {{if .IsAutoMerge}}
                         <div class="panel panel-radius">
                             <p class="panel-header clear">
-                                <i class="octicon octicon-check"></i><strong>{{.i18n.Tr "merge_check_well"}}</strong>
+                                <i class="octicon octicon-check"></i><strong>{{.i18n.Tr "repo.pulls.merge_check_well"}}</strong>
                             </p>
                             <div class="panel-content content clear">
                             	<div id="pr-merge-notice">
@@ -180,7 +180,7 @@
                                     <p class="submit text-right">
                                         {{if not .Issue.IsClosed}}<button class="btn btn-gray btn-radius text-bold" name="submit" value="close">{{.i18n.Tr "repo.pulls.close_pr"}}</button>&nbsp;&nbsp;
                                         {{end}}
-                                        <button class="btn btn-green btn-radius text-bold" name="submit" value="comment">{{.i18n.Tr "settings.commits.comment.add"}}</button>
+                                        <button class="btn btn-green btn-radius text-bold" name="submit" value="comment">{{.i18n.Tr "repo.commits.comment.add"}}</button>
                                     </p>
                                 </form>
                                 <div id="issue-add-comment-preview" class="js-preview-container">
