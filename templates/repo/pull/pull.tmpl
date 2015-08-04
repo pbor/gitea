@@ -106,7 +106,9 @@
                         <i class="mega-octicon octicon-issue-closed left"></i>
                         <a class="author-avatar left" href="{{AppSubUrl}}/{{.Poster.Name}}"><img class="avatar-24 radius" src="{{.Poster.AvatarLink}}" alt="{{.Poster.Name}}"/></a>
                         <span class="message">
-                        {{.i18n.Tr "repo.issues.close_desc" "#" .Poster.Name (TimeSince .Created $.Lang)}}</span>
+                        {{$url := Join AppSubUrl "/" .Poster.Name}}
+                        {{Str2html ($.i18n.Tr "repo.issues.open_desc" (TimeSince .Created $.Lang) $url .Poster.Name)}}
+                        </span>
                     </div>
                     {{else if eq .Type 6}}
                     <div class="issue-commit clear">

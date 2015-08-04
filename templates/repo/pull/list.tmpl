@@ -34,7 +34,10 @@
                         <i class="octicon octicon-git-pull-request"></i>
                         <a href="{{$.RepoLink}}/pull/{{.Index}}" class="title-text">{{.Name}}</a>
                     </p>
-                    <p class="desc">{{.i18n.Tr "repo.issues.open_desc" (TimeSince .Created $.Lang) "#" .Poster.Name}}</a></p>
+                    <p class="desc">
+                    {{$url := Join AppSubUrl "/" .Poster.Name}}
+                    {{Str2html ($.i18n.Tr "repo.issues.open_desc" (TimeSince .Created $.Lang) $url .Poster.Name)}}
+                    </p>
                 </li>
                 {{end}}
             </ul>
