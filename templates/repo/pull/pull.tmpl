@@ -132,7 +132,7 @@
                             </p>
                             <div class="panel-content content clear">
                             	<div id="pr-merge-notice">
-									<div class="message left">{{.i18n.Tr "repo.pulls.merge_check_hint"}}</div>
+									<div class="message left">{{.i18n.Tr "repo.pulls.merge_check_hint" | Str2html}}</div>
 									<button class="btn btn-green right btn-radius" id="pr-merge-btn">
 										<i class="octicon octicon-git-merge"></i>
 										{{.i18n.Tr "repo.pulls.merge"}}
@@ -156,7 +156,7 @@
                                 <i class="octicon octicon-check"></i><strong>{{.i18n.Tr "repo.pulls.merge_check_conflict"}}</strong>
                             </p>
                             <div class="panel-content content clear">
-                                <div class="message left">{{.i18n.Tr "repo.pulls.merge_check_conflict_hint"}}</div>
+                                <div class="message left">{{.i18n.Tr "repo.pulls.merge_check_conflict_hint" | Str2html}}</div>
                             </div>
                         </div>
                         {{end}}
