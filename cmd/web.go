@@ -9,7 +9,6 @@ import (
 	"crypto/tls"
 	"fmt"
 	"html/template"
-	"io/ioutil"
 	"net/http"
 	"net/http/fcgi"
 	"os"
@@ -72,15 +71,6 @@ type VerChecker struct {
 
 // checkVersion checks if binary matches the version of templates files.
 func checkVersion() {
-	// Templates.
-	data, err := ioutil.ReadFile(path.Join(setting.StaticRootPath, "templates/.VERSION"))
-	if err != nil {
-		log.Fatal(4, "Fail to read 'templates/.VERSION': %v", err)
-	}
-	if string(data) != setting.AppVer {
-		log.Fatal(4, "Binary and template file version does not match, did you forget to recompile?")
-	}
-
 	// Check dependency version.
 	checkers := []VerChecker{
 		{"github.com/Unknwon/macaron", macaron.Version, "0.5.4"},
