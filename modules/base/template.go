@@ -21,6 +21,10 @@ import (
 	"github.com/gogits/chardet"
 )
 
+func Join(strs ...string) string {
+	return strings.Join(strs, "")
+}
+
 func Str2html(raw string) template.HTML {
 	return template.HTML(Sanitizer.Sanitize(raw))
 }
@@ -180,6 +184,7 @@ var TemplateFuncs template.FuncMap = map[string]interface{}{
 		return strings.Replace(str, "#", "%23", -1)
 	},
 	"RenderCommitMessage": RenderCommitMessage,
+	"Join": Join,
 }
 
 type Actioner interface {

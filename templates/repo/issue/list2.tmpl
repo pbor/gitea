@@ -90,7 +90,9 @@
                         <span class="label issue-label" style="background-color: {{.Color}}">{{.Name}}</span>
                         {{end}}
                     </p>
-                    <p class="desc">opened {{TimeSince .Created $.Lang}} by <a href="{{AppSubUrl}}/{{.Poster.Name}}">{{.Poster.Name}}</a>
+                    <p class="desc">
+                    {{$url := Join AppSubUrl "/" .Poster.Name}}
+                    {{Str2html ($.i18n.Tr "repo.issues.open_desc" (TimeSince .Created $.Lang) $url .Poster.Name)}}
                     </p>
                 </li>
                 {{end}}{{end}}
