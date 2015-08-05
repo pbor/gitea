@@ -178,8 +178,8 @@
                                     <input type="hidden" name="issueIndex" value="{{.Issue.Index}}"/>
                                     <textarea class="ipt ipt-radius js-preview-input" name="content" id="issue-add-content"></textarea>
                                     <p class="submit text-right">
-                                        {{if not .Issue.IsClosed}}<button class="btn btn-gray btn-radius text-bold" name="submit" value="close">{{.i18n.Tr "repo.pulls.close_pr"}}</button>&nbsp;&nbsp;
-                                        {{end}}
+                                        {{if .IsIssueOwner}}{{if not .Issue.IsClosed}}<button class="btn btn-gray btn-radius text-bold" name="submit" value="close">{{.i18n.Tr "repo.pulls.close_pr"}}</button>&nbsp;&nbsp;
+                                        {{end}}{{end}}
                                         <button class="btn btn-green btn-radius text-bold" name="submit" value="comment">{{.i18n.Tr "repo.commits.comment.add"}}</button>
                                     </p>
                                 </form>
