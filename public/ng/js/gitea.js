@@ -1019,6 +1019,18 @@ function initTimeSwitch() {
 }
 
 function initDiff() {
+    $('#pr-upstream-repo').on("change", function () {
+        window.location.href = Gitea.AppSubUrl + '/' + $('#pr-upstream-repo').val() + "/compare/" + $('#pr-upstream-branch').val() + "..." + $('#pr-forked-repo').val() + ":" + $('#pr-forked-branch').val();
+    });
+    $('#pr-upstream-branch').on("change", function () {
+        window.location.href = Gitea.AppSubUrl + '/' + $('#pr-upstream-repo').val() + "/compare/" + $('#pr-upstream-branch').val() + "..." + $('#pr-forked-repo').val() + ":" + $('#pr-forked-branch').val();
+    });
+    $('#pr-forked-repo').on("change", function () {
+        window.location.href = Gitea.AppSubUrl + '/' + $('#pr-upstream-repo').val() + "/compare/" + $('#pr-upstream-branch').val() + "..." + $('#pr-forked-repo').val() + ":" + $('#pr-forked-branch').val();
+    });
+    $('#pr-forked-branch').on("change", function () {
+        window.location.href = Gitea.AppSubUrl + '/' + $('#pr-upstream-repo').val() + "/compare/" + $('#pr-upstream-branch').val() + "..." + $('#pr-forked-repo').val() + ":" + $('#pr-forked-branch').val();
+    });
     $('#pr-diff-btn').click(function () {
         $($(this).data('target')).slideToggle(100);
     });
