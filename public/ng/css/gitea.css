@@ -2793,6 +2793,9 @@ textarea#pr-merge-content {
 #milestone-new-form .date-picker table {
   width: 100%;
 }
+#milestone-new-form .date-picker td.cw {
+  opacity: 0;
+}
 .org-header-alert .alert {
   margin-top: 10px;
 }

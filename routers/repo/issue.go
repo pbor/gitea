@@ -1151,7 +1151,7 @@ func UpdateMilestone(ctx *middleware.Context) {
 				return
 			}
 		}
-		ctx.Redirect(ctx.Repo.RepoLink + "/issues/milestones")
+		ctx.Redirect(ctx.Repo.RepoLink + "/milestones")
 		return
 	}
 
@@ -1208,7 +1208,7 @@ func UpdateMilestonePost(ctx *middleware.Context, form auth.CreateMilestoneForm)
 		return
 	}
 
-	ctx.Redirect(ctx.Repo.RepoLink + "/issues/milestones")
+	ctx.Redirect(ctx.Repo.RepoLink + "/milestones")
 }
 
 func IssueGetAttachment(ctx *middleware.Context) {
