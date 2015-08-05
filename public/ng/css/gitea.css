@@ -2747,6 +2747,49 @@ textarea#pr-merge-content {
 #issue-no-list .octicon {
   color: #999;
 }
+#milestone-new-form {
+  margin-bottom: 6em;
+}
+#milestone-new-form .clear {
+  clear: both;
+}
+#milestone-new-form label {
+  display: block;
+}
+#milestone-new-form .ipt {
+  width: 100%;
+  box-sizing: border-box;
+}
+#milestone-new-form .field {
+  margin: 1.2em 0 2em 0;
+}
+#milestone-new-form textarea {
+  height: 390px;
+}
+#milestone-new-form .right {
+  position: relative;
+}
+#milestone-new-form .date-picker .day {
+  text-align: center;
+}
+#milestone-new-form .date-picker .day:hover {
+  background: #eeeeee;
+  cursor: pointer;
+}
+#milestone-new-form .date-picker .day.today {
+  color: #000000;
+  background-color: #ffdb99;
+  border-color: #ffb733;
+}
+#milestone-new-form .date-picker .day.active {
+  color: #ffffff;
+  background-color: #3276b1;
+  border-color: #285e8e;
+}
+#milestone-new-form .date-picker thead tr:first-child th:hover,
+#milestone-new-form .date-picker tfoot tr th:hover {
+  background: #eeeeee;
+}
 .org-header-alert .alert {
   margin-top: 10px;
 }

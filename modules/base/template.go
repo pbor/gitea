@@ -184,7 +184,7 @@ var TemplateFuncs template.FuncMap = map[string]interface{}{
 		return strings.Replace(str, "#", "%23", -1)
 	},
 	"RenderCommitMessage": RenderCommitMessage,
-	"Join": Join,
+	"Join":                Join,
 }
 
 type Actioner interface {

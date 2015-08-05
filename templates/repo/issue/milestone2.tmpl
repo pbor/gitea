@@ -44,18 +44,18 @@
 
                     <div class="action">
                         <p class="status-bar">
-                            <span class="closed">{{.i18n.Tr "closed"}} {{.NumClosedIssues}}</span>
+                            <span class="closed">{{$.i18n.Tr "closed"}} {{.NumClosedIssues}}</span>
                             <span class="inline-block bar"><span class="inline-block opening" style="width:{{.Completeness}}%"></span></span>
                             <span class="open">{{.NumOpenIssues}} open</span>
                         </p>
                         <div class="action-bar text-right">
-                            <a href="{{$.RepoLink}}/issues/milestones/{{.Index}}/edit">{{.i18n.Tr "edit"}}</a>
+                            <a href="{{$.RepoLink}}/issues/milestones/{{.Index}}/edit">{{$.i18n.Tr "edit"}}</a>
                             {{if .IsClosed}}
-                            <a href="{{$.RepoLink}}/issues/milestones/{{.Index}}/open">{{.i18n.Tr "open"}}</a>
+                            <a href="{{$.RepoLink}}/issues/milestones/{{.Index}}/open">{{$.i18n.Tr "open"}}</a>
                             {{else}}
-                            <a href="{{$.RepoLink}}/issues/milestones/{{.Index}}/close">{{.i18n.Tr "closed"}}</a>
+                            <a href="{{$.RepoLink}}/issues/milestones/{{.Index}}/close">{{$.i18n.Tr "closed"}}</a>
                             {{end}}
-                            <a href="{{$.RepoLink}}/issues/milestones/{{.Index}}/delete" class="text-red">{{.i18n.Tr "delete"}}</a>
+                            <a href="{{$.RepoLink}}/issues/milestones/{{.Index}}/delete" class="text-red">{{$.i18n.Tr "delete"}}</a>
                         </div>
                     </div>
                 </li>

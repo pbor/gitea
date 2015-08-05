@@ -1063,6 +1063,13 @@ func NewMilestone(ctx *middleware.Context) {
 	ctx.HTML(200, MILESTONE_NEW)
 }
 
+func NewMilestone2(ctx *middleware.Context) {
+	ctx.Data["Title"] = "New Milestone"
+	ctx.Data["IsRepoToolbarIssues"] = true
+	ctx.Data["IsRepoToolbarIssuesList"] = true
+	ctx.HTML(200, "repo/issue/milestone_new2")
+}
+
 func NewMilestonePost(ctx *middleware.Context, form auth.CreateMilestoneForm) {
 	ctx.Data["Title"] = "New Milestone"
 	ctx.Data["IsRepoToolbarIssues"] = true
@@ -1096,7 +1103,7 @@ func NewMilestonePost(ctx *middleware.Context, form auth.CreateMilestoneForm) {
 		return
 	}
 
-	ctx.Redirect(ctx.Repo.RepoLink + "/issues/milestones")
+	ctx.Redirect(ctx.Repo.RepoLink + "/milestones")
 }
 
 func UpdateMilestone(ctx *middleware.Context) {
