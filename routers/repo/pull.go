@@ -73,6 +73,7 @@ func Pull(ctx *middleware.Context) {
 	}
 	ctx.Data["Comments"] = comments
 	ctx.Data["CountComments"] = len(comments) + 1
+	ctx.Data["IsIssueOwner"] = ctx.Repo.IsOwner() || (ctx.IsSigned && issue.PosterID == ctx.User.Id)
 
 	fromRepo, err := models.GetRepositoryById(pull.FromRepoID)
 	if err != nil {
