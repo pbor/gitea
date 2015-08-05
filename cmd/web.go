@@ -420,7 +420,6 @@ func runWeb(ctx *cli.Context) {
 		m.Group("/milestones", func() {
 			m.Get("/", repo.Milestones)
 			m.Get("/new", repo.NewMilestone)
-			m.Get("/new2", repo.NewMilestone2)
 			m.Post("/new", bindIgnErr(auth.CreateMilestoneForm{}), repo.NewMilestonePost)
 			m.Get("/:index/edit", repo.UpdateMilestone)
 			m.Post("/:index/edit", bindIgnErr(auth.CreateMilestoneForm{}), repo.UpdateMilestonePost)

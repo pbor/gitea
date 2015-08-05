@@ -2790,6 +2790,9 @@ textarea#pr-merge-content {
 #milestone-new-form .date-picker tfoot tr th:hover {
   background: #eeeeee;
 }
+#milestone-new-form .date-picker table {
+  width: 100%;
+}
 .org-header-alert .alert {
   margin-top: 10px;
 }
