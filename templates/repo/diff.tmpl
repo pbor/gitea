@@ -106,9 +106,11 @@
             {{$isImage := (call $.IsImageFile $file.Name)}}
             <div class="panel-body file-body file-code code-view code-diff">
                 {{if $isImage}}
-                    <div class="text-center">
-                        <img src="{{$.RawPath}}/{{.Name}}">
-                    </div>
+                    {{if not $file.IsRenamed}}
+                        <div class="text-center">
+                            <img src="{{$.RawPath}}/{{.Name}}">
+                        </div>
+                    {{end}}
                 {{else}}
                 <table>
                     <tbody>
