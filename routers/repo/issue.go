@@ -482,6 +482,136 @@ func ViewIssue(ctx *middleware.Context) {
 	ctx.HTML(200, ISSUE_VIEW)
 }
 
+func ViewIssue2(ctx *middleware.Context) {
+	ctx.Data["AttachmentsEnabled"] = setting.AttachmentEnabled
+
+	idx := com.StrTo(ctx.Params(":index")).MustInt64()
+	if idx == 0 {
+		ctx.Handle(404, "issue.ViewIssue", nil)
+		return
+	}
+
+	issue, err := models.GetIssueByIndex(ctx.Repo.Repository.ID, idx)
+	if err != nil {
+		if err == models.ErrIssueNotExist {
+			ctx.Handle(404, "issue.ViewIssue(GetIssueByIndex)", err)
+		} else {
+			ctx.Handle(500, "issue.ViewIssue(GetIssueByIndex)", err)
+		}
+		return
+	}
+
+	// Get labels.
+	if err = issue.GetLabels(); err != nil {
+		ctx.Handle(500, "issue.ViewIssue(GetLabels)", err)
+		return
+	}
+	labels, err := models.GetLabels(ctx.Repo.Repository.ID)
+	if err != nil {
+		ctx.Handle(500, "issue.ViewIssue(GetLabels.2)", err)
+		return
+	}
+	checkLabels(issue.Labels, labels)
+	ctx.Data["Labels"] = labels
+
+	// Get assigned milestone.
+	if issue.MilestoneID > 0 {
+		ctx.Data["Milestone"], err = models.GetMilestoneById(issue.MilestoneID)
+		if err != nil {
+			if err == models.ErrMilestoneNotExist {
+				log.Warn("issue.ViewIssue(GetMilestoneById): %v", err)
+			} else {
+				ctx.Handle(500, "issue.ViewIssue(GetMilestoneById)", err)
+				return
+			}
+		}
+	}
+
+	// Get all milestones.
+	ctx.Data["OpenMilestones"], err = models.GetMilestones(ctx.Repo.Repository.ID, false)
+	if err != nil {
+		ctx.Handle(500, "issue.ViewIssue(GetMilestones.1): %v", err)
+		return
+	}
+	ctx.Data["ClosedMilestones"], err = models.GetMilestones(ctx.Repo.Repository.ID, true)
+	if err != nil {
+		ctx.Handle(500, "issue.ViewIssue(GetMilestones.2): %v", err)
+		return
+	}
+
+	// Get all collaborators.
+	collaborators, err := ctx.Repo.Repository.GetCollaborators()
+	if err != nil {
+		ctx.Handle(500, "issue.CreateIssue(GetCollaborators)", err)
+		return
+	}
+
+	var owners []*models.User
+	if ctx.Repo.Repository.Owner.IsOrganization() {
+		ctx.Repo.Repository.Owner.GetMembers()
+		owners = append(owners, ctx.Repo.Repository.Owner.Members...)
+	} else {
+		owners = append(owners, ctx.Repo.Repository.Owner)
+	}
+	ctx.Data["Collaborators"] = append(owners, collaborators...)
+
+	if ctx.IsSigned {
+		// Update issue-user.
+		if err = models.UpdateIssueUserPairByRead(ctx.User.Id, issue.ID); err != nil {
+			ctx.Handle(500, "issue.ViewIssue(UpdateIssueUserPairByRead): %v", err)
+			return
+		}
+	}
+
+	// Get poster and Assignee.
+	if err = issue.GetPoster(); err != nil {
+		ctx.Handle(500, "issue.ViewIssue(GetPoster): %v", err)
+		return
+	} else if err = issue.GetAssignee(); err != nil {
+		ctx.Handle(500, "issue.ViewIssue(GetAssignee): %v", err)
+		return
+	}
+	issue.RenderedContent = string(base.RenderMarkdown([]byte(issue.Content), ctx.Repo.RepoLink))
+
+	// Get comments.
+	comments, err := models.GetIssueComments(issue.ID)
+	if err != nil {
+		ctx.Handle(500, "issue.ViewIssue(GetIssueComments): %v", err)
+		return
+	}
+
+	// Get posters.
+	for i := range comments {
+		u, err := models.GetUserById(comments[i].PosterId)
+		if err != nil {
+			ctx.Handle(500, "issue.ViewIssue(GetUserById.2): %v", err)
+			return
+		}
+		comments[i].Poster = u
+
+		if comments[i].Type == models.COMMENT_TYPE_COMMENT {
+			comments[i].Content = string(base.RenderMarkdown([]byte(comments[i].Content), ctx.Repo.RepoLink))
+		}
+	}
+
+	ctx.Data["AllowedTypes"] = setting.AttachmentAllowedTypes
+
+	ctx.Data["Title"] = issue.Name
+	ctx.Data["Issue"] = issue
+	ctx.Data["Comments"] = comments
+	ctx.Data["IsIssueOwner"] = ctx.Repo.IsOwner() || (ctx.IsSigned && issue.PosterID == ctx.User.Id)
+	ctx.Data["IsRepoToolbarIssues"] = true
+	ctx.Data["IsRepoToolbarIssuesList"] = false
+
+	repo := ctx.Repo.Repository
+	repoLink, _ := repo.RepoLink()
+	ctx.Data["RepoLink"] = repoLink
+	ctx.Data["NumIssues"] = repo.NumIssues
+	ctx.Data["NumPulls"] = repo.NumPulls
+
+	ctx.HTML(200,  "repo/issue/view2")
+}
+
 func UpdateIssue(ctx *middleware.Context, form auth.CreateIssueForm) {
 	idx := com.StrTo(ctx.Params(":index")).MustInt64()
 	if idx <= 0 {

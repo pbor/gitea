@@ -20,7 +20,9 @@
                     {{if .Pull.IsClosed}}{{.i18n.Tr "closed"}}{{else if .Pull.IsMerged}}{{.i18n.Tr "merged"}}{{else}}{{.i18n.Tr "opened"}}{{end}}
                 </button>
             <span class="msg">
-                <a href="{{AppSubUrl}}/{{.Issue.Poster.Name}}" class="text-bold pr-author">{{.Issue.Poster.Name}}</a> <span class="label radius label-blue">{{.CommitCount}}</span> {{.i18n.Tr "repo.pulls.commits"}}
+                <a href="{{AppSubUrl}}/{{.Issue.Poster.Name}}" class="text-bold pr-author">{{.Issue.Poster.Name}}</a>
+				<span class="label radius label-blue">{{.CommitCount}}</span>
+				<span class="pr-commits">{{.i18n.Tr "repo.pulls.commits"}}</span>
                 <span class="pr-branch label label-gray radius">{{.FromRepo.Owner.Name}}:{{.Pull.FromBranch}}</span>
                 <i class="octicon octicon-arrow-right"></i>
                 <span class="pr-branch label label-gray radius">{{.Pull.ToBranch}}</span>
@@ -61,7 +63,9 @@
                                 -->
                             </span>
                             </p>
-                            <div class="panel-content content markdown">{{.Issue.Content}}</div>
+                            <div class="panel-content content">
+								<div class="markdown">{{.Issue.Content}}</div>
+							</div>
                         </div>
                     </div>
                     {{range .Comments}}

@@ -465,6 +465,7 @@ func runWeb(ctx *cli.Context) {
 		m.Get("/releases", middleware.RepoRef(), repo.Releases)
 		m.Get("/issues", repo.Issues)
 		m.Get("/issues/:index", repo.ViewIssue)
+		m.Get("/issues2/:index", repo.ViewIssue2)
 		m.Get("/milestones", repo.Milestones)
 		m.Get("/branches", repo.Branches)
 		m.Get("/archive/*", repo.Download)
