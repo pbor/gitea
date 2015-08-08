@@ -4,10 +4,10 @@
     {{template "repo/header" .}}
     <div id="repo-content" class="clear container">
         <div id="repo-main" class="left grid-5-6">
-            <p id="repo-desc">
+            <!--<p id="repo-desc">
                 {{if .Repository.DescriptionHtml}}<span class="description">{{.Repository.DescriptionHtml}}</span>{{else}}<span class="no-description text-italic">{{.i18n.Tr "repo.no_desc"}}</span>{{end}}
                 <a class="link" href="{{.Repository.Website}}">{{.Repository.Website}}</a>
-            </p>
+            </p>-->
             <ul id="repo-file-nav" class="clear menu menu-line">
                 {{if (and (.Repository.IsFork) .IsRepositoryAdmin)}}
                 <li>
