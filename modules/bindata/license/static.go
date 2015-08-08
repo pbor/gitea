@@ -35,6 +35,8 @@
 // static/license/Mozilla Public License 2.0
 // DO NOT EDIT!
 
+// +build !nobindata
+
 package license
 
 import (
@@ -115,7 +117,7 @@ func licenseAcademicFreeLicenseV11() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "license/Academic Free License v1.1", size: 4660, mode: os.FileMode(420), modTime: time.Unix(1438677660, 0)}
+	info := bindataFileInfo{name: "license/Academic Free License v1.1", size: 4660, mode: os.FileMode(420), modTime: time.Unix(1439029708, 0)}
 	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
@@ -135,7 +137,7 @@ func licenseAcademicFreeLicenseV12() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "license/Academic Free License v1.2", size: 4949, mode: os.FileMode(420), modTime: time.Unix(1438677660, 0)}
+	info := bindataFileInfo{name: "license/Academic Free License v1.2", size: 4949, mode: os.FileMode(420), modTime: time.Unix(1439029708, 0)}
 	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
@@ -155,7 +157,7 @@ func licenseAcademicFreeLicenseV20() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "license/Academic Free License v2.0", size: 8937, mode: os.FileMode(420), modTime: time.Unix(1438677660, 0)}
+	info := bindataFileInfo{name: "license/Academic Free License v2.0", size: 8937, mode: os.FileMode(420), modTime: time.Unix(1439029708, 0)}
 	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
@@ -175,7 +177,7 @@ func licenseAcademicFreeLicenseV21() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "license/Academic Free License v2.1", size: 8922, mode: os.FileMode(420), modTime: time.Unix(1438677660, 0)}
+	info := bindataFileInfo{name: "license/Academic Free License v2.1", size: 8922, mode: os.FileMode(420), modTime: time.Unix(1439029708, 0)}
 	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
@@ -195,7 +197,7 @@ func licenseAcademicFreeLicenseV30() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "license/Academic Free License v3.0", size: 10306, mode: os.FileMode(420), modTime: time.Unix(1438677660, 0)}
+	info := bindataFileInfo{name: "license/Academic Free License v3.0", size: 10306, mode: os.FileMode(420), modTime: time.Unix(1439029708, 0)}
 	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
@@ -215,7 +217,7 @@ func licenseAfferoGeneralPublicLicenseV10() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "license/Affero General Public License v1.0", size: 15837, mode: os.FileMode(420), modTime: time.Unix(1438677660, 0)}
+	info := bindataFileInfo{name: "license/Affero General Public License v1.0", size: 15837, mode: os.FileMode(420), modTime: time.Unix(1439029708, 0)}
 	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
@@ -235,7 +237,7 @@ func licenseApacheLicense10() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "license/Apache License 1.0", size: 2475, mode: os.FileMode(420), modTime: time.Unix(1438677660, 0)}
+	info := bindataFileInfo{name: "license/Apache License 1.0", size: 2475, mode: os.FileMode(420), modTime: time.Unix(1439029708, 0)}
 	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
@@ -255,7 +257,7 @@ func licenseApacheLicense11() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "license/Apache License 1.1", size: 2508, mode: os.FileMode(420), modTime: time.Unix(1438677660, 0)}
+	info := bindataFileInfo{name: "license/Apache License 1.1", size: 2508, mode: os.FileMode(420), modTime: time.Unix(1439029708, 0)}
 	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
@@ -275,7 +277,7 @@ func licenseApacheLicense20() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "license/Apache License 2.0", size: 10261, mode: os.FileMode(420), modTime: time.Unix(1438677660, 0)}
+	info := bindataFileInfo{name: "license/Apache License 2.0", size: 10261, mode: os.FileMode(420), modTime: time.Unix(1439029708, 0)}
 	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
@@ -295,7 +297,7 @@ func licenseArtisticLicense10() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "license/Artistic License 1.0", size: 4789, mode: os.FileMode(420), modTime: time.Unix(1438677660, 0)}
+	info := bindataFileInfo{name: "license/Artistic License 1.0", size: 4789, mode: os.FileMode(420), modTime: time.Unix(1439029708, 0)}
 	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
@@ -315,7 +317,7 @@ func licenseArtisticLicense20() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "license/Artistic License 2.0", size: 8661, mode: os.FileMode(420), modTime: time.Unix(1438677660, 0)}
+	info := bindataFileInfo{name: "license/Artistic License 2.0", size: 8661, mode: os.FileMode(420), modTime: time.Unix(1439029708, 0)}
 	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
@@ -335,7 +337,7 @@ func licenseBsd2ClauseLicense() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "license/BSD 2-clause License", size: 1286, mode: os.FileMode(420), modTime: time.Unix(1438677660, 0)}
+	info := bindataFileInfo{name: "license/BSD 2-clause License", size: 1286, mode: os.FileMode(420), modTime: time.Unix(1439029708, 0)}
 	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
@@ -355,7 +357,7 @@ func licenseBsd3ClauseLicense() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "license/BSD 3-clause License", size: 1480, mode: os.FileMode(420), modTime: time.Unix(1438677660, 0)}
+	info := bindataFileInfo{name: "license/BSD 3-clause License", size: 1480, mode: os.FileMode(420), modTime: time.Unix(1439029708, 0)}
 	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
@@ -375,7 +377,7 @@ func licenseBsd4ClauseLicense() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "license/BSD 4-clause License", size: 1624, mode: os.FileMode(420), modTime: time.Unix(1438677660, 0)}
+	info := bindataFileInfo{name: "license/BSD 4-clause License", size: 1624, mode: os.FileMode(420), modTime: time.Unix(1439029708, 0)}
 	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
@@ -395,7 +397,7 @@ func licenseCreativeCommonsZeroV10Universal() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "license/Creative Commons Zero v1.0 Universal", size: 6894, mode: os.FileMode(420), modTime: time.Unix(1438677660, 0)}
+	info := bindataFileInfo{name: "license/Creative Commons Zero v1.0 Universal", size: 6894, mode: os.FileMode(420), modTime: time.Unix(1439029708, 0)}
 	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
@@ -415,7 +417,7 @@ func licenseEclipsePublicLicense10() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "license/Eclipse Public License 1.0", size: 11248, mode: os.FileMode(420), modTime: time.Unix(1438677660, 0)}
+	info := bindataFileInfo{name: "license/Eclipse Public License 1.0", size: 11248, mode: os.FileMode(420), modTime: time.Unix(1439029708, 0)}
 	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
@@ -435,7 +437,7 @@ func licenseEducationalCommunityLicenseV10() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "license/Educational Community License v1.0", size: 2394, mode: os.FileMode(420), modTime: time.Unix(1438677660, 0)}
+	info := bindataFileInfo{name: "license/Educational Community License v1.0", size: 2394, mode: os.FileMode(420), modTime: time.Unix(1439029708, 0)}
 	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
@@ -455,7 +457,7 @@ func licenseEducationalCommunityLicenseV20() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "license/Educational Community License v2.0", size: 11085, mode: os.FileMode(420), modTime: time.Unix(1438677660, 0)}
+	info := bindataFileInfo{name: "license/Educational Community License v2.0", size: 11085, mode: os.FileMode(420), modTime: time.Unix(1439029708, 0)}
 	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
@@ -475,7 +477,7 @@ func licenseGnuAfferoGeneralPublicLicenseV30() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "license/GNU Affero General Public License v3.0", size: 33818, mode: os.FileMode(420), modTime: time.Unix(1438677660, 0)}
+	info := bindataFileInfo{name: "license/GNU Affero General Public License v3.0", size: 33818, mode: os.FileMode(420), modTime: time.Unix(1439029708, 0)}
 	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
@@ -495,7 +497,7 @@ func licenseGnuFreeDocumentationLicenseV11() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "license/GNU Free Documentation License v1.1", size: 17912, mode: os.FileMode(420), modTime: time.Unix(1438677660, 0)}
+	info := bindataFileInfo{name: "license/GNU Free Documentation License v1.1", size: 17912, mode: os.FileMode(420), modTime: time.Unix(1439029708, 0)}
 	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
@@ -515,7 +517,7 @@ func licenseGnuFreeDocumentationLicenseV12() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "license/GNU Free Documentation License v1.2", size: 20209, mode: os.FileMode(420), modTime: time.Unix(1438677660, 0)}
+	info := bindataFileInfo{name: "license/GNU Free Documentation License v1.2", size: 20209, mode: os.FileMode(420), modTime: time.Unix(1439029708, 0)}
 	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
@@ -535,7 +537,7 @@ func licenseGnuFreeDocumentationLicenseV13() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "license/GNU Free Documentation License v1.3", size: 22732, mode: os.FileMode(420), modTime: time.Unix(1438677660, 0)}
+	info := bindataFileInfo{name: "license/GNU Free Documentation License v1.3", size: 22732, mode: os.FileMode(420), modTime: time.Unix(1439029708, 0)}
 	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
@@ -555,7 +557,7 @@ func licenseGnuGeneralPublicLicenseV10() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "license/GNU General Public License v1.0", size: 12165, mode: os.FileMode(420), modTime: time.Unix(1438677660, 0)}
+	info := bindataFileInfo{name: "license/GNU General Public License v1.0", size: 12165, mode: os.FileMode(420), modTime: time.Unix(1439029708, 0)}
 	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
@@ -575,7 +577,7 @@ func licenseGnuGeneralPublicLicenseV20() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "license/GNU General Public License v2.0", size: 17277, mode: os.FileMode(420), modTime: time.Unix(1438677660, 0)}
+	info := bindataFileInfo{name: "license/GNU General Public License v2.0", size: 17277, mode: os.FileMode(420), modTime: time.Unix(1439029708, 0)}
 	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
@@ -595,7 +597,7 @@ func licenseGnuGeneralPublicLicenseV30() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "license/GNU General Public License v3.0", size: 34570, mode: os.FileMode(420), modTime: time.Unix(1438677660, 0)}
+	info := bindataFileInfo{name: "license/GNU General Public License v3.0", size: 34570, mode: os.FileMode(420), modTime: time.Unix(1439029708, 0)}
 	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
@@ -615,7 +617,7 @@ func licenseGnuLesserGeneralPublicLicenseV21() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "license/GNU Lesser General Public License v2.1", size: 25885, mode: os.FileMode(420), modTime: time.Unix(1438677660, 0)}
+	info := bindataFileInfo{name: "license/GNU Lesser General Public License v2.1", size: 25885, mode: os.FileMode(420), modTime: time.Unix(1439029708, 0)}
 	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
@@ -635,7 +637,7 @@ func licenseGnuLesserGeneralPublicLicenseV30() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "license/GNU Lesser General Public License v3.0", size: 7355, mode: os.FileMode(420), modTime: time.Unix(1438677660, 0)}
+	info := bindataFileInfo{name: "license/GNU Lesser General Public License v3.0", size: 7355, mode: os.FileMode(420), modTime: time.Unix(1439029708, 0)}
 	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
@@ -655,7 +657,7 @@ func licenseGnuLibraryGeneralPublicLicenseV20() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "license/GNU Library General Public License v2.0", size: 24758, mode: os.FileMode(420), modTime: time.Unix(1438677660, 0)}
+	info := bindataFileInfo{name: "license/GNU Library General Public License v2.0", size: 24758, mode: os.FileMode(420), modTime: time.Unix(1439029708, 0)}
 	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
@@ -675,7 +677,7 @@ func licenseIscLicense() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "license/ISC License", size: 823, mode: os.FileMode(420), modTime: time.Unix(1438677660, 0)}
+	info := bindataFileInfo{name: "license/ISC License", size: 823, mode: os.FileMode(420), modTime: time.Unix(1439029708, 0)}
 	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
@@ -695,7 +697,7 @@ func licenseMitLicense() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "license/MIT License", size: 1077, mode: os.FileMode(420), modTime: time.Unix(1438677660, 0)}
+	info := bindataFileInfo{name: "license/MIT License", size: 1077, mode: os.FileMode(420), modTime: time.Unix(1439029708, 0)}
 	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
@@ -715,7 +717,7 @@ func licenseMozillaPublicLicense10() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "license/Mozilla Public License 1.0", size: 18026, mode: os.FileMode(420), modTime: time.Unix(1438677660, 0)}
+	info := bindataFileInfo{name: "license/Mozilla Public License 1.0", size: 18026, mode: os.FileMode(420), modTime: time.Unix(1439029708, 0)}
 	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
@@ -735,7 +737,7 @@ func licenseMozillaPublicLicense11() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "license/Mozilla Public License 1.1", size: 23361, mode: os.FileMode(420), modTime: time.Unix(1438677660, 0)}
+	info := bindataFileInfo{name: "license/Mozilla Public License 1.1", size: 23361, mode: os.FileMode(420), modTime: time.Unix(1439029708, 0)}
 	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
@@ -755,7 +757,7 @@ func licenseMozillaPublicLicense20() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "license/Mozilla Public License 2.0", size: 14827, mode: os.FileMode(420), modTime: time.Unix(1438677660, 0)}
+	info := bindataFileInfo{name: "license/Mozilla Public License 2.0", size: 14827, mode: os.FileMode(420), modTime: time.Unix(1439029708, 0)}
 	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }
