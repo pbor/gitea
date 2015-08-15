@@ -609,7 +609,7 @@ func ViewIssue2(ctx *middleware.Context) {
 	ctx.Data["NumIssues"] = repo.NumIssues
 	ctx.Data["NumPulls"] = repo.NumPulls
 
-	ctx.HTML(200,  "repo/issue/view2")
+	ctx.HTML(200, "repo/issue/view2")
 }
 
 func UpdateIssue(ctx *middleware.Context, form auth.CreateIssueForm) {
@@ -818,7 +818,7 @@ func UpdateAssignee(ctx *middleware.Context) {
 }
 
 func uploadFiles(ctx *middleware.Context, issueId, commentId int64) {
-	if !setting.AttachmentEnabled {
+	if !setting.AttachmentEnabled || ctx.Req.MultipartForm == nil {
 		return
 	}
 
