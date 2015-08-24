@@ -219,6 +219,45 @@ func CreateIssue(ctx *middleware.Context) {
 	ctx.HTML(200, ISSUE_CREATE)
 }
 
+func CreateIssue2(ctx *middleware.Context) {
+	ctx.Data["Title"] = "Create issue"
+	ctx.Data["IsRepoToolbarIssues"] = true
+	ctx.Data["IsRepoToolbarIssuesList"] = false
+	ctx.Data["AttachmentsEnabled"] = setting.AttachmentEnabled
+
+	var err error
+	// Get all milestones.
+	ctx.Data["OpenMilestones"], err = models.GetMilestones(ctx.Repo.Repository.ID, false)
+	if err != nil {
+		ctx.Handle(500, "issue.ViewIssue(GetMilestones.1): %v", err)
+		return
+	}
+	ctx.Data["ClosedMilestones"], err = models.GetMilestones(ctx.Repo.Repository.ID, true)
+	if err != nil {
+		ctx.Handle(500, "issue.ViewIssue(GetMilestones.2): %v", err)
+		return
+	}
+
+	us, err := ctx.Repo.Repository.GetCollaborators()
+	if err != nil {
+		ctx.Handle(500, "issue.CreateIssue(GetCollaborators)", err)
+		return
+	}
+
+	ctx.Data["AllowedTypes"] = setting.AttachmentAllowedTypes
+
+	var owners []*models.User
+	if ctx.Repo.Repository.Owner.IsOrganization() {
+		ctx.Repo.Repository.Owner.GetMembers()
+		owners = append(owners, ctx.Repo.Repository.Owner.Members...)
+	} else {
+		owners = append(owners, ctx.Repo.Repository.Owner)
+	}
+	ctx.Data["Collaborators"] = append(owners, us...)
+
+	ctx.HTML(200, ISSUE_CREATE+"2")
+}
+
 func CreateIssuePost(ctx *middleware.Context, form auth.CreateIssueForm) {
 	send := func(status int, data interface{}, err error) {
 		if err != nil {

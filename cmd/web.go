@@ -428,6 +428,7 @@ func runWeb(ctx *cli.Context) {
 
 		m.Group("/issues", func() {
 			m.Get("/new", repo.CreateIssue)
+			m.Get("/new2",repo.CreateIssue2)
 			m.Post("/new", bindIgnErr(auth.CreateIssueForm{}), repo.CreateIssuePost)
 			m.Post("/:index", bindIgnErr(auth.CreateIssueForm{}), repo.UpdateIssue)
 			m.Post("/:index/label", repo.UpdateIssueLabel)
