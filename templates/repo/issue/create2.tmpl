@@ -3,34 +3,30 @@
 <div id="repo-wrapper">
 	{{template "repo/header" .}}
 	<div class="issue-main repo-wide-wrapper container clear" id="issue-new-container">
-		<form id="issue-add-comment-form" action="/fuxiaohei/note-test/comment/new" method="post" enctype="multipart/form-data">
+		<form id="issue-new-form" action="{{.RepoLink}}/issues/new" method="post" enctype="multipart/form-data">
 			<div class="issue-add-comment clear grid-3-4 left">
-				<a class="author-avatar" href="/fuxiaohei"><img class="avatar-40 radius" src="http://gravatar.duoshuo.com/avatar/f72f7454ce9d710baa506394f68f4132" alt=""></a>
+				<a class="author-avatar" href="{{AppSubUrl}}/{{.SignedUser.Name}}"><img class="avatar-40 radius" src="{{.SignedUser.AvatarLink}}" alt=""></a>
 				<div class="panel panel-radius">
 					<div class="panel-content title issue-new-title">
 						<input type="text" class="ipt ipt-radius" name="title" id="issue-new-title" placeholder="title">
 					</div>
 					<div class="panel-header">
 						<ul class="menu menu-line add-nav">
-							<li class="js-tab-nav js-tab-nav-show" data-tab-target="#issue-add-comment-form"><a href="#">撰写</a></li>
+							<li class="js-tab-nav js-tab-nav-show" data-tab-target="#issue-new-textarea"><a href="#">撰写</a></li>
 							<li class="js-tab-nav" data-tab-target="#issue-add-comment-preview"><a href="#" id="pull-issue-preview">预览</a></li>
 						</ul>
 					</div>
 					<div class="panel-content content">
-							<input type="hidden" name="_csrf" value="H-T8OX7ilJ9XvF8t6B0MWfAAZJM6MTQ0MDM4MTI4NjY0NDAwMTIwMA==">
-							<input type="hidden" name="issueID" value="14">
-							<input type="hidden" name="issueIndex" value="13">
 							<div id="submit-error" class="alert alert-red hide"></div>
-							<textarea class="ipt ipt-radius js-preview-input" name="content" id="issue-add-content"></textarea>
-
-
-
+							<div id="issue-new-textarea">
+								<textarea class="ipt ipt-radius js-preview-input" name="content" id="issue-add-content"></textarea>
+							</div>
+							<div id="issue-add-comment-preview" class="js-preview-container">
+								issues.preview
+							</div>
 							<div class="submit text-right">
 								<button class="btn btn-green btn-radius text-bold" name="submit" value="create">Create New Issue</button>
 							</div>
-						<div id="issue-add-comment-preview" class="js-preview-container">
-							issues.preview
-						</div>
 					</div>
 				</div>
 			</div>
