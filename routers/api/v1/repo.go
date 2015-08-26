@@ -12,7 +12,7 @@ import (
 
 	"github.com/Unknwon/com"
 
-	api "github.com/gogits/go-gogs-client"
+	sdk "github.com/go-gitea/go-sdk"
 
 	"github.com/go-gitea/gitea/models"
 	"github.com/go-gitea/gitea/modules/auth"
@@ -23,12 +23,12 @@ import (
 )
 
 // ToApiRepository converts repository to API format.
-func ToApiRepository(owner *models.User, repo *models.Repository, permission api.Permission) *api.Repository {
+func ToApiRepository(owner *models.User, repo *models.Repository, permission sdk.Permission) *sdk.Repository {
 	cl, err := repo.CloneLink()
 	if err != nil {
 		log.Error(4, "CloneLink: %v", err)
 	}
-	return &api.Repository{
+	return &sdk.Repository{
 		Id:          repo.ID,
 		Owner:       *ToApiUser(owner),
 		FullName:    owner.Name + "/" + repo.Name,
@@ -80,7 +80,7 @@ func SearchRepos(ctx *middleware.Context) {
 		return
 	}
 
-	results := make([]*api.Repository, len(repos))
+	results := make([]*sdk.Repository, len(repos))
 	for i := range repos {
 		if err = repos[i].GetOwner(); err != nil {
 			ctx.JSON(500, map[string]interface{}{
@@ -89,7 +89,7 @@ func SearchRepos(ctx *middleware.Context) {
 			})
 			return
 		}
-		results[i] = &api.Repository{
+		results[i] = &sdk.Repository{
 			Id:       repos[i].ID,
 			FullName: path.Join(repos[i].Owner.Name, repos[i].Name),
 		}
@@ -101,7 +101,7 @@ func SearchRepos(ctx *middleware.Context) {
 	})
 }
 
-func createRepo(ctx *middleware.Context, owner *models.User, opt api.CreateRepoOption) {
+func createRepo(ctx *middleware.Context, owner *models.User, opt sdk.CreateRepoOption) {
 	repo, err := models.CreateRepository(owner, opt.Name, opt.Description,
 		opt.Gitignore, opt.License, opt.Private, false, opt.AutoInit, false, 0)
 	if err != nil {
@@ -121,12 +121,12 @@ func createRepo(ctx *middleware.Context, owner *models.User, opt api.CreateRepoO
 		return
 	}
 
-	ctx.JSON(200, ToApiRepository(owner, repo, api.Permission{true, true, true}))
+	ctx.JSON(200, ToApiRepository(owner, repo, sdk.Permission{true, true, true}))
 }
 
 // POST /user/repos
 // https://developer.github.com/v3/repos/#create
-func CreateRepo(ctx *middleware.Context, opt api.CreateRepoOption) {
+func CreateRepo(ctx *middleware.Context, opt sdk.CreateRepoOption) {
 	// Shouldn't reach this condition, but just in case.
 	if ctx.User.IsOrganization() {
 		ctx.JSON(422, "not allowed creating repository for organization")
@@ -137,7 +137,7 @@ func CreateRepo(ctx *middleware.Context, opt api.CreateRepoOption) {
 
 // POST /orgs/:org/repos
 // https://developer.github.com/v3/repos/#create
-func CreateOrgRepo(ctx *middleware.Context, opt api.CreateRepoOption) {
+func CreateOrgRepo(ctx *middleware.Context, opt sdk.CreateRepoOption) {
 	org, err := models.GetOrgByName(ctx.Params(":org"))
 	if err != nil {
 		if err == models.ErrUserNotExist {
@@ -248,9 +248,9 @@ func ListMyRepos(ctx *middleware.Context) {
 		return
 	}
 
-	repos := make([]*api.Repository, numOwnRepos+len(accessibleRepos))
+	repos := make([]*sdk.Repository, numOwnRepos+len(accessibleRepos))
 	for i := range ownRepos {
-		repos[i] = ToApiRepository(ctx.User, ownRepos[i], api.Permission{true, true, true})
+		repos[i] = ToApiRepository(ctx.User, ownRepos[i], sdk.Permission{true, true, true})
 	}
 	i := numOwnRepos
 
@@ -260,7 +260,7 @@ func ListMyRepos(ctx *middleware.Context) {
 			return
 		}
 
-		repos[i] = ToApiRepository(repo.Owner, repo, api.Permission{false, access >= models.ACCESS_MODE_WRITE, true})
+		repos[i] = ToApiRepository(repo.Owner, repo, sdk.Permission{false, access >= models.ACCESS_MODE_WRITE, true})
 
 		// FIXME: cache result to reduce DB query?
 		if repo.Owner.IsOrganization() && repo.Owner.IsOwnedBy(ctx.User.Id) {
