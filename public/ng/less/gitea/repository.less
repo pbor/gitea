@@ -37,6 +37,7 @@
     }
     a {
         &>.btn {
+		    width: 122px;
             line-height: 16px;
             margin-left: 16px;
             font-size: 13px;
@@ -47,12 +48,13 @@
     }
 }
 #repo-header-download-btn {
+  padding-right:0;
     >.btn>i {
         margin-right: 0 !important;
     }
     &:after {
         background-color: @btnBlackColor;
-        padding: 9px 16px 8px 0;
+        padding: 9px 0 8px 0;
         margin-left: -8px !important;
         color: #FFF;
         border-top: 1px solid@btnBlackColor;
@@ -62,13 +64,7 @@
     }
 }
 #repo-header-download-drop {
-    line-height: 24px;
-    width: 240px;
-    top: 40px;
-    left: -40px;
-    padding: 10px;
-    box-sizing: border-box;
-    z-index: 1;
+  padding-right: .75em;
     .btn>i {
         margin-right: 6px;
     }
@@ -81,7 +77,6 @@
     }
 }
 #repo-content {
-    padding-top: 18px;
     padding-bottom: 18px;
 }
 .repo-wide-wrapper {
@@ -93,16 +88,20 @@
 	padding-bottom: 20px;
 }
 
+#repo-meta{
+  margin-top: 16px;
+}
+
 #repo-clone {
     position: relative;
-    top: 15px;
     > * {
-        line-height: 20px;
+        line-height: 17px;
     }
 }
 
 #repo-clone-url {
-    width: 190px;
+    border-right: none;
+    width: 204px;
     border-left: none;
     border-right: none;
     cursor: default;
@@ -125,11 +124,14 @@
 }
 #repo-desc {
     font-size: 1.2em;
+  line-height: 34px;
     .no-description{
         color: #999;
     }
 }
+
 #repo-sidebar-nav {
+  padding-top: 18px;
     .label {
         font-size: 12px;
         line-height: 1.4em;
@@ -267,7 +269,7 @@
 #repo-files-table {
     margin-bottom: 20px;
     .sha .label {
-     font-family: Monaco,Menlo,Consolas,"Courier New",monospace;   
+     font-family: Monaco,Menlo,Consolas,"Courier New",monospace;
     }
     th, td {
         text-align: left;
@@ -495,7 +497,7 @@
         span {
             font-family: Monaco,Menlo,Consolas,"Courier New",monospace;
             line-height: 20px;
-            padding: 0 10px;  
+            padding: 0 10px;
             cursor: pointer;
             display: block;
         }
@@ -730,7 +732,7 @@
                     }
                 }
                 &.add-code {
-                    td, pre { 
+                    td, pre {
                         background-color: #d1ffd6 !important;
                         border-color: #b4e2b4 !important;
                     }
@@ -741,7 +743,7 @@
                 &:hover {
                     td, pre {
                         background-color: #FFF8D2 !important;
-                        border-color: #F0DB88 !important;   
+                        border-color: #F0DB88 !important;
                     }
                 }
                 &.add-comment {
@@ -808,7 +810,7 @@
             float: left;
             padding-right: 15px;
         }
-        .tag, 
+        .tag,
         .commit {
             display: block;
             margin-top: 12px;
