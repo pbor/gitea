@@ -1217,6 +1217,7 @@ The register and sign-in page style
   background-color: transparent;
 }
 #repo-header-meta a > .btn {
+	width: 124px;
   line-height: 16px;
   margin-left: 16px;
   font-size: 13px;
@@ -1224,12 +1225,20 @@ The register and sign-in page style
 #repo-header-meta a > .btn i {
   margin-right: 6px;
 }
+
+#repo-header-meta a > .btn .num {
+  margin-left: 6px;
+}
+#repo-header-download-btn{
+	padding-right:0
+}
+
 #repo-header-download-btn > .btn > i {
   margin-right: 0 !important;
 }
 #repo-header-download-btn:after {
   background-color: #444444;
-  padding: 9px 16px 8px 0;
+  padding: 9px 0 8px 0;
   margin-left: -8px !important;
   color: #FFF;
   border-top: 1px solid #444444;
@@ -1239,10 +1248,10 @@ The register and sign-in page style
 }
 #repo-header-download-drop {
   line-height: 24px;
-  width: 240px;
-  top: 40px;
-  left: -40px;
-  padding: 10px;
+  width: 160px;
+  top: 50px;
+  left: -55px;
+  padding: 20px;
   box-sizing: border-box;
   z-index: 1;
 }
@@ -1276,7 +1285,8 @@ The register and sign-in page style
   line-height: 20px;
 }
 #repo-clone-url {
-  width: 190px;
+  border-right: none;
+  width: 191px;
   border-left: none;
   border-right: none;
   cursor: default;
@@ -1302,6 +1312,9 @@ The register and sign-in page style
 }
 #repo-desc .no-description {
   color: #999;
+}
+#repo-sidebar-nav{
+	padding-top: 2em;
 }
 #repo-sidebar-nav .label {
   font-size: 12px;
