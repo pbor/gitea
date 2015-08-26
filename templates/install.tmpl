@@ -64,7 +64,7 @@
                             <label class="req" for="repo_root_path">{{.i18n.Tr "install.repo_path"}}</label>
                             <input class="ipt ipt-large ipt-radius {{if .Err_RepoRootPath}}ipt-error{{end}}" id="repo_root_path" name="repo_root_path" value="{{.repo_root_path}}" required />
                             <label></label>
-                            <span class="help">{{.i18n.Tr "install.repo_path_helper"}}</span>
+                            <span class="help">{{.i18n.Tr "install.repo_path_helper"}}<br>{{.i18n.Tr "install.invalid_repo_path_format"}}</span>
                         </div>
                         <div class="field">
                             <label class="req" for="run_user">{{.i18n.Tr "install.run_user"}}</label>
