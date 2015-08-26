@@ -135,12 +135,12 @@ func ForkDiff(ctx *middleware.Context, beforeCommitId, afterCommitId string) {
 		return
 	}
 
-	afterCommit, err := repo.GetCommitIdOfRef("refs/remotes/upstream/" + afterBranch)
+	afterCommit, err := repo.GetCommitOfBranch(afterBranch)
 	if err != nil {
 		ctx.Handle(404, "GetCommitIdOfRef", err)
 		return
 	}
-	afterCommitId = afterCommit
+	afterCommitId = afterCommit.Id.String()
 
 	commit, err := repo.GetCommit(afterCommitId)
 	if err != nil {
