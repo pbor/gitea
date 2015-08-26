@@ -1247,13 +1247,7 @@ The register and sign-in page style
   border-bottom-right-radius: .25em;
 }
 #repo-header-download-drop {
-  line-height: 24px;
-  width: 160px;
-  top: 50px;
-  left: -55px;
-  padding: 20px;
-  box-sizing: border-box;
-  z-index: 1;
+	padding-right: .75em;
 }
 #repo-header-download-drop .btn > i {
   margin-right: 6px;
@@ -1287,7 +1281,7 @@ The register and sign-in page style
 }
 #repo-clone-url {
   border-right: none;
-  width: 191px;
+  width: 204px;
   border-left: none;
   border-right: none;
   cursor: default;

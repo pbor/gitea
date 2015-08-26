@@ -17,6 +17,14 @@
         <li>
             <a class="radius" href="{{.RepoLink}}/commits/{{EscapePound .BranchName}}"><i class="octicon octicon-history"></i>{{.i18n.Tr "repo.commits"}} <span class="num right label label-gray label-radius">{{.CommitsCount}}</span></a>
         </li>
+		<li>
+			<div id="repo-header-download-drop">
+				<div id="repo-clone-zip" class="text-right">
+					<a class="btn btn-green btn-radius btn-medium" href="{{$.RepoLink}}/archive/{{EscapePound $.BranchName}}.zip"><i class="octicon octicon-file-zip"></i>ZIP</a>
+					<a class="btn btn-green btn-radius btn-medium" href="{{$.RepoLink}}/archive/{{EscapePound $.BranchName}}.tar.gz"><i class="octicon octicon-file-zip"></i>TAR.GZ</a>
+				</div>
+			</div>
+		</li>
         <!-- <li>
             <a class="radius" href="{{.RepoLink}}/branches"><i class="octicon octicon-git-branch"></i>Branches<span class="num right label label-gray label-radius">{{.BrancheCount}}</span></a>
         </li> -->
