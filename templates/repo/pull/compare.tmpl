@@ -10,23 +10,23 @@
         {{if .IsDiffCompare }}
         <div class="panel panel-info panel-radius compare-head-box">
             <div class="panel-header">
-            <select>
+            <select id="pr-upstream-repo">
                 {{range .Forks}}
                 <option{{if eq .Owner.Name $beforeRepo.Owner.Name}} selected{{end}}>{{.Owner.Name}}/{{.Name}}</option>
                 {{end}}
             </select>
-            <select>
+            <select id="pr-upstream-branch">
             {{range .BeforeBranches}}
             <option{{if eq . $beforeBranch}} selected{{end}}>{{.}}</option>
             {{end}}
             </select>
             ...
-            <select>
+            <select id="pr-forked-repo">
                 {{range .Forks}}
-                <option{{if eq .Owner.Name $afterRepo.Owner.Name}} selected{{end}}>{{.Owner.Name}}/{{.Name}}</option>
+                <option{{if eq .Owner.Name $afterRepo.Owner.Name}} selected{{end}} value={{.Owner.Name}}>{{.Owner.Name}}/{{.Name}}</option>
                 {{end}}
             </select>
-            <select>
+            <select id="pr-forked-branch">
             {{range .AfterBranches}}
             <option{{if eq . $afterBranch}} selected{{end}}>{{.}}</option>
             {{end}}

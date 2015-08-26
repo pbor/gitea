@@ -1244,6 +1244,34 @@ function initDiff() {
 		var addPercent = parseFloat(addLine) / (parseFloat(addLine) + parseFloat(delLine)) * 100;
 		$item.find(".bar .add").css("width", addPercent + "%");
 	});
+
+    $('#pr-upstream-repo').on("change", function () {
+        window.location.href = Gitea.AppSubUrl + '/' + $('#pr-upstream-repo').val() + "/compare/" + $('#pr-upstream-branch').val() + "..." + $('#pr-forked-repo').val() + ":" + $('#pr-forked-branch').val();
+    });
+    $('#pr-upstream-branch').on("change", function () {
+        window.location.href = Gitea.AppSubUrl + '/' + $('#pr-upstream-repo').val() + "/compare/" + $('#pr-upstream-branch').val() + "..." + $('#pr-forked-repo').val() + ":" + $('#pr-forked-branch').val();
+    });
+    $('#pr-forked-repo').on("change", function () {
+        window.location.href = Gitea.AppSubUrl + '/' + $('#pr-upstream-repo').val() + "/compare/" + $('#pr-upstream-branch').val() + "..." + $('#pr-forked-repo').val() + ":" + $('#pr-forked-branch').val();
+    });
+    $('#pr-forked-branch').on("change", function () {
+        window.location.href = Gitea.AppSubUrl + '/' + $('#pr-upstream-repo').val() + "/compare/" + $('#pr-upstream-branch').val() + "..." + $('#pr-forked-repo').val() + ":" + $('#pr-forked-branch').val();
+    });
+    $('#pr-diff-btn').click(function () {
+        $($(this).data('target')).slideToggle(100);
+    });
+
+    var $counter = $('.diff-counter');
+    if ($counter.length < 1) {
+        return;
+    }
+    $counter.each(function (i, item) {
+        var $item = $(item);
+        var addLine = $item.find('span[data-line].add').data("line");
+        var delLine = $item.find('span[data-line].del').data("line");
+        var addPercent = parseFloat(addLine) / (parseFloat(addLine) + parseFloat(delLine)) * 100;
+        $item.find(".bar .add").css("width", addPercent + "%");
+    });
 }
 
 $(document).ready(function () {
