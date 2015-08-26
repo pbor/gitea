@@ -27,7 +27,7 @@ import (
 	"github.com/macaron-contrib/toolbox"
 	"gopkg.in/ini.v1"
 
-	api "github.com/gogits/go-gogs-client"
+	sdk "github.com/go-gitea/go-sdk"
 
 	"github.com/go-gitea/gitea/models"
 	"github.com/go-gitea/gitea/modules/auth"
@@ -203,7 +203,7 @@ func runWeb(ctx *cli.Context) {
 		m.Get("/issues", user.Issues)
 	}, reqSignIn)
 
-	// API.
+	// sdk.
 	// FIXME: custom form error response.
 	m.Group("/api", func() {
 		m.Group("/v1", func() {
@@ -225,15 +225,15 @@ func runWeb(ctx *cli.Context) {
 			})
 
 			// Repositories.
-			m.Combo("/user/repos", middleware.ApiReqToken()).Get(v1.ListMyRepos).Post(bind(api.CreateRepoOption{}), v1.CreateRepo)
-			m.Post("/org/:org/repos", middleware.ApiReqToken(), bind(api.CreateRepoOption{}), v1.CreateOrgRepo)
+			m.Combo("/user/repos", middleware.ApiReqToken()).Get(v1.ListMyRepos).Post(bind(sdk.CreateRepoOption{}), v1.CreateRepo)
+			m.Post("/org/:org/repos", middleware.ApiReqToken(), bind(sdk.CreateRepoOption{}), v1.CreateOrgRepo)
 			m.Group("/repos", func() {
 				m.Get("/search", v1.SearchRepos)
 				m.Post("/migrate", bindIgnErr(auth.MigrateRepoForm{}), v1.MigrateRepo)
 
 				m.Group("/:username/:reponame", func() {
-					m.Combo("/hooks").Get(v1.ListRepoHooks).Post(bind(api.CreateHookOption{}), v1.CreateRepoHook)
-					m.Patch("/hooks/:id:int", bind(api.EditHookOption{}), v1.EditRepoHook)
+					m.Combo("/hooks").Get(v1.ListRepoHooks).Post(bind(sdk.CreateHookOption{}), v1.CreateRepoHook)
+					m.Patch("/hooks/:id:int", bind(sdk.EditHookOption{}), v1.EditRepoHook)
 					m.Get("/raw/*", middleware.RepoRef(), v1.GetRepoRawFile)
 				}, middleware.ApiRepoAssignment(), middleware.ApiReqToken())
 			})
