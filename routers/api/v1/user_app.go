@@ -6,7 +6,7 @@
 package v1
 
 import (
-	api "github.com/gogits/go-gogs-client"
+	sdk "github.com/go-gitea/go-sdk"
 
 	"github.com/go-gitea/gitea/models"
 	"github.com/go-gitea/gitea/modules/base"
@@ -21,9 +21,9 @@ func ListAccessTokens(ctx *middleware.Context) {
 		return
 	}
 
-	apiTokens := make([]*api.AccessToken, len(tokens))
+	apiTokens := make([]*sdk.AccessToken, len(tokens))
 	for i := range tokens {
-		apiTokens[i] = &api.AccessToken{tokens[i].Name, tokens[i].Sha1}
+		apiTokens[i] = &sdk.AccessToken{tokens[i].Name, tokens[i].Sha1}
 	}
 	ctx.JSON(200, &apiTokens)
 }
@@ -42,5 +42,5 @@ func CreateAccessToken(ctx *middleware.Context, form CreateAccessTokenForm) {
 		ctx.JSON(500, &base.ApiJsonErr{"NewAccessToken: " + err.Error(), base.DOC_URL})
 		return
 	}
-	ctx.JSON(201, &api.AccessToken{t.Name, t.Sha1})
+	ctx.JSON(201, &sdk.AccessToken{t.Name, t.Sha1})
 }

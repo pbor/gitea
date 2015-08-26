@@ -8,7 +8,7 @@ package v1
 import (
 	"encoding/json"
 
-	api "github.com/gogits/go-gogs-client"
+	sdk "github.com/go-gitea/go-sdk"
 
 	"github.com/go-gitea/gitea/models"
 	"github.com/go-gitea/gitea/modules/base"
@@ -24,9 +24,9 @@ func ListRepoHooks(ctx *middleware.Context) {
 		return
 	}
 
-	apiHooks := make([]*api.Hook, len(hooks))
+	apiHooks := make([]*sdk.Hook, len(hooks))
 	for i := range hooks {
-		h := &api.Hook{
+		h := &sdk.Hook{
 			Id:     hooks[i].Id,
 			Type:   hooks[i].HookTaskType.Name(),
 			Active: hooks[i].IsActive,
@@ -51,7 +51,7 @@ func ListRepoHooks(ctx *middleware.Context) {
 
 // POST /repos/:username/:reponame/hooks
 // https://developer.github.com/v3/repos/hooks/#create-a-hook
-func CreateRepoHook(ctx *middleware.Context, form api.CreateHookOption) {
+func CreateRepoHook(ctx *middleware.Context, form sdk.CreateHookOption) {
 	if !models.IsValidHookTaskType(form.Type) {
 		ctx.JSON(422, &base.ApiJsonErr{"invalid hook type", base.DOC_URL})
 		return
@@ -102,7 +102,7 @@ func CreateRepoHook(ctx *middleware.Context, form api.CreateHookOption) {
 		return
 	}
 
-	apiHook := &api.Hook{
+	apiHook := &sdk.Hook{
 		Id:     w.Id,
 		Type:   w.HookTaskType.Name(),
 		Events: []string{"push"},
@@ -121,7 +121,7 @@ func CreateRepoHook(ctx *middleware.Context, form api.CreateHookOption) {
 
 // PATCH /repos/:username/:reponame/hooks/:id
 // https://developer.github.com/v3/repos/hooks/#edit-a-hook
-func EditRepoHook(ctx *middleware.Context, form api.EditHookOption) {
+func EditRepoHook(ctx *middleware.Context, form sdk.EditHookOption) {
 	w, err := models.GetWebhookById(ctx.ParamsInt64(":id"))
 	if err != nil {
 		ctx.JSON(500, &base.ApiJsonErr{"GetWebhookById: " + err.Error(), base.DOC_URL})
