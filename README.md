@@ -9,8 +9,8 @@ Gitea (Git service with a cup of tea) is a self-hosted Git service.
 
 ### NOTICES
 
-- Due to testing purpose, data of [try.gogs.io](https://try.gogs.io) has been reset in **Jan 28, 2015** and will reset multiple times after. Please do **NOT** put your important data on the site.
-- The demo site [try.gogs.io](https://try.gogs.io) is running under `develop` branch.
+- Due to testing purpose, data of [try.gitea.io](http://try.gitea.io) has been reset in **Jan 28, 2015** and will reset multiple times after. Please do **NOT** put your important data on the site.
+- The demo site [try.gitea.io](http://try.gitea.io) is running under `develop` branch.
 - You **MUST** read [CONTRIBUTING.md](CONTRIBUTING.md) before you start filing an issue or making a Pull Request, and **MUST** discuss with us on [Gitter](https://gitter.im/go-gitea/gitea) for UI changes and feature Pull Reuqests, otherwise it's high possibilities that we are not going to merge it.
 - If you think there are vulnerabilities in the project, please talk privately to **lunny@gitea.io**. Thanks!
 
@@ -25,8 +25,8 @@ The goal of this project is to make the easiest, fastest, and most painless way 
 ## Overview
 
 - Please see the [Documentation](http://gitea.io/docs/intro/) for project design, known issues, and change log.
-- See the [Trello Board](https://trello.com/b/uxAoeLUl/gogs-go-git-service) to follow the develop team.
-- Want to try it before doing anything else? Do it [online](https://try.gogs.io/unknwon/gogs) or go down to the **Installation -> Install from binary** section!
+- See the [Issues](https://github.com/go-gitea/gitea/issues) to follow the develop team.
+- Want to try it before doing anything else? Do it [online](http://try.gitea.io) or go down to the **Installation -> Install from binary** section!
 - Having trouble? Get help with [Troubleshooting](http://gitea.io/docs/intro/troubleshooting.md).
 - Want to help with localization? Check out the [guide](http://gitea.io/docs/features/i18n.html)!
 
