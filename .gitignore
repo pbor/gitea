@@ -26,6 +26,7 @@ _testmain.go
 *.exe~
 /gitea
 gitea
+gitea_amd64
 profile/
 __pycache__
 *.pem
