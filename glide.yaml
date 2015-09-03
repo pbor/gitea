@@ -1,0 +1,72 @@
+package: github.com/go-gitea/gitea
+import:
+  - package: github.com/bradfitz/gomemcache
+    ref:     72a68649ba712ee7c4b5b4a943a626bcd7d90eb8
+  - package: github.com/codegangsta/cli
+    ref:     142e6cd241a4dfbf7f07a018f1f8225180018da4
+  - package: github.com/go-sql-driver/mysql
+    ref:     3dd7008ac1529aca1bcd8a9db75228a71ba23cac
+  - package: github.com/go-xorm/core
+    ref:     515edd92c14d7da944575151a54e243b802f75cc
+  - package: github.com/go-xorm/xorm
+    ref:     ce23797899966f75493d7afec4930147ee69de50
+  - package: github.com/gogits/chardet
+    ref:     2404f777256163ea3eadb273dada5dcb037993c0
+  - package: github.com/go-gitea/go-sdk
+    ref:     c8b760091f07bc4c38b1ffa90784e5195c6ac664
+  - package: github.com/kennygrant/sanitize
+    ref:     bf9c39a678d8e26aeee60d5fe733cad47a7a6871
+  - package: github.com/lib/pq
+    ref:     b269bd035a727d6c1081f76e7a239a1b00674c40
+  - package: github.com/macaron-contrib/binding
+    ref:     de6ed786683ec1afb9a9db503f51aa7caeba99f0
+  - package: github.com/macaron-contrib/cache
+    ref:     594c1cfa146036b7204a70aef0fe084cb2c27e86
+  - package: github.com/macaron-contrib/captcha
+    ref:     9a0a0b14680c8c22fe169f67d924b7e97e3d89e3
+  - package: github.com/macaron-contrib/csrf
+    ref:     98ddf5a710090c506ad8983ef28924289d6d417e
+  - package: github.com/macaron-contrib/i18n
+    ref:     da2b19e90bb9112f0b09876ad106ed73df5cda54
+  - package: github.com/macaron-contrib/oauth2
+    ref:     1adb5ce0720bcd4e7fc07516c3123649cd411fc9
+  - package: github.com/macaron-contrib/session
+    ref:     e48134e803fa0694f7838508027386b941ede3fa
+  - package: github.com/macaron-contrib/toolbox
+    ref:     acbfe36e16c17e0a227948c76749ca81a4ebf262
+  - package: github.com/mattn/go-sqlite3
+    ref:     897b8800a7d1a93518b87c00e5d1c5d7476f3701
+  - package: github.com/microcosm-cc/bluemonday
+    ref:     2b7763a06cb6d740966c9a8e6a001eee9679be0e
+  - package: github.com/msteinert/pam
+    ref:     9a42d39dbf2c9f3deeddb4e9f72ba83e2ef59f2d
+  - package: github.com/nfnt/resize
+    ref:     dc93e1b98c579d90ee2fa15c1fd6dac34f6e7899
+  - package: github.com/russross/blackfriday
+    ref:     8cec3a854e68dba10faabbe31c089abf4a3e57a6
+  - package: github.com/shurcooL/go
+    ref:     a5604e98844f8cbcd650de3b49f26509ff426a4b
+  - package: github.com/shurcooL/sanitized_anchor_name
+    ref:     244f5ac324cb97e1987ef901a0081a77bfd8e845
+  - package: github.com/Unknwon/cae
+    ref:     2e70a1351ba7842f0b4e58ef2f87302061ab2ced
+  - package: github.com/Unknwon/com
+    ref:     47d7d2b81a44157600669037e11e9ddfbf16745f
+  - package: github.com/Unknwon/i18n
+    ref:     7457d88830b0522fcb414b7dae71c2d4811fdec3
+  - package: github.com/Unknwon/macaron
+    ref:     635c89ac7410dd20df967e37e8f7f173e126cedd
+
+  - package: golang.org/x/crypto
+    ref:     aedad9a179ec1ea11b7064c57cbc6dc30d7724ec
+  - package: golang.org/x/net
+    ref:     db8e4de5b2d6653f66aea53094624468caad15d2
+  - package: golang.org/x/text
+    ref:     505f8b49cc14d790314b7535959a10b87b9161c7
+
+  - package: gopkg.in/bufio.v1
+    ref:     567b2bfa514e796916c4747494d6ff5132a1dfce
+  - package: gopkg.in/ini.v1
+    ref:     463307112d3b6430c54c3dad77b4d0fa745b859c
+  - package: gopkg.in/redis.v2
+    ref:     e6179049628164864e6e84e973cfb56335748dea
