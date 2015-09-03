@@ -11,6 +11,10 @@ sudo: false
 script: go build -v
 
 notifications:
-  email:
-    - u@gogs.io
-  slack: gophercn:o5pSanyTeNhnfYc3QnG0X7Wx
+  webhooks:
+    on_success: always
+    on_failure: always
+    on_start: never
+
+    urls:
+      - https://webhooks.gitter.im/e/cac0161488e4bf1fb94b
