@@ -1,19 +1,31 @@
+sudo: false
 language: go
 
 go:
-  - 1.2
-  - 1.3
-  - 1.4
+  - 1.5
   - tip
 
-before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install -y libpam-dev
-  - go get github.com/msteinert/pam 
+env:
+  global:
+    - GO15VENDOREXPERIMENT=1
+    - TAGS=cert,pam,sqlite,memcache,redis
 
-script: go build -v -tags "pam"
+addons:
+  apt:
+    packages:
+      - libpam0g-dev
+
+install:
+  - echo "Skip the default install!"
+
+script:
+  - go run make.go deps build test clean
 
 notifications:
-  email:
-    - u@gogs.io
-  slack: gophercn:o5pSanyTeNhnfYc3QnG0X7Wx
+  webhooks:
+    on_success: always
+    on_failure: always
+    on_start: never
+
+    urls:
+      - https://webhooks.gitter.im/e/cac0161488e4bf1fb94b

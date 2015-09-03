@@ -18,24 +18,26 @@ import (
 	"github.com/go-gitea/gitea/modules/setting"
 )
 
-const APP_VER = "0.7.0-beta0"
+var (
+	version  = "0.7.0-beta0"
+	revision = ""
+)
 
 func init() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
-	setting.AppVer = APP_VER
+	setting.AppVer = version
 }
 
 func main() {
 	app := cli.NewApp()
 	app.Name = "Gitea"
-	app.Usage = "Go Git Service"
-	app.Version = APP_VER
+	app.Usage = "Git service with a cup of tea"
+	app.Version = version
 	app.Commands = []cli.Command{
 		cmd.CmdWeb,
 		cmd.CmdServ,
 		cmd.CmdUpdate,
 		cmd.CmdDump,
-		//cmd.CmdCert, // Cert command have been merged to Generate
 		cmd.CmdGenerate,
 	}
 	app.Flags = append(app.Flags, []cli.Flag{}...)
