@@ -1,20 +1,32 @@
 [run]
 init_cmds = [
-	#["grep", "-rn", "FIXME", "."],
+	["go", "run", "make.go", "bindata", "build"],
 	["./gitea", "web"]
 ]
+
 watch_all = true
+
 watch_dirs = [
 	"$WORKDIR/cmd",
 	"$WORKDIR/models",
 	"$WORKDIR/modules",
-	"$WORKDIR/routers"
+	"$WORKDIR/routers",
+	"$WORKDIR/static"
 ]
-watch_exts = [".go"]
-build_delay = 1500
+
+watch_exts = [
+	".go",
+	".ini"
+]
+
+ignore = [
+	"vendor",
+	"bindata"
+]
+
 cmds = [
-	#["go-bindata", "-o=modules/bindata/bindata.go", "-ignore=\\.DS_Store|README", "-pkg=bindata", "conf/..."],
-	["go", "install", "-tags", "sqlite"],# redis memcache cert pam
-	["go", "build", "-tags", "sqlite"],
-	["./gitea", "web"]
+	["go", "run", "make.go", "bindata", "build"],
+	["./website", "web"]
 ]
+
+build_delay = 1500
