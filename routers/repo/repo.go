@@ -56,8 +56,8 @@ func Create(ctx *middleware.Context) {
 	// Give default value for template to render.
 	ctx.Data["gitignore"] = "0"
 	ctx.Data["license"] = "0"
-	ctx.Data["Gitignores"] = models.Gitignores
-	ctx.Data["Licenses"] = models.Licenses
+	ctx.Data["Gitignores"] = models.AvailableGitignores()
+	ctx.Data["Licenses"] = models.AvailableLicenses()
 
 	ctxUser := checkContextUser(ctx, ctx.QueryInt64("org"))
 	if ctx.Written() {
@@ -77,8 +77,8 @@ func Create(ctx *middleware.Context) {
 func CreatePost(ctx *middleware.Context, form auth.CreateRepoForm) {
 	ctx.Data["Title"] = ctx.Tr("new_repo")
 
-	ctx.Data["Gitignores"] = models.Gitignores
-	ctx.Data["Licenses"] = models.Licenses
+	ctx.Data["Gitignores"] = models.AvailableGitignores()
+	ctx.Data["Licenses"] = models.AvailableLicenses()
 
 	ctxUser := checkContextUser(ctx, form.Uid)
 	if ctx.Written() {

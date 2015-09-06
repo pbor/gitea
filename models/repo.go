@@ -54,47 +54,58 @@ var (
 	DescPattern = regexp.MustCompile(`https?://\S+`)
 )
 
-func LoadRepoConfig() {
-	Gitignores, err := gitignore.AssetDir("gitignore")
+func AvailableGitignores() []string {
+	available, err := gitignore.AssetDir("gitignore")
+
 	if err != nil {
 		log.Fatal(4, "Fail to get gitignore files: %v", err)
 	}
 
-	customGitignores := path.Join(setting.CustomPath, "gitignore")
-	if com.IsDir(customGitignores) {
-		customFiles, err := com.StatDir(customGitignores)
+	customs := path.Join(setting.CustomPath, "gitignore")
+
+	if com.IsDir(customs) {
+		files, err := com.StatDir(customs)
+
 		if err != nil {
 			log.Fatal(4, "Fail to get custom gitignore files: %v", err)
 		}
 
-		for _, f := range customFiles {
-			if !com.IsSliceContainsStr(Gitignores, f) {
-				Gitignores = append(Gitignores, f)
+		for _, file := range files {
+			if !com.IsSliceContainsStr(available, file) {
+				available = append(available, file)
 			}
 		}
 	}
 
-	sort.Strings(Gitignores)
-	Licenses, err := license.AssetDir("license")
+	sort.Strings(available)
+	return available
+}
+
+func AvailableLicenses() []string {
+	available, err := license.AssetDir("license")
+
 	if err != nil {
 		log.Fatal(4, "Fail to get license files: %v", err)
 	}
 
-	customLicenses := path.Join(setting.CustomPath, "license")
-	if com.IsDir(customLicenses) {
-		customFiles, err := com.StatDir(customLicenses)
+	customs := path.Join(setting.CustomPath, "license")
+
+	if com.IsDir(customs) {
+		files, err := com.StatDir(customs)
+
 		if err != nil {
 			log.Fatal(4, "Fail to get custom license files: %v", err)
 		}
 
-		for _, f := range customFiles {
-			if !com.IsSliceContainsStr(Licenses, f) {
-				Licenses = append(Licenses, f)
+		for _, file := range files {
+			if !com.IsSliceContainsStr(available, file) {
+				available = append(available, file)
 			}
 		}
 	}
 
-	sort.Strings(Licenses)
+	sort.Strings(available)
+	return available
 }
 
 func NewRepoContext() {
