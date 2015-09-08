@@ -1,0 +1,52 @@
+{{template "ng/base/head" .}}
+{{template "ng/base/header" .}}
+<div id="repo-wrapper">
+	{{template "repo/header" .}}
+	<div class="issue-main repo-wide-wrapper container clear" id="issue-new-container">
+		<form id="issue-new-form" action="{{.RepoLink}}/issues/new" method="post" enctype="multipart/form-data">
+			<div class="issue-add-comment clear grid-3-4 left">
+				<a class="author-avatar" href="{{AppSubUrl}}/{{.SignedUser.Name}}"><img class="avatar-40 radius" src="{{.SignedUser.AvatarLink}}" alt=""></a>
+				<div class="panel panel-radius">
+					<div class="panel-content title issue-new-title">
+						<input type="text" class="ipt ipt-radius" name="title" id="issue-new-title" placeholder="title">
+					</div>
+					<div class="panel-header">
+						<ul class="menu menu-line add-nav">
+							<li class="js-tab-nav js-tab-nav-show" data-tab-target="#issue-new-textarea"><a href="#">撰写</a></li>
+							<li class="js-tab-nav" data-tab-target="#issue-add-comment-preview"><a href="#" id="pull-issue-preview">预览</a></li>
+						</ul>
+					</div>
+					<div class="panel-content content">
+							<div id="submit-error" class="alert alert-red hide"></div>
+							<div id="issue-new-textarea">
+								<textarea class="ipt ipt-radius js-preview-input" name="content" id="issue-add-content"></textarea>
+							</div>
+							<div id="issue-add-comment-preview" class="js-preview-container">
+								issues.preview
+							</div>
+							<div class="submit text-right">
+								<button class="btn btn-green btn-radius text-bold" name="submit" value="create">Create New Issue</button>
+							</div>
+					</div>
+				</div>
+			</div>
+			<div class="issue-create-aside grid-1-4 right">
+				<div class="panel">
+					<div class="issue-new-panel">
+						<div class="panel-header">Label</div>
+						<div class="panel-content">No Label</div>
+					</div>
+					<div class="issue-new-milestone">
+						<div class="panel-header">Milestone</div>
+						<div class="panel-content">No Milestone</div>
+					</div>
+					<div class="issue-new-assignee">
+						<div class="panel-header">Assignee</div>
+						<div class="panel-content">No Assignee</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+{{template "ng/base/footer" .}}

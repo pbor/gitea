@@ -62,7 +62,6 @@ func GlobalInit() {
 	NewServices()
 
 	if setting.InstallLock {
-		models.LoadRepoConfig()
 		models.NewRepoContext()
 
 		if err := models.NewEngine(); err != nil {

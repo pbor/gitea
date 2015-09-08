@@ -1,0 +1,88 @@
+{{template "ng/base/head" .}}
+{{template "ng/base/header" .}}
+<div id="repo-wrapper">
+    {{template "repo/header" .}}
+    <div class="issue-main container repo-wide-wrapper">
+        <ul id="issue-list-nav" class="menu menu-line">
+			<li><a href="{{.RepoLink}}/issues">{{.i18n.Tr "repo.issues"}}</a></li>
+			<li><a href="{{.RepoLink}}/pulls">{{.i18n.Tr "repo.pulls"}}</a></li>
+			<li class="current"><a href="{{.RepoLink}}/labels">{{.i18n.Tr "repo.labels"}}</a></li>
+			<li><a href="{{.RepoLink}}/milestones">{{.i18n.Tr "repo.milestones"}}</a></li>
+            <li class="right" id="label-new"><a href="#"><button id="label-new-btn" class="btn btn-green text-bold">{{.i18n.Tr "repo.labels.new"}}</button></a></li>
+        </ul>
+        <form id="label-add-form" method="post" action="{{.RepoLink}}/issues/labels/new" class="form clear hidden">
+			{{.CsrfTokenHtml}}
+            <input type="text" class="ipt" name="title" placeholder="label name" id="label-add-name"/>
+            <div class="inline down drop label-color-drop">
+                <label for="label-add-color"></label>
+                <input class="ipt" name="color" type="text" placeholder="color" id="label-add-color"/>
+                <div class="drop-down">
+                    <a href="#" class="color" style="background: red"></a>
+                    <a href="#" class="color" style="background: green"></a>
+                </div>
+            </div>
+            <button class="btn btn-gray right" type="button" id="label-cancel-btn">{{.i18n.Tr "cancel"}}</button>
+            <button class="btn btn-green right" id="label-add-btn">{{.i18n.Tr "create"}}</button>
+        </form>
+        <div id="issue-list-container">
+            <div id="issue-list-menu">
+                <div class="left"><span class="label label-black" id="labels-num">{{.LabelsCount}}</span><strong>{{.i18n.Tr "repo.labels"}}</strong></div>
+                <div class="clear"></div>
+            </div>
+			{{if .Labels}}
+            <ul id="label-list" class="list-no-style">
+				{{range .Labels}}
+                <li class="item" id="label-{{.Id}}">
+                    <a class="right delete" href="#"><i class="octicon octicon-x"></i>{{.i18n.Tr "delete"}}</a>
+                    <a class="right edit" href="#"><i class="octicon octicon-pencil"></i>{{.i18n.Tr "edit"}}</a>
+                    <a class="right issue-num" href="{{$.RepoLink}}/issues?type=all&labels={{.Id}}"><i class="octicon octicon-issue-opened"></i><strong class="num">{{.NumOpenIssues}}</strong>{{.i18n.Tr "repo.issues"}}</a>
+                    <a class="left label clear" href="#" style="background-color: {{.Color}}" data-color-hex="{{.Color}}"><i class="octicon octicon-tag"></i><strong>{{.Name}}</strong></a>
+                </li>
+				{{end}}
+                </li>
+            </ul>
+			{{else}}
+			<div id="issue-no-list" class="text-center">
+				<h2><i class="octicon octicon-git-pull-request mega-octicon"></i><br/></h2>
+				<h2>{{.i18n.Tr "repo.labels.nolabel"}}</h2>
+				<a href="#">
+					<button class="btn btn-green text-bold">
+						{{.i18n.Tr "repo.labels.new"}}
+					</button>
+				</a>
+			</div>
+			{{end}}
+        </div>
+    </div>
+</div>
+<div id="label-edit-form-tpl" class="hidden">
+    <li class="item">
+		<form id="label-edit-form" action="{{.RepoLink}}/issues/labels/edit" class="form clear" method="post">
+			{{.CsrfTokenHtml}}
+			<input type="text" class="ipt" name="title" placeholder="label name" id="label-edit-name"/>
+			<input type="hidden" name="id" value="id"/>
+			<div class="inline down drop label-color-drop">
+				<label for="label-add-color"></label>
+				<input class="ipt" name="color" type="text" placeholder="color" id="label-edit-color"/>
+				<div class="drop-down">
+					<a href="#" class="color" style="background: red"></a>
+					<a href="#" class="color" style="background: green"></a>
+				</div>
+			</div>
+			<button class="btn btn-gray right" type="button" id="label-edit-cancel-btn">{{.i18n.Tr "cancel"}}</button>
+			<button class="btn btn-green right" id="label-edit-btn">{{.i18n.Tr "save"}}</button>
+    	</form>
+	</li>
+</div>
+<div id="label-delete-form-tpl" class="hidden">
+    <li class="item">
+        <form id="label-delete-form" action="{{.RepoLink}}/issues/labels/delete?form=form" method="post">
+			{{.CsrfTokenHtml}}
+            <input type="hidden" name="remove" value="id"/>
+            <span>{{.i18n.Tr "repo.labels.confirm_delete"}}</span>
+            <button class="btn btn-gray right" type="button" id="label-del-cancel-btn">{{.i18n.Tr "cancel"}}</button>
+            <button class="btn btn-red right" id="label-del-btn">{{.i18n.Tr "delete"}}</button>
+        </form>
+    </li>
+</div>
+{{template "ng/base/footer" .}}

@@ -212,17 +212,73 @@ func executeBindata() error {
 	var paths = []struct {
 		input  string
 		output string
+		tags   string
+		prefix string
 		pkg    string
 	}{
-		{"conf/...", "modules/bindata/bindata.go", "bindata"},
+		{
+			"static/conf/...",
+			"modules/bindata/conf/static.go",
+			"",
+			"static/",
+			"conf",
+		},
+		{
+			"static/gitignore/...",
+			"modules/bindata/gitignore/static.go",
+			"!nobindata",
+			"static/",
+			"gitignore",
+		},
+		{
+			"static/license/...",
+			"modules/bindata/license/static.go",
+			"!nobindata",
+			"static/",
+			"license",
+		},
+		{
+			"static/locale/...",
+			"modules/bindata/locale/static.go",
+			"!nobindata",
+			"static/",
+			"locale",
+		},
+		{
+			"static/public/...",
+			"modules/bindata/public/static.go",
+			"!nobindata",
+			"static/public/",
+			"public",
+		},
+		{
+			"static/templates/...",
+			"modules/bindata/templates/static.go",
+			"!nobindata",
+			"static/templates/",
+			"templates",
+		},
 	}
 
 	for _, path := range paths {
+		ignore := fmt.Sprint("README\\.md")
+		output := fmt.Sprint(path.output)
+		tags := fmt.Sprint(path.tags)
+		pkg := fmt.Sprint(path.pkg)
+		prefix := fmt.Sprint(path.prefix)
+
 		err := run(
 			"go-bindata",
-			fmt.Sprintf("-o=%s", path.output),
-			"-ignore=\"README\\\\.md\"",
-			fmt.Sprintf("-pkg=%s", path.pkg),
+			"-ignore",
+			ignore,
+			"-o",
+			output,
+			"-tags",
+			tags,
+			"-pkg",
+			pkg,
+			"-prefix",
+			prefix,
 			path.input)
 
 		if err != nil {

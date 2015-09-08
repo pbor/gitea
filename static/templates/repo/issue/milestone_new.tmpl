@@ -1,0 +1,51 @@
+{{template "ng/base/head" .}}
+{{template "ng/base/header" .}}
+<div id="repo-wrapper">
+	{{template "repo/header" .}}
+	<div class="issue-main container repo-wide-wrapper">
+		<h2>New Milestone</h2>
+		<p>Create a new milestone to help organize your issues and pull requests.</p>
+		<hr/>
+		<form id="milestone-new-form" class="form" action="{{.RepoLink}}/milestones/new" method="post">
+			<div class="grid-2-3 left">
+				{{.CsrfTokenHtml}}
+				{{template "base/alert" .}}
+				<div class="field">
+					<label for="milestone-title" class="req">Title</label>
+					<input id="milestone-title" class="ipt ipt-large" type="text" required="required" name="title" placeholder="Title"/>
+				</div>
+				<div class="field">
+					<label class="req" for="milestone-content">Content</label>
+					<textarea class="ipt" name="content" id="milestone-content"></textarea>
+				</div>
+			</div>
+			<div class="grid-1-4 right">
+				<div class="field">
+					<label for="milestone-due-date">Due Date</label>
+					<input name="due_date" type="text" class="ipt ipt-large" id="milestone-due-date"/>
+				</div>
+				<div class="field">
+					<div class="date-picker"></div>
+				</div>
+			</div>
+			<hr class="clear"/>
+			<div class="field">
+				<button class="btn btn-green text-bold" type="submit">Create Milestone</button>
+			</div>
+		</form>
+	</div>
+</div>
+<script src="/js/bootstrap-datepicker.js"></script>
+<script>
+	$(function () {
+		$('.date-picker').datepicker({
+			weekStart: 1,
+			todayBtn: "linked",
+			calendarWeeks: true,
+			todayHighlight: true
+		}).on("changeDate", function (e) {
+			$('#milestone-due-date').val(e.format());
+		});
+	});
+</script>
+{{template "ng/base/footer" .}}

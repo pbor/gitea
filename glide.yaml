@@ -4,6 +4,8 @@ import:
     ref:     72a68649ba712ee7c4b5b4a943a626bcd7d90eb8
   - package: github.com/codegangsta/cli
     ref:     142e6cd241a4dfbf7f07a018f1f8225180018da4
+  - package: github.com/elazarl/go-bindata-assetfs
+    ref:     d5cac425555ca5cf00694df246e04f05e6a55150
   - package: github.com/go-sql-driver/mysql
     ref:     3dd7008ac1529aca1bcd8a9db75228a71ba23cac
   - package: github.com/go-xorm/core
@@ -18,6 +20,8 @@ import:
     ref:     bf9c39a678d8e26aeee60d5fe733cad47a7a6871
   - package: github.com/lib/pq
     ref:     b269bd035a727d6c1081f76e7a239a1b00674c40
+  - package: github.com/macaron-contrib/bindata
+    ref:     8034104f1486732c68b88433eaac22a20ee9040a
   - package: github.com/macaron-contrib/binding
     ref:     de6ed786683ec1afb9a9db503f51aa7caeba99f0
   - package: github.com/macaron-contrib/cache
