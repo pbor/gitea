@@ -8,7 +8,7 @@ go:
 env:
   global:
     - GO15VENDOREXPERIMENT=1
-    - TAGS=cert,pam,sqlite,memcache,redis
+    - TAGS=cert,pam,sqlite
 
 addons:
   apt:

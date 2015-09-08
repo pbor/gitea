@@ -21,10 +21,20 @@ import (
 	"github.com/macaron-contrib/session"
 	"gopkg.in/ini.v1"
 
+	_ "github.com/macaron-contrib/cache/memcache"
+	_ "github.com/macaron-contrib/cache/mysql"
+	_ "github.com/macaron-contrib/cache/postgres"
+	_ "github.com/macaron-contrib/cache/redis"
+
+	_ "github.com/macaron-contrib/session/memcache"
+	_ "github.com/macaron-contrib/session/mysql"
+	_ "github.com/macaron-contrib/session/postgres"
+	_ "github.com/macaron-contrib/session/redis"
+
 	"github.com/go-gitea/gitea/modules/bindata/conf"
 	"github.com/go-gitea/gitea/modules/log"
-	// "github.com/go-gitea/gitea/modules/ssh"
 	"github.com/go-gitea/gitea/modules/user"
+	// "github.com/go-gitea/gitea/modules/ssh"
 )
 
 type Scheme string
@@ -112,9 +122,6 @@ var (
 	CacheAdapter  string
 	CacheInternal int
 	CacheConn     string
-
-	EnableRedis    bool
-	EnableMemcache bool
 
 	// Session settings.
 	SessionConfig session.Options
@@ -442,13 +449,8 @@ func newLogService() {
 }
 
 func newCacheService() {
-	CacheAdapter = Cfg.Section("cache").Key("ADAPTER").In("memory", []string{"memory", "redis", "memcache"})
-	if EnableRedis {
-		log.Info("Redis Enabled")
-	}
-	if EnableMemcache {
-		log.Info("Memcache Enabled")
-	}
+	CacheAdapter = Cfg.Section("cache").Key("ADAPTER").In("memory",
+		[]string{"memory", "file", "redis", "memcache", "mysql", "postgres"})
 
 	switch CacheAdapter {
 	case "memory":
@@ -464,7 +466,8 @@ func newCacheService() {
 
 func newSessionService() {
 	SessionConfig.Provider = Cfg.Section("session").Key("PROVIDER").In("memory",
-		[]string{"memory", "file", "redis", "mysql"})
+		[]string{"memory", "file", "redis", "memcache", "mysql", "postgres"})
+
 	SessionConfig.ProviderConfig = strings.Trim(Cfg.Section("session").Key("PROVIDER_CONFIG").String(), "\" ")
 	SessionConfig.CookieName = Cfg.Section("session").Key("COOKIE_NAME").MustString("i_like_gogits")
 	SessionConfig.CookiePath = AppSubUrl
