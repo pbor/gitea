@@ -1217,7 +1217,7 @@ The register and sign-in page style
   background-color: transparent;
 }
 #repo-header-meta a > .btn {
-	width: 122px;
+  width: 122px;
   line-height: 16px;
   margin-left: 16px;
   font-size: 13px;
@@ -1225,14 +1225,9 @@ The register and sign-in page style
 #repo-header-meta a > .btn i {
   margin-right: 6px;
 }
-
-#repo-header-meta a > .btn .num {
-  margin-left: 6px;
+#repo-header-download-btn {
+  padding-right: 0;
 }
-#repo-header-download-btn{
-	padding-right:0
-}
-
 #repo-header-download-btn > .btn > i {
   margin-right: 0 !important;
 }
@@ -1247,7 +1242,7 @@ The register and sign-in page style
   border-bottom-right-radius: .25em;
 }
 #repo-header-download-drop {
-	padding-right: .75em;
+  padding-right: .75em;
 }
 #repo-header-download-drop .btn > i {
   margin-right: 6px;
@@ -1270,8 +1265,8 @@ The register and sign-in page style
 #repo-header-download-zip {
   padding-bottom: 20px;
 }
-#repo-meta{
-	margin-top: 16px;
+#repo-meta {
+  margin-top: 16px;
 }
 #repo-clone {
   position: relative;
@@ -1280,7 +1275,6 @@ The register and sign-in page style
   line-height: 17px;
 }
 #repo-clone-url {
-  border-right: none;
   width: 204px;
   border-left: none;
   border-right: none;
@@ -1304,13 +1298,13 @@ The register and sign-in page style
 }
 #repo-desc {
   font-size: 1.2em;
-	line-height: 34px;
+  line-height: 34px;
 }
 #repo-desc .no-description {
   color: #999;
 }
-#repo-sidebar-nav{
-	padding-top: 18px;
+#repo-sidebar-nav {
+  padding-top: 18px;
 }
 #repo-sidebar-nav .label {
   font-size: 12px;
@@ -1433,6 +1427,9 @@ The register and sign-in page style
 #repo-files-table {
   margin-bottom: 20px;
 }
+#repo-files-table .sha {
+  width: 100px;
+}
 #repo-files-table .sha .label {
   font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
 }
@@ -1453,7 +1450,7 @@ The register and sign-in page style
   max-width: 100%;
 }
 #repo-files-table td.age {
-  max-width: 120px;
+  width: 120px;
   text-align: right;
 }
 #repo-files-table td.msg {
@@ -1782,18 +1779,17 @@ The register and sign-in page style
   width: 120px;
 }
 .commit-list .author {
-  padding-left: 20px;
-  min-width: 180px;
+  width: 120px;
 }
 .commit-list .author img {
   margin-top: -4px;
 }
+.commit-list .sha {
+  width: 100px;
+}
 .commit-list .sha a {
   font-family: Consolas, Menlo, Monaco, "Lucida Console", monospace;
   font-size: 14px;
-}
-.commit-list .message {
-  width: 60%;
 }
 .commit-list .message span {
   max-width: 500px;
