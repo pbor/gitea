@@ -92,7 +92,7 @@ func ParsePatch(pid int64, maxlines int, cmd *exec.Cmd, reader io.Reader) (*Diff
 
 		leftLine, rightLine int
 		isTooLong           bool
-		// FIXME: use first 30 lines to detect file encoding. Should use cache in the future.
+	// FIXME: use first 50 lines to detect file encoding. Should use cache in the future.
 		buf bytes.Buffer
 	)
 
@@ -111,8 +111,8 @@ func ParsePatch(pid int64, maxlines int, cmd *exec.Cmd, reader io.Reader) (*Diff
 
 		i = i + 1
 
-		// FIXME: use first 30 lines to detect file encoding.
-		if i <= 30 {
+		// FIXME: use first 50 lines to detect file encoding.
+		if i <= 50 {
 			buf.WriteString(line)
 		}
 
@@ -217,7 +217,7 @@ func ParsePatch(pid int64, maxlines int, cmd *exec.Cmd, reader io.Reader) (*Diff
 		}
 	}
 
-	// FIXME: use first 30 lines to detect file encoding.
+	// FIXME: use first 50 lines to detect file encoding.
 	charsetLabel, err := base.DetectEncoding(buf.Bytes())
 	if charsetLabel != "utf8" && err == nil {
 		encoding, _ := charset.Lookup(charsetLabel)
