@@ -1,4 +1,4 @@
-Gitea - Git service with a cup of tea [![Build Status](https://travis-ci.org/go-gitea/gitea.svg?branch=master)](https://travis-ci.org/go-gitea/gitea)
+Gitea - Git service with a cup of tea [![TravisCI](https://travis-ci.org/go-gitea/gitea.svg?branch=master)](https://travis-ci.org/go-gitea/gitea) [![DroneCI](https://ci.webhippie.de/github/api/badges/go-gitea/gitea/status.svg)](https://ci.webhippie.de/github/go-gitea/gitea)
 =====================================
 
 Gitea (Git service with a cup of tea) 是一款可轻易搭建的自助 Git 服务。

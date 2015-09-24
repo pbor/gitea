@@ -1,4 +1,4 @@
-Gitea - Git service with a cup of tea [![Build Status](https://travis-ci.org/go-gitea/gitea.svg?branch=master)](https://travis-ci.org/go-gitea/gitea)
+Gitea - Git service with a cup of tea [![TravisCI](https://travis-ci.org/go-gitea/gitea.svg?branch=master)](https://travis-ci.org/go-gitea/gitea) [![DroneCI](https://ci.webhippie.de/github/api/badges/go-gitea/gitea/status.svg)](https://ci.webhippie.de/github/go-gitea/gitea)
 =====================================
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/go-gitea/gitea?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
