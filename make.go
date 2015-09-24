@@ -70,7 +70,13 @@ func executeDeps() error {
 	}
 
 	return run(
-		"glide",
+		strings.Join(
+			[]string{
+				os.Getenv("GOPATH"),
+				"bin",
+				"glide",
+			},
+			"/"),
 		"install")
 }
 
@@ -85,7 +91,13 @@ func executeLint() error {
 	}
 
 	return run(
-		"golint",
+		strings.Join(
+			[]string{
+				os.Getenv("GOPATH"),
+				"bin",
+				"golint",
+			},
+			"/"),
 		"./...")
 }
 
@@ -268,7 +280,13 @@ func executeBindata() error {
 		prefix := fmt.Sprint(path.prefix)
 
 		err := run(
-			"go-bindata",
+			strings.Join(
+				[]string{
+					os.Getenv("GOPATH"),
+					"bin",
+					"go-bindata",
+				},
+				"/"),
 			"-ignore",
 			ignore,
 			"-o",

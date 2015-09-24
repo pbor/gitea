@@ -1,0 +1,37 @@
+clone:
+  path: "github.com/go-gitea/gitea"
+
+build:
+  image: "golang:1.5.0"
+
+  environment:
+    TAGS: "cert,pam,sqlite"
+    GOPATH: "/drone"
+
+  commands:
+    - apt-get update
+    - apt-get -y install libpam0g-dev
+
+    - go run make.go deps
+    - go run make.go bindata
+    - go run make.go build
+    - go run make.go test
+
+# publish:
+#   github:
+#     image: plugins/publish-github
+#     when:
+#       branch: master
+#       success: true
+#   bintray:
+#     image: plugins/publish-bintray
+#     when:
+#       branch: develop
+#       success: true
+
+# notify:
+#   gitter:
+#     url: https://webhooks.gitter.im/e/cac0161488e4bf1fb94b
+#     when:
+#       success: true
+#       failure: true
